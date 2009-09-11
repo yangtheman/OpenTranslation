@@ -1,0 +1,17 @@
+<% form_tag '/posts/create' do %>
+	<p>
+	Which blog?: <br />
+	<%=  text_field_tag 'url', '', :size => 100 %>
+	</p>
+	<p>
+	From: <br />
+	<%= collection_select(:post, :origin_id, @languages, :id, :language) %>
+	</p>
+	<p>
+	To: <br />
+	<%= collection_select(:post, :ted_id, @languages, :id, :language) %>
+	</p>
+	<p>
+	<%= submit_tag 'Submit' %>
+	</p>
+<% end %>

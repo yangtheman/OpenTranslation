@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <title>Local Community for Parents around Playgrounds - Keep your neighborhood playgrounds clean and safe!</title>
+  <%= javascript_include_tag :defaults %>
+  <%= yield :page_includes %>
+  <%= GMap.header %>
+  <%= stylesheet_link_tag 'style', 'pagination' %>
+  <%= fb_connect_javascript_tag %>
+  <% init_fb_connect "XFBML", "Api" do %>
+  	<%= fb_user_action(flash[:user_action_to_publish]) if flash[:user_action_to_publish] %>
+  <% end %>
+</head>
+<body>
+	<!--<%= fb_connect_javascript_tag %>-->
+	<!--<%= init_fb_connect "XFBML"%>-->
+
+<div id="title">
+	<h1><span><%= link_to 'Playgrounds R Us', playgrounds_path%></span></h1>
+		<p class="sharethis"><script type="text/javascript" src="http://w.sharethis.com/button/sharethis.js#publisher=564c1c05-04e4-4a32-82a0-df34172e816d&amp;type=website"></script>
+		</p>
+		<p class="login">
+		<% if !@current_user.nil? %>
+			<% if @current_user.facebook_user? %>
+				<p class="fb_login"><fb:profile-pic uid="<%= @current_user.fb_id%>" facebook-logo="true" size="thumb" ></fb:profile-pic></p>
+				<p class="logout">
+				<%= link_to 'Edit', user_path(@current_user) %> | 
+				<a href="#" onclick='FB.Connect.logoutAndRedirect("/session/destroy")'>Logout</a>
+				</p>
+			<% else %>
+				Logged in as: <%= link_to @current_user.username, user_path(@current_user) %> |
+				<em><%= link_to "Logout", session_path, :method => :delete %></em>
+			<% end %>
+		<% else %>
+			<%= link_to 'Login', new_session_path %> |
+			<%= link_to 'Register', new_user_path %> 
+			<p class="fb_button"><%= fb_login_button('window.location = "/users/link_user_accounts";')%></p>
+		<% end %>
+		</p>
+	</div>
+</div>
+<div id="top_nav">
+	<ul class="nav">
+		<li><%= link_to 'Home', playgrounds_path, :class => "nav" %></li>
+		<li><%= link_to 'Add new playground', new_playground_path, :class => "nav" %></li>
+		<li><%= link_to 'Feature requests', features_path, :class => "nav" %></li>
+		<li><%= link_to "Blog", "http://blog.yangtheman.com/category/playground/", :class => "nav", :target => "_blank" %></li>
+	</ul>
+</div>
+<% unless flash[:error].blank? %>
+	<div id="notification"><strong><em><%= flash[:error] %></em></strong></div>
+<% end %>
+<%= yield %>
+<div id="footer">
+</div>
+<script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+	try {
+	var pageTracker = _gat._getTracker("UA-10418051-2");
+	pageTracker._trackPageview();
+	} catch(err) {}
+</script>
+
+</body>
+</html>

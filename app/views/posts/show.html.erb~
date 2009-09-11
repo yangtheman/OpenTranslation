@@ -1,0 +1,8 @@
+<h1><%= @post.title %></h1>
+Original post: <%= link_to @original_post.title, @post.url %><br />
+Version: <%= link_to @post.version, edit_post_path(@post) %>
+<p>
+Content: <br />
+<%= @post.content %>
+</p>
+<h2>Previous Versions</h2>

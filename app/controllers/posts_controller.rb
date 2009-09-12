@@ -1,7 +1,8 @@
 class PostsController < ApplicationController
 
+  uses_yui_editor
+
   def index
-	  #@post = Post.new
 	  @languages = Language.find(:all, :order => "language ASC")
   end
 
@@ -12,6 +13,7 @@ class PostsController < ApplicationController
 	  @post.origin_id = params[:post][:origin_id]
 	  @post.ted_id = params[:post][:ted_id]
 	  if @post.origin_id == @post.ted_id
+		  debugger
 		  render :action => "index"
 	  end
 
@@ -20,40 +22,36 @@ class PostsController < ApplicationController
 
 	  web = Hpricot(open(@post.url))
           @post.title = web.at("title").inner_text
+	  ted_title = Translate.t(@post.title, from, to)
           
-	  content = ""
+	  @post.content = ""
 	  ted_content = ""
           
-	  body = web.search("/html/body//p")
-          if body.inner_text.length < 1
-            body = web.search("/html/body/")
+	  #Wordpress's main body had "entry" div id
+	  body = web.search("div.entry/p")
+          if body.inner_text.length == 0
+		  body = web.search("/html/body//p")
 	  end
+          #body = web.search("/html/body/")
 	  
 	  body.each do |p|
-	    content += "#{p.inner_text} \n"
-	    ted_content += Translate.t(p.inner_text, from, to)
+		  @post.content += p.to_html
+		  ted_content += Translate.t(p.to_html, from, to)
 	  end
-	  @post.content = content
-	  ted_title = Translate.t(@post.title, from, to)
 
 	  if @post.save
 		  @post.title = ted_title
 		  @post.content = ted_content
 		  render :action => "edit"
-		  #if @post.update_attribute(:title, ted_title) && @post.update_attribute(:content, ted_content) 
-			  #redirect_to edit_post_path(@post) 
-		  #else 
-			  #render :action => "index"
-		  #end
 	  else 
-		  render :action => "index"
+		  debugger
+		  redirect_to posts_path
 	  end
   end
 
 
   def edit
 	  @post = Post.find(params[:id])
-	  #@original_post = @post.versions.earliest
   end
 
   def update

@@ -21,6 +21,10 @@ class PostsController < ApplicationController
 	  to = Language.find_by_id(params[:post][:ted_id]).short
 
 	  web = Hpricot(open(@post.url))
+
+	  #remove all images (shall I or not?)
+	  #web.search("img").remove
+
           @post.title = web.at("title").inner_text
 	  ted_title = Translate.t(@post.title, from, to)
           
@@ -36,7 +40,7 @@ class PostsController < ApplicationController
 	  
 	  body.each do |p|
 		  @post.content += p.to_html
-		  ted_content += Translate.t(p.to_html, from, to)
+		  ted_content += Translate.t(cleanup(p.to_html), from, to)
 	  end
 
 	  if @post.save

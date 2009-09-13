@@ -13,4 +13,22 @@ class ApplicationController < ActionController::Base
   # Scrub sensitive parameters from your log
   # filter_parameter_logging :password
 
+  def cleanup(txt)
+	  txt.gsub!(/\&\#8211\;/, '–')
+	  txt.gsub!(/\&\#8212\;/, '—')
+	  txt.gsub!(/\&\#8216\;/, '‘')
+	  txt.gsub!(/\&\#8217\;/, '’')
+	  txt.gsub!(/\&\#8218\;/, '‚')
+	  txt.gsub!(/\&\#8220\;/, '“')
+	  txt.gsub!(/\&\#8221\;/, '”')
+	  txt.gsub!(/\&\#8222\;/, '„')
+	  txt.gsub!(/\&\#8224\;/, '†')
+	  txt.gsub!(/\&\#8225\;/, '‡')
+	  txt.gsub!(/\&\#8226\;/, '•')
+	  txt.gsub!(/\&\#8230\;/, '…')
+	  txt.gsub!(/\&\#8240\;/, '‰')
+	  txt.gsub!(/\&\#8364\;/, '€')
+	  txt.gsub!(/\&\#8482\;/, '™')
+	  return txt
+  end
 end

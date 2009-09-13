@@ -1,8 +1,16 @@
 <h1><%= @post.title %></h1>
 Original post: <%= link_to @original_post.title, @post.url, :target => "_blank" %><br />
-Version: <%= link_to @post.version, edit_post_path(@post) %>
+Version: <%= @post.version %> 
+<% if @post.version == @post.versions.last.version %>
+	<%= link_to '(edit)', edit_post_path(@post) %>
+<% end %>
 <p>
 Content: <br />
 <%= @post.content %>
 </p>
 <h2>Previous Versions</h2>
+<% for version in @post.versions.reverse %>
+	<% if version.version > 1 %>
+		<%= link_to version.version, :action => "show", :version => version.version, :id => @post.id %>, updated at <%= version.updated_at %><br />
+	<% end %>
+<% end %>

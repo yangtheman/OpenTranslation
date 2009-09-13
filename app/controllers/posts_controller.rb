@@ -69,9 +69,9 @@ class PostsController < ApplicationController
 
   def show
 	  @post = Post.find(params[:id])
-	  @original_post = @post.versions.earliest
 	  if params[:version] 
-		  @post = revert_to(params[:version])
+		  @post.revert_to(params[:version])
 	  end
+	  @original_post = @post.versions.earliest
   end
 end

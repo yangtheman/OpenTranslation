@@ -4,6 +4,7 @@ class PostsController < ApplicationController
 
   def index
 	  @languages = Language.find(:all, :order => "language ASC")
+	  @posts = Post.find(:all, :order => "created_at DESC")
   end
 
   def create 
@@ -13,7 +14,6 @@ class PostsController < ApplicationController
 	  @post.origin_id = params[:post][:origin_id]
 	  @post.ted_id = params[:post][:ted_id]
 	  if @post.origin_id == @post.ted_id
-		  debugger
 		  render :action => "index"
 	  end
 
@@ -48,7 +48,7 @@ class PostsController < ApplicationController
 		  @post.content = ted_content
 		  render :action => "edit"
 	  else 
-		  debugger
+		  flash[:error] = 'Oops! Something happened! Same article perhaps?'
 		  redirect_to posts_path
 	  end
   end

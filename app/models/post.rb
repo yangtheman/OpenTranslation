@@ -3,5 +3,8 @@ class Post < ActiveRecord::Base
   	#validates_format_of :url, :with => %r{\Ahttp://[A-Za-z0-9][\w./]*\.[\w./]*\Z}
 
 	acts_as_versioned
+
+	#validates_uniqueness_of :url, :case_sensitive => false
+
 end
                                              

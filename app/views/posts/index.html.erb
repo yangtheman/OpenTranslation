@@ -1,0 +1,25 @@
+<% form_tag '/posts/create' do %>
+	<p>
+	Which blog?: <br />
+	<%=  text_field_tag 'url', @the_url, :size => 100 %>
+	</p>
+	<p>
+	From: <br />
+	<%= collection_select(:post, :origin_id, @languages, :id, :language, {:selected => "1"}) %>
+	</p>
+	<p>
+	To: <br />
+	<%= collection_select(:post, :ted_id, @languages, :id, :language) %>
+	</p>
+	<p>
+	<%= submit_tag 'Submit' %>
+	</p>
+<% end %>
+
+<p>
+Add a link to your blog: "Help us translate this into other languages": <%= copy_translate_me_js_to_clipboard %>
+</p>
+
+<h2>Translated Articles</h2>
+<%= render :partial => @posts %>
+

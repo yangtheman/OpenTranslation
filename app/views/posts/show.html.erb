@@ -1,9 +1,19 @@
 <h1><%= @post.title %></h1>
 Original post: <%= link_to @original_post.title, @post.url, :target => "_blank" %><br />
-Version: <%= @post.version %> 
-<% if @post.version == @post.versions.last.version %>
+Version: <%= @post.version %>  
+<% if @post.version != 1 && @post.version == @post.versions.last.version %>
 	<%= link_to '(edit)', edit_post_path(@post) %>
 <% end %>
+<br />
+
+<!--
+<% form_for @post, :url => { :action => "edit" } do |f| %>
+From: <%= collection_select(:post, :origin_id, @languages, :id, :language, {:selected => "1"}) %> 
+To: <%= collection_select(:post, :ted_id, @languages, :id, :language) %> 
+<%= submit_tag 'Translate to another language' %>
+<% end %>
+-->
+
 <p>
 Content: <br />
 <%= @post.content %>

@@ -4,7 +4,7 @@ class Post < ActiveRecord::Base
 
 	acts_as_versioned
 
-	#validates_uniqueness_of :url, :case_sensitive => false
+	validates_uniqueness_of :url, :scope => :ted_id, :case_sensitive => false
 
 end
                                              

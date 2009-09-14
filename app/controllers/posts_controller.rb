@@ -73,5 +73,6 @@ class PostsController < ApplicationController
 		  @post.revert_to(params[:version])
 	  end
 	  @original_post = @post.versions.earliest
+	  @languages = Language.find(:all, :order => "language ASC")
   end
 end

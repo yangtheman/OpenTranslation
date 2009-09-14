@@ -3,6 +3,7 @@ class PostsController < ApplicationController
   uses_yui_editor
 
   def index
+    @the_url = params[:url]
 	  @languages = Language.find(:all, :order => "language ASC")
   end
 

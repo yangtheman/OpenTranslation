@@ -29,6 +29,14 @@ class ApplicationController < ActionController::Base
 	  txt.gsub!(/\&\#8240\;/, '‰')
 	  txt.gsub!(/\&\#8364\;/, '€')
 	  txt.gsub!(/\&\#8482\;/, '™')
-	  return txt
+	  txt
+  end
+
+  def translate(body, from, to)
+	  ted_content = ""
+	  body.each do |p|
+		  ted_content += Translate.t(cleanup(p.to_html), from, to)
+	  end
+	  ted_content
   end
 end

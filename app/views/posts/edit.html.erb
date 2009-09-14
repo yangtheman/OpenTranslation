@@ -8,6 +8,7 @@
 	Content: <br />
 	<%= f.text_area :content, :cols => 60, :rows => 100, :class => 'rich_text_editor' %>
 	</p>
+	<%= f.hidden_field :ted_id, :value => @post.ted_id %>
 	<p>
 	<%= submit_tag 'Update' %>
 	</p>

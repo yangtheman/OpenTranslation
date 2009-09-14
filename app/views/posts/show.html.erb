@@ -6,13 +6,10 @@ Version: <%= @post.version %>
 <% end %>
 <br />
 
-<!--
-<% form_for @post, :url => { :action => "edit" } do |f| %>
-From: <%= collection_select(:post, :origin_id, @languages, :id, :language, {:selected => "1"}) %> 
-To: <%= collection_select(:post, :ted_id, @languages, :id, :language) %> 
-<%= submit_tag 'Translate to another language' %>
+<% form_for @post,  :url => { :action => "add_trans", :id => @post.id } do |f| %>
+	To: <%= collection_select(:post, :ted_id, @languages, :id, :language) %> 
+	<%= submit_tag 'Translate to another language' %>
 <% end %>
--->
 
 <p>
 Content: <br />
@@ -21,6 +18,8 @@ Content: <br />
 <h2>Previous Versions</h2>
 <% for version in @post.versions.reverse %>
 	<% if version.version > 1 %>
-		<%= link_to version.version, :action => "show", :version => version.version, :id => @post.id %>, updated at <%= version.updated_at %><br />
+		<%= link_to version.version, :action => "show", :version => version.version, :id => @post.id %>, 
+		translated into <%= Language.find_by_id(version.ted_id).language %>, 
+		updated at <%= version.updated_at %><br />
 	<% end %>
 <% end %>

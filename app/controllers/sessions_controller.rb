@@ -64,8 +64,11 @@ class SessionsController < ApplicationController
 			  if @current_user = User.find_by_openid_url(openid_url)
 				  successful_login
 			  else
-			          #If users is not found based on OpenID, Clickpass will ask your if new account should be opened or merged
-			          redirect_to "http://www.clickpass.com/process_new_openid?site_key=CNxswsAO8P&process_openid_registration_url=http%3A%2F%2F127.0.0.1%3A3000%2Fsessions%2Fopenid_reg&requested_fields=nickname%2Cemail&required_fields=&nickname_label=Nickname&email_label=Email"
+			    #If users is not found based on OpenID, Clickpass will ask your if new account should be opened or merged
+			    #Development Server      
+			    #redirect_to "http://www.clickpass.com/process_new_openid?site_key=CNxswsAO8P&process_openid_registration_url=http%3A%2F%2F127.0.0.1%3A3000%2Fsessions%2Fopenid_reg&requested_fields=nickname%2Cemail&required_fields=&nickname_label=Nickname&email_label=Email"
+			    #Production Server
+			    redirect_to "http://www.clickpass.com/process_new_openid?site_key=rzMQEOe8gQ&process_openid_registration_url=http%3A%2F%2Fopent.heroku.com%2Fsession%2Fopenid_reg&requested_fields=nickname%2Cemail&required_fields=&nickname_label=Nickname&email_label=Email"
 			  end
 		  else
 		          failed_login result.message

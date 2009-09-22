@@ -3,15 +3,22 @@
 
 class ApplicationController < ActionController::Base
 
-  require 'hpricot'
-  require 'open-uri'
-  require 'rtranslate'
+  require 'shorturl'
 
   helper :all # include all helpers, all the time
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
 
+  before_filter :set_facebook_session, :fetch_logged_in_user
+  helper_method :logged_in?, :facebook_session
+
   # Scrub sensitive parameters from your log
   # filter_parameter_logging :password
+
+  def login_required
+    return true if logged_in?
+    session[:return_to] = request.request_uri
+    redirect_to new_session_path and return false
+  end
 
   def cleanup(txt)
 	  txt.gsub!(/\&\#8211\;/, '–')
@@ -39,4 +46,26 @@ class ApplicationController < ActionController::Base
 	  end
 	  ted_content
   end
+
+  def tweetthis(post)
+    twitter_title = post.versions.earliest.title.gsub(/[ \t]+/, '+') # change to twitter-friendly title                   
+    url = "http://127.0.0.1:3000/posts/#{post.id}?version=#{post.version}"
+    url = ( ShortURL.shorten(url, :tinyurl) rescue nil ) || url
+    "http://www.twitter.com/home/?status=Just+translated+to+#{post.target_lang.language}!+-+#{twitter_title}+#{url}"
+  end         
+
+  protected
+  def fetch_logged_in_user
+	  if facebook_session
+		  @current_user = User.find_by_fb_user(facebook_session.user)
+	  else
+		  return unless session[:user_id]
+		  @current_user = User.find_by_id(session[:user_id])
+	  end
+  end
+
+  def logged_in?
+	  !@current_user.nil?
+  end
+
 end

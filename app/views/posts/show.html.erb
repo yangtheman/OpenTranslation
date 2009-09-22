@@ -1,16 +1,20 @@
 <h1><%= @post.title %></h1>
+<p>
 Original post: <%= link_to @original_post.title, @post.url, :target => "_blank" %><br />
+</p>
+<p>
 Version: <%= @post.version %>  
 <% if @post.version != 1 && @post.version == @post.versions.last.version %>
 	<%= link_to '(edit)', edit_post_path(@post) %>
 <% end %>
-<br />
-
+ | <%= link_to "Tweet this", @twitterurl, :target => "_blank" %> 
+ </p>
+ <p>
 <% form_for @post,  :url => { :action => "add_trans", :id => @post.id } do |f| %>
 	To: <%= collection_select(:post, :ted_id, @languages, :id, :language) %> 
 	<%= submit_tag 'Translate to another language' %>
 <% end %>
-
+</p>
 <p>
 Content: <br />
 <%= @post.content %>

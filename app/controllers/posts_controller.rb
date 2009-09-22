@@ -1,11 +1,17 @@
 class PostsController < ApplicationController
-
+  
   uses_yui_editor
+
+  before_filter :login_required, :except => [:index, :show]
+
+  require 'hpricot'
+  require 'open-uri'
+  require 'rtranslate'
 
   def index
     	  @the_url = params[:url]
 	  @languages = Language.find(:all, :order => "language ASC")
-	  @posts = Post.find(:all, :order => "updated_at DESC")
+	  @posts = Post.find(:all, :order => "updated_at DESC", :limit => 10)
   end
 
   def create 
@@ -74,7 +80,14 @@ class PostsController < ApplicationController
   def update
 	  @post = Post.find(params[:id])
 	  if @post.update_attributes(params[:post])
-		  redirect_to post_path(@post)
+	    if @current_user.facebook_user?
+	      flash[:user_action_to_publish] = FacebookPublisher.create_publish_tx(@post, @post.versions.earliest.title, session[:facebook_session])
+	    end
+	    if params[:tweet]
+	      redirect_to tweetthis(@post)
+	    else
+	      redirect_to post_path(@post)
+	    end
 	  else 
 		  render :action => "edit"
 	  end
@@ -87,5 +100,21 @@ class PostsController < ApplicationController
 	  end
 	  @original_post = @post.versions.earliest
 	  @languages = Language.find(:all, :order => "language ASC")
+	  @twitterurl = tweetthis(@post)
   end
+
+  class FacebookPublisher < Facebooker::Rails::Publisher
+    def publish_tx_template
+      one_line_story_template "{*actor*} translated/edited: {*post_title*}"
+      short_story_template "{*actor*} translated/edited: <a href='http://opent.heroku.com/posts/{*post_id*}?version={*post_version*}'>{*post_title*}</a> to {*post_language*}",
+			   "Read it, rate it and/or make it better. Help spread the knowledge in other cultures!"
+    end
+
+    def publish_tx(post, orig_title, facebook_session)
+      send_as :user_action
+      from facebook_session.user
+      data :actor => facebook_session.user.first_name, :post_id => post.id, :post_title => orig_title, :post_version => post.version, :post_language => post.target_lang.language
+    end
+  end
+
 end

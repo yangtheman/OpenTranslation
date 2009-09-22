@@ -35,11 +35,17 @@ ActionController::Routing::Routes.draw do |map|
   map.root :controller => "posts"
 
   # See how all your routes lay out with "rake routes"
+  map.login	'/login', :controller => "sessions", :action => "new"
+  map.logout	'/logout', :controller => "sessions", :action => "destroy"
+  map.fb_login	'/fb_login', :controller => "sessions", :action => "fb_login"
+  map.cp_login	'/cp_login', :controller => "sessions", :action => "create"
 
   # Install the default routes as the lowest priority.
   # Note: These default routes make all actions in every controller accessible via GET requests. You should
   # consider removing the them or commenting them out if you're using named routes and resources.
   map.resources :posts 
+  map.resources :users
+  map.resource :session, :member => {:destroy => :get, :add_openid => :post, :openid_reg => :get}
   map.connect ':controller/:action/:id'
   map.connect ':controller/:action/:id.:format'
 end

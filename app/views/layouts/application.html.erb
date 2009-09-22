@@ -7,8 +7,36 @@
   <%= yield :page_includes %>
   <%= stylesheet_link_tag 'style' %>
   <%= include_yui_editor_if_used %>
+  <%= fb_connect_javascript_tag %>
+  <% init_fb_connect "XFBML", "Api" do %>
+     <%= fb_user_action(flash[:user_action_to_publish]) if flash[:user_action_to_publish] %>
+  <% end %>
 </head>
 <body>
+<% if logged_in? %>
+	<% if @current_user.facebook_user? %>
+		 <p>
+		 <fb:profile-pic uid="<%= @current_user.fb_user_id%>" facebook-logo="true" size="thumb" ></fb:profile-pic><br />
+		 <a href="#" onclick='FB.Connect.logoutAndRedirect("/logout")'>Logout</a><br />
+		 </p>
+        <% else %>
+	         Logged in as: <%= link_to @current_user.username, user_path(@current_user) %> |
+	         <em><%= link_to "Logout", "/logout" %></em>
+	<% end %>
+<% else %>
+	Please log in using either
+	<p>
+	<%= fb_login_button('window.location = "/fb_login";')%> or 
+        <style> @import 'http://www.clickpass.com/stylesheets/container.css'; </style>
+        <div id="clickpass_button" style="width: 176px; height: 28px; position: relative; z-index : 9999 ;">
+		<iframe src="http://www.clickpass.com/embedded_buttons/login-standard/CNxswsAO8P" width="176" height="28" frameborder="0" allowtransparency="true" scrolling="no" style="z-index:9999;position: absolute; top: 0; left: 0;"></iframe>
+        </div>
+        <script type="text/javascript" src="http://www.clickpass.com/javascripts/ClickpassPanel.class.external.js?v1"></script>
+        <script type="text/javascript"> 
+		var clickpassPanel = new ClickpassPanel('clickpass_button');> 
+	</script>
+	</p>
+<% end %>
 <% unless flash[:error].blank? %>
 	<div id="notification"><strong><em><%= flash[:error] %></em></strong></div>
 <% end %>

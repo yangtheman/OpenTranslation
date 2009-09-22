@@ -4,7 +4,7 @@ Original post: <%= link_to @original_post.title, @post.url, :target => "_blank" 
 </p>
 <p>
 Version: <%= @post.version %>  
-<% if @post.version != 1 && @post.version == @post.versions.last.version %>
+<% if logged_in? && @post.version != 1 && @post.version == @post.versions.last.version %>
 	<%= link_to '(edit)', edit_post_path(@post) %>
 <% end %>
  | <%= link_to "Tweet this", @twitterurl, :target => "_blank" %> 

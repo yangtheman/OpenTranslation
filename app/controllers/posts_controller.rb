@@ -79,15 +79,12 @@ class PostsController < ApplicationController
 
   def update
 	  @post = Post.find(params[:id])
+	  @post.user_id = @current_user.id
 	  if @post.update_attributes(params[:post])
 	    if @current_user.facebook_user?
 	      flash[:user_action_to_publish] = FacebookPublisher.create_publish_tx(@post, @post.versions.earliest.title, session[:facebook_session])
 	    end
-	    if params[:tweet]
-	      redirect_to tweetthis(@post)
-	    else
-	      redirect_to post_path(@post)
-	    end
+	    redirect_to post_path(@post)
 	  else 
 		  render :action => "edit"
 	  end
@@ -101,6 +98,50 @@ class PostsController < ApplicationController
 	  @original_post = @post.versions.earliest
 	  @languages = Language.find(:all, :order => "language ASC")
 	  @twitterurl = tweetthis(@post)
+  end
+
+  #Expects two parameters. :url is URL of a blog. :target is target language in two-letter form such as "en" for English
+  def external_request
+    url = params[:url]
+    to = params[:target]
+    ted_id = Language.find_by_short(to).id
+
+    post = Post.find_by_url(url)
+    if post 
+      #Target translation exists
+      if post.versions.find_by_ted_id(ted_id)
+      	version = post.versions.find_by_ted_id(ted_id).version
+	if version == 1
+	  version += 1
+      	end
+	post.revert_to(version)
+	@title = post.title
+	@content = post.content
+      else
+	#A translation has been done, but target translation does not exist
+      	post.revert_to('1')
+	from = post.orig_lang.short
+      	@title = Translate.t(post.title, from, to)
+      	@content = translate(Hpricot(post.content).search("/p"), from, to)
+      end
+    else
+      #No translation has ever been done
+ 	web = Hpricot(open(url))
+	orig_title = web.at("title").inner_text
+
+      	from = Detection.detect(orig_title)
+
+	#Wordpress's main body has "entry" div id
+	body = web.search("div.entry/p")
+	if body.inner_text.length == 0
+	  body = web.search("/html/body//p")
+	end
+	orig_content = body.to_html
+
+	@title = Translate.t(orig_title, from, to)
+	@content = translate(body, from, to)
+    end
+    debugger
   end
 
   class FacebookPublisher < Facebooker::Rails::Publisher

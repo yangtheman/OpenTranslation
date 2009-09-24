@@ -1,12 +1,18 @@
 class PostsController < ApplicationController
   
   uses_yui_editor
+  local_addresses.clear
 
   before_filter :login_required, :except => [:index, :show]
 
   require 'hpricot'
   require 'open-uri'
   require 'rtranslate'
+
+  def exception
+    debugger
+    raise(Exception, "Forced Exception from NodesController")
+  end
 
   def index
     	  @the_url = params[:url]

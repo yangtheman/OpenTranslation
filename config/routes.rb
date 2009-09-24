@@ -40,6 +40,7 @@ ActionController::Routing::Routes.draw do |map|
   map.fb_login	'/fb_login', :controller => "sessions", :action => "fb_login"
   map.cp_login	'/cp_login', :controller => "sessions", :action => "create"
   map.external_request	'/external_request', :controller => "posts", :action => "external_request"
+  map.exception	'/exception', :controller => "posts", :action => "exception"
 
   # Install the default routes as the lowest priority.
   # Note: These default routes make all actions in every controller accessible via GET requests. You should

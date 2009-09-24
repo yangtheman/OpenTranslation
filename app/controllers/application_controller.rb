@@ -5,11 +5,15 @@ class ApplicationController < ActionController::Base
 
   require 'shorturl'
 
+  include ExceptionNotifiable
+
   helper :all # include all helpers, all the time
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
 
   before_filter :set_facebook_session, :fetch_logged_in_user
   helper_method :logged_in?, :facebook_session
+
+  local_addresses.clear
 
   # Scrub sensitive parameters from your log
   # filter_parameter_logging :password

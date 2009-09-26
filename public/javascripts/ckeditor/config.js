@@ -1,1 +1,1 @@
-/home/yangtheman/ror/openT/public/javascripts/ckcustom.js
+../ckcustom.js

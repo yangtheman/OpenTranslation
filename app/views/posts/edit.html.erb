@@ -10,6 +10,9 @@
 	</p>
 	<%= f.hidden_field :ted_id, :value => @post.ted_id %>
 	<p>
+	<%= check_box_tag :fbfeed %> Publish this in Facebook Feed?
+	</p>
+	<p>
 	<%= submit_tag 'Update' %>
 	</p>
 <% end %>

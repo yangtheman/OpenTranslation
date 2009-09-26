@@ -87,7 +87,7 @@ class PostsController < ApplicationController
 	  @post = Post.find(params[:id])
 	  @post.user_id = @current_user.id
 	  if @post.update_attributes(params[:post])
-	    if @current_user.facebook_user?
+	    if @current_user.facebook_user? && params[:fbfeed]
 	      flash[:user_action_to_publish] = FacebookPublisher.create_publish_tx(@post, @post.versions.earliest.title, session[:facebook_session])
 	    end
 	    redirect_to post_path(@post)
@@ -132,22 +132,36 @@ class PostsController < ApplicationController
       end
     else
       #No translation has ever been done
- 	web = Hpricot(open(url))
-	orig_title = web.at("title").inner_text
+      @post = Post.new
+      @post.url = url
+      @post.ted_id = ted_id
 
-      	from = Detection.detect(orig_title)
+      web = Hpricot(open(url))
+      @post.title = web.at("title").inner_text
+      from = Detection.detect(@post.title)
+      @post.origin_id = Language.find_by_short(from).id
 
-	#Wordpress's main body has "entry" div id
-	body = web.search("div.entry/p")
-	if body.inner_text.length == 0
-	  body = web.search("/html/body//p")
-	end
-	orig_content = body.to_html
+      if @post.origin_id == @post.ted_id
+	flash[:error] = 'Cannot translate from and to the same language.'
+	#Send error message
+      end
 
-	@title = Translate.t(orig_title, from, to)
+      #Wordpress's main body has "entry" div id
+      body = web.search("div.entry/p")
+      if body.inner_text.length == 0
+	body = web.search("/html/body//p")
+      end
+      @post.content = body.to_html
+
+      #Save version 1 first.
+      if @post.save 
+	@title = Translate.t(@post.title, from, to)
 	@content = translate(body, from, to)
+      else 
+	#Send error message
+      end
     end
-    debugger
+    #Send translated contents over...post.id, post.title, post.content
   end
 
   class FacebookPublisher < Facebooker::Rails::Publisher

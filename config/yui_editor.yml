@@ -1,6 +1,6 @@
 version: '2.7.0'
 selector: rich_text_editor
-simple_editor: false
+simple_editor: true
 body_class: yui-skin-sam
 editor_extension_callbacks: "// MyExtension.install(editor);"
 javascript_base_uri: //yui.yahooapis.com

@@ -101,9 +101,21 @@ class PostsController < ApplicationController
 	  if params[:version] 
 		  @post.revert_to(params[:version])
 	  end
+	  @ted_user = User.find_by_id(@post.user_id)
 	  @original_post = @post.versions.earliest
 	  @languages = Language.find(:all, :order => "language ASC")
 	  @twitterurl = tweetthis(@post)
+  end
+
+  def rate
+	  user = User.find_by_id(params[:id])
+	  if @current_user.id != user.id
+ 	    user.rate(params[:rating].to_i, @current_user)
+	    render :partial => "users/user_rating", :locals => {:user => user}
+	  else
+	    flash[:error] = 'You cannot rate yourself!'
+	    render :action => "show"
+	  end
   end
 
   #Expects two parameters. :url is URL of a blog. :target is target language in two-letter form such as "en" for English

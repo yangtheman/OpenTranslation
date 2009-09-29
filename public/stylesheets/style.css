@@ -16,3 +16,112 @@
 	padding: 5px;
 	margin: 10px 0;
 }
+
+/* CSS star rating */
+
+ul.stars {
+    display: block;
+    margin: 0 auto;
+    padding: 0;
+    background-position: left top;
+    height: 30px;
+    width: 150px;
+    overflow: hidden;
+    position: relative;
+    color: #fff;
+}
+
+ul.stars,
+ul.stars li.current_rating,
+ul.stars li a:hover,
+ul.stars li a:active { background: url(/images/star.png) left top repeat-x; float:left; }
+
+ul.stars li {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    float: none;
+}
+
+ul.stars li a,
+ul.stars li.current_rating {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 30px;
+    line-height: 30px;
+    text-indent: -1000px;
+    overflow:hidden;
+}
+
+ul.stars li.current_rating { z-index: 1; background-position: left bottom; }
+
+ul.stars li a:hover,
+ul.stars li a:active { background-position: left center; }
+
+ul.stars li a.one_star {
+    width: 20%;
+    z-index: 6;
+}
+
+ul.stars li a.two_stars {
+    width: 40%;
+    z-index: 5;
+}
+
+ul.stars li a.three_stars {
+    width: 60%;
+    z-index: 4;
+}
+
+ul.stars li a.four_stars {
+    width: 80%;
+    z-index: 3;
+}
+
+ul.stars li a.five_stars {
+    width: 100%;
+    z-index: 2;
+}
+
+ul.small_stars {
+    display: block;
+    margin: 0 auto;
+    margin-top: -15px;
+    padding: 0;
+    background-position: left top;
+    height: 15px;
+    width: 75px;
+    overflow: hidden;
+    position: relative;
+    color: #fff;
+}
+
+ul.small_stars,
+ul.small_stars li.current_rating,
+ul.small_stars li a:hover,
+ul.small_stars li a:active { background: url(/images/star_small.png) left top repeat-x; float:left; }
+
+ul.small_stars li {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    float: none;
+}
+
+ul.small_stars li a,
+ul.small_stars li.current_rating {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 15px;
+    line-height: 15px;
+    text-indent: -1000px;
+    overflow:hidden;
+}
+
+ul.small_stars li.current_rating { z-index: 1; background-position: left bottom; }
+
+ul.small_stars li a:hover,
+ul.small_stars li a:active { background-position: left center; }
+

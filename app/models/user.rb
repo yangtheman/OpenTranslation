@@ -1,5 +1,7 @@
 class User < ActiveRecord::Base
 
+	acts_as_rated :no_rater => true
+
 	has_many :posts
 
 	validates_uniqueness_of :username, :case_sensitive => false

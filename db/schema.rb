@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090922050944) do
+ActiveRecord::Schema.define(:version => 20090929000951) do
 
   create_table "facebook_templates", :force => true do |t|
     t.string "template_name", :null => false
@@ -70,6 +70,16 @@ ActiveRecord::Schema.define(:version => 20090922050944) do
     t.integer  "user_id"
   end
 
+  create_table "ratings", :force => true do |t|
+    t.integer "rater_id"
+    t.integer "rated_id"
+    t.string  "rated_type"
+    t.integer "rating",     :limit => 10, :precision => 10, :scale => 0
+  end
+
+  add_index "ratings", ["rated_type", "rated_id"], :name => "index_ratings_on_rated_type_and_rated_id"
+  add_index "ratings", ["rater_id"], :name => "index_ratings_on_rater_id"
+
   create_table "sessions", :force => true do |t|
     t.string   "session_id",                       :null => false
     t.text     "data",       :limit => 2147483647
@@ -88,6 +98,9 @@ ActiveRecord::Schema.define(:version => 20090922050944) do
     t.string   "email_hash"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "rating_count"
+    t.integer  "rating_total", :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "rating_avg",                 :precision => 10, :scale => 2
   end
 
 end

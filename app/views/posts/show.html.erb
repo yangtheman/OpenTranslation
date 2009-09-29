@@ -8,8 +8,13 @@ Version: <%= @post.version %>
 	<%= link_to '(edit)', edit_post_path(@post) %>
 <% end %>
  | <%= link_to "Tweet this", @twitterurl, :target => "_blank" %> 
- </p>
- <p>
+</p>
+<% if !@ted_user.nil? %>
+<p>
+Translated by <em><%= @ted_user.username %></em><br />
+<span id="user_rating_<%= @ted_user.id %>"><%= render :partial => 'users/user_rating', :locals => {:user => @ted_user} %></span>
+<p>
+<% end %>
 <% form_for @post,  :url => { :action => "add_trans", :id => @post.id } do |f| %>
 	To: <%= collection_select(:post, :ted_id, @languages, :id, :language) %> 
 	<%= submit_tag 'Translate to another language' %>

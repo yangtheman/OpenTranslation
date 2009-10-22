@@ -97,16 +97,14 @@ class PostsController < ApplicationController
   end
 
   def create
-    debugger
-    orig = OrigPost.find(params[:post][:orig_post_id])
-    @post = orig.posts.new(params[:post])
+    @orig = OrigPost.find(params[:post][:orig_post_id])
+    @post = @orig.posts.new(params[:post])
     @post.user_id = @current_user.id
     if @post.save
       redirect_to post_path(@post)
     else
-      #flash[:error] = "Save failed"
-      #render :action => "new"
-      #redirect_to new_post_path
+      flash[:error] = "Save failed"
+      render :action => "new"
     end
   end
 

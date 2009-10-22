@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090929000951) do
+ActiveRecord::Schema.define(:version => 20091001213257) do
 
   create_table "facebook_templates", :force => true do |t|
     t.string "template_name", :null => false
@@ -41,6 +41,17 @@ ActiveRecord::Schema.define(:version => 20090929000951) do
     t.string  "salt",       :null => false
   end
 
+  create_table "orig_posts", :force => true do |t|
+    t.string   "url"
+    t.string   "title"
+    t.text     "content"
+    t.string   "author"
+    t.integer  "origin_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "post_versions", :force => true do |t|
     t.integer  "post_id"
     t.integer  "version"
@@ -53,6 +64,7 @@ ActiveRecord::Schema.define(:version => 20090929000951) do
     t.integer  "origin_id"
     t.integer  "ted_id"
     t.integer  "user_id"
+    t.integer  "orig_post_id"
   end
 
   add_index "post_versions", ["post_id"], :name => "index_post_versions_on_post_id"
@@ -68,6 +80,7 @@ ActiveRecord::Schema.define(:version => 20090929000951) do
     t.integer  "origin_id"
     t.integer  "ted_id"
     t.integer  "user_id"
+    t.integer  "orig_post_id"
   end
 
   create_table "ratings", :force => true do |t|

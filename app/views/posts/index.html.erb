@@ -1,4 +1,5 @@
-<% form_tag '/posts/create' do %>
+<div id="main">
+<% form_tag '/posts/new' do %>
 	<p>
 	Which blog?: <br />
 	<%=  text_field_tag 'url', @the_url, :size => 100 %>
@@ -21,7 +22,16 @@
        	Just copy and paste this javascript code on your site: <%= copy_translate_me_js_to_clipboard %>
 </strong>
 </p>
-
-<h2>Translated Articles</h2>
+</div>
+<div id="latest">
+<h2>Latest Translations</h2>
 <%= render :partial => @posts %>
-
+</div>
+<div id="most">
+  <h2>Most Translated Blog</h2>
+  <%= render :partial => "most", :collection => @top_origs %>
+</div>
+<div id="top_users">
+  <h2>Top Translators</h2>
+  <%= render :partial => "top_users", :collection => @top_users %>
+</div>

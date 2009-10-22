@@ -1,0 +1,3 @@
+<h2><%= @orig.title %></h2>
+<em><%= link_to 'Original Article', @orig.url, :target => '_blank' %></em>
+<%= render :partial => 'posts/post', :collection => @posts %>

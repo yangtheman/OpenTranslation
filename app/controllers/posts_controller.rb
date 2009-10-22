@@ -17,27 +17,39 @@ class PostsController < ApplicationController
   def index
     	  @the_url = params[:url]
 	  @languages = Language.find(:all, :order => "language ASC")
-	  @posts = Post.find(:all, :order => "updated_at DESC", :limit => 10)
+	  @posts = Post.find(:all, :order => "created_at DESC", :limit => 5)
+	  @top_origs = OrigPost.find(:all, 
+				      :select => 'orig_posts.*, count(posts.id) as post_count', 
+				      :joins => 'left outer join posts on posts.orig_post_id = orig_posts.id', 
+				      :group => 'orig_posts.id', 
+				      :order => 'post_count DESC',
+				      :limit => 5)
+	  @top_users = User.find(:all, 
+				 :select => 'users.*, count(posts.id) as post_count',
+				 :joins => 'left outer join posts on posts.user_id = users.id',
+				 :group => 'users.id',
+				 :order => 'post_count DESC',
+				 :limit => 5)
   end
 
-  def create 
-	  @post = Post.new
-	  
-	  @post.url = params[:url]
-	  @post.origin_id = params[:post][:origin_id]
-	  @post.ted_id = params[:post][:ted_id]
-	  if @post.origin_id == @post.ted_id
+  def new
+    @orig = OrigPost.find_by_url(params[:url])
+
+    #New translation
+    if @orig.nil?
+	  @orig = OrigPost.new
+	  @orig.url = params[:url]
+	  @orig.origin_id = params[:post][:origin_id]
+	  @orig.user_id = @current_user.id
+	  if @orig.origin_id == params[:post][:ted_id]
 		  flash[:error] = 'Cannot translate from and to the same language.'
 		  render :action => "index"
 	  end
-	  
 	  from = Language.find_by_id(params[:post][:origin_id]).short
-	  to = Language.find_by_id(params[:post][:ted_id]).short
 
-	  web = Hpricot(open(@post.url))
+	  web = Hpricot(open(@orig.url))
 
-          @post.title = web.at("title").inner_text
-	  ted_title = Translate.t(@post.title, from, to)
+          @orig.title = web.at("title").inner_text
 
           #remove all images (shall I or not?)
 	  #web.search("img").remove
@@ -49,38 +61,66 @@ class PostsController < ApplicationController
 	  end
 	  #body = web.search("/html/body/")
 
-	  @post.content = body.to_html
+	  @orig.content = body.to_html
 	  #ted_content = ""
 	  #body.each do |p|
 		  #ted_content += Translate.t(cleanup(p.to_html), from, to)
 	  #end
 
-	  if @post.save
-		  @post.title = ted_title
-		  @post.content = translate(body, from, to)
-		  render :action => "edit"
-	  else 
+	  if !@orig.save
 		  flash[:error] = 'Oops! Something happened! Same article perhaps?'
 		  redirect_to posts_path
 	  end
+    elsif @post = Post.find_by_orig_post_id_and_ted_id(@orig.id, params[:post][:ted_id])
+	#Original exists and target language was already done before.
+      	render :action => "edit"
+    else
+	#Original exists, but target language was not done before.
+	@post = @orig.posts.new
+	from = @orig.orig_lang.short
+	body = Hpricot(@orig.content).search("/p")
+    end
+
+    to = Language.find_by_id(params[:post][:ted_id]).short
+
+    @post.title = Translate.t(@orig.title, from, to)
+    @post.content = translate(body, from, to)
+    @post.ted_id = params[:post][:ted_id] 
+  end
+
+  def create
+    orig = OrigPost.find(params[:post][:orig_post_id])
+    @post = orig.posts.new(params[:post])
+    if @post.save
+      redirect_to post_path(@post)
+    else
+      flash[:error] = "Save failed"
+      redirect_to new_post_path
+    end
   end
 
   def add_trans
-	  @post = Post.find(params[:id])
-	  original_post = @post.versions.earliest
+	  @orig = OrigPost.find(params[:orig_post_id])
+	  if @post = @orig.posts.find_by_ted_id(params[:post][:ted_id])
+	    flash[:error] = "Translation already exists"
+	    redirect_to post_path(@post)
+	  else 
+	    @post = @orig.posts.new
+	  end
 
-	  from = @post.orig_lang.short
+	  from = @orig.orig_lang.short
 	  @post.ted_id = params[:post][:ted_id]
-	  to = Language.find_by_id(params[:post][:ted_id]).short
+	  to = Language.find(@post.ted_id).short
 
-	  @post.title = Translate.t(original_post.title, from, to)
-	  @post.content = translate(Hpricot(original_post.content).search("/p"), from, to)
+	  @post.title = Translate.t(@orig.title, from, to)
+	  @post.content = translate(Hpricot(@orig.content).search("/p"), from, to)
 
-	  render :action => "edit"
+	  render :action => "new"
   end
 
   def edit
 	  @post = Post.find(params[:id])
+	  @orig = OrigPost.find(@post.orig_post_id)
   end
 
   def update
@@ -88,11 +128,12 @@ class PostsController < ApplicationController
 	  @post.user_id = @current_user.id
 	  if @post.update_attributes(params[:post])
 	    if @current_user.facebook_user? && params[:fbfeed]
-	      flash[:user_action_to_publish] = FacebookPublisher.create_publish_tx(@post, @post.versions.earliest.title, session[:facebook_session])
+	      flash[:user_action_to_publish] = FacebookPublisher.create_publish_tx(@post, OrigPost.find(@post.orig_post_id).title, session[:facebook_session])
 	    end
 	    redirect_to post_path(@post)
 	  else 
-		  render :action => "edit"
+	    flash[:error] = 'Update failed'
+	    render :action => "edit"
 	  end
   end
 
@@ -102,20 +143,21 @@ class PostsController < ApplicationController
 		  @post.revert_to(params[:version])
 	  end
 	  @ted_user = User.find_by_id(@post.user_id)
-	  @original_post = @post.versions.earliest
+	  @original_post = OrigPost.find(@post.orig_post_id)
 	  @languages = Language.find(:all, :order => "language ASC")
 	  @twitterurl = tweetthis(@post)
   end
 
   def rate
 	  user = User.find_by_id(params[:id])
-	  if @current_user.id != user.id
- 	    user.rate(params[:rating].to_i, @current_user)
-	    render :partial => "users/user_rating", :locals => {:user => user}
-	  else
-	    flash[:error] = 'You cannot rate yourself!'
-	    render :action => "show"
-	  end
+ 	  user.rate(params[:rating].to_i, @current_user)
+	  render :partial => "users/user_rating", :locals => {:user => user}
+  end
+
+  def showorig
+    post = Post.find(params[:id])
+    orig = OrigPost.find(post.orig_post_id)
+    @posts = orig
   end
 
   #Expects two parameters. :url is URL of a blog. :target is target language in two-letter form such as "en" for English

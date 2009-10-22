@@ -1,0 +1,2 @@
+module OrigPostsHelper
+end

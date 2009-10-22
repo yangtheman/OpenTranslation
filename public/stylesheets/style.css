@@ -1,5 +1,40 @@
+body {
+  font-family: Tahoma, Geneva, sans-serif;
+  font-size: 14px;
+  color: #333333;
+  background-color: #FFFFFF;
+  width: 800px;
+  margin: 15px auto;
+}
+
+#header {
+}
+
+#main {
+  height: 250px;
+  margin: 10px auto;
+}
+
+#latest {
+  width: 300px;
+  margin: 10px;
+  float: left;
+}
+
+#most {
+  width: 240px;
+  margin: 10px;
+  float: left;
+}
+
+#top_users {
+  width: 200px;
+  margin: 10px;
+  float: left;
+}
+
 #edit {
-	width: 500px;
+	width: 350px;
 	float: left;
 	padding: 10px;
 }

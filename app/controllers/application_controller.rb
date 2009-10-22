@@ -52,7 +52,7 @@ class ApplicationController < ActionController::Base
   end
 
   def tweetthis(post)
-    twitter_title = post.versions.earliest.title.gsub(/[ \t]+/, '+') # change to twitter-friendly title                   
+    twitter_title = OrigPost.find(post.orig_post_id).title.gsub(/[ \t]+/, '+') # change to twitter-friendly title                   
     url = "http://127.0.0.1:3000/posts/#{post.id}?version=#{post.version}"
     url = ( ShortURL.shorten(url, :tinyurl) rescue nil ) || url
     "http://www.twitter.com/home/?status=Just+translated+to+#{post.target_lang.language}!+-+#{twitter_title}+#{url}"

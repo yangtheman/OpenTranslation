@@ -47,6 +47,7 @@ ActionController::Routing::Routes.draw do |map|
   # consider removing the them or commenting them out if you're using named routes and resources.
   map.resources :posts, :member => {:rate => :put} 
   map.resources :users
+  map.resources :orig_posts
   map.resource :session, :member => {:destroy => :get, :add_openid => :post, :openid_reg => :get}
   map.connect ':controller/:action/:id'
   map.connect ':controller/:action/:id.:format'

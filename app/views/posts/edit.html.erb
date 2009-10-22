@@ -1,14 +1,16 @@
 <div id = "edit">
 <h1>Translate </h1>
-<% form_for @post do |f| %>
+<% form_for @post, :url => { :action => 'update' } do |f| %>
 	<p>
-	Title: <%= f.text_field :title %>
+	Title: <%= f.text_field :title, :value => @post.title %>
 	</p>
 	<p>
 	Content: <br />
-	<%= f.text_area :content, :cols => 60, :rows => 40, :class => 'rich_text_editor' %>
+	<%= f.text_area :content, :cols => 60, :rows => 40, :class => 'rich_text_editor', :value => @post.content %>
 	</p>
 	<%= f.hidden_field :ted_id, :value => @post.ted_id %>
+	<%= f.hidden_field :origin_id, :value => @orig.origin_id %>
+	<%= f.hidden_field :orig_post_id, :value => @orig.id %>
 	<p>
 	<%= check_box_tag :fbfeed %> Publish this in Facebook Feed?
 	</p>
@@ -21,10 +23,10 @@
 <div id = "original">
 <h1> Original </h1>
 <p>
-Title: <%= @post.versions.earliest.title %>
+Title: <%= @orig.title %>
 </p>
 <p>
 Content: <br />
-<%= @post.versions.earliest.content %>
+<%= @orig.content %>
 </p>
 </div>

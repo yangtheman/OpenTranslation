@@ -13,7 +13,8 @@
   <% end %>
 </head>
 <body>
-<% if logged_in? %>
+  <div id="header">
+    <% if logged_in? %>
 	<% if @current_user.facebook_user? %>
 		 <p>
 		 <fb:profile-pic uid="<%= @current_user.fb_user_id%>" facebook-logo="true" size="thumb" ></fb:profile-pic><br />
@@ -50,7 +51,8 @@
 <% end %>
 <% unless flash[:error].blank? %>
 	<div id="notification"><strong><em><%= flash[:error] %></em></strong></div>
-<% end %>
+      <% end %>
+    </div>
 <%= yield %>
 <div id="footer">
 </div>

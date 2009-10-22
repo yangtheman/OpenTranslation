@@ -1,6 +1,6 @@
 <h1><%= @post.title %></h1>
 <p>
-Original post: <%= link_to @original_post.title, @post.url, :target => "_blank" %><br />
+Original post: <%= link_to @original_post.title, orig_post_path(@original_post), :target => "_blank" %><br />
 </p>
 <p>
 Version: <%= @post.version %>  

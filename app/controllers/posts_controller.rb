@@ -10,7 +10,6 @@ class PostsController < ApplicationController
   require 'rtranslate'
 
   def exception
-    debugger
     raise(Exception, "Forced Exception from NodesController")
   end
 
@@ -25,7 +24,6 @@ class PostsController < ApplicationController
 	  user_cols = User.column_names.collect {|c| "users.#{c}"}.join(",")
 	  @top_users = User.find_by_sql("SELECT #{user_cols}, count(posts.id) AS post_count FROM users LEFT OUTER JOIN posts ON posts.user_id = users.id GROUP BY users.id, #{user_cols} ORDER BY post_count DESC LIMIT 5")
 	  
-
 	  #@top_origs = OrigPost.find(:all, 
 	#			      :select => 'orig_posts.*, count(posts.id) as post_count', 
 	#			      :joins => 'left outer join posts on posts.orig_post_id = orig_posts.id', 
@@ -78,6 +76,8 @@ class PostsController < ApplicationController
 	  if !@orig.save
 		  flash[:error] = 'Oops! Something happened! Same article perhaps?'
 		  redirect_to posts_path
+	  else
+	    @post = @orig.posts.new
 	  end
     elsif @post = Post.find_by_orig_post_id_and_ted_id(@orig.id, params[:post][:ted_id])
 	#Original exists and target language was already done before.
@@ -97,13 +97,16 @@ class PostsController < ApplicationController
   end
 
   def create
+    debugger
     orig = OrigPost.find(params[:post][:orig_post_id])
     @post = orig.posts.new(params[:post])
+    @post.user_id = @current_user.id
     if @post.save
       redirect_to post_path(@post)
     else
-      flash[:error] = "Save failed"
-      redirect_to new_post_path
+      #flash[:error] = "Save failed"
+      #render :action => "new"
+      #redirect_to new_post_path
     end
   end
 

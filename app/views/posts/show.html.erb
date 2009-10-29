@@ -1,4 +1,5 @@
 <h1><%= @post.title %></h1>
+<span id="post_rating_<%= @post.id %>"><%= render :partial => 'post_rating', :locals => {:post => @post} %></span>
 <p>
 Original post: <%= link_to @original_post.title, orig_post_path(@original_post) %><br />
 </p>
@@ -12,7 +13,14 @@ Version: <%= @post.version %>
 <% if !@ted_user.nil? %>
 <p>
 Translated by <em><%= @ted_user.username %></em><br />
-<span id="user_rating_<%= @ted_user.id %>"><%= render :partial => 'users/user_rating', :locals => {:user => @ted_user} %></span>
+<% average = (@ted_user.rating_average.blank? ? 0 : @ted_user.rating_average) * 100 / 5 %>
+<ul class = 'stars'>
+          <li class='current_rating' style='width: <%= "#{average}" %>%'> <%="#{average}"%>%</li>
+</ul><br />
+</p>
+<p>
+<em>based on <%= @ted_user.rating_count %> ratings </em>
+</p>
 <p>
 <% end %>
 <% form_tag '/posts/add_trans' do %>

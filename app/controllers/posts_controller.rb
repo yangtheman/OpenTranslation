@@ -43,50 +43,50 @@ class PostsController < ApplicationController
 
     # New translation
     if @orig.nil?
-	  @orig = OrigPost.new
-	  @orig.url = params[:url]
-	  @orig.origin_id = params[:post][:origin_id]
-	  @orig.user_id = @current_user.id
-	  if @orig.origin_id == params[:post][:ted_id]
-		  flash[:error] = 'Cannot translate from and to the same language.'
-		  render :action => "index"
-	  end
-	  from = Language.find_by_id(params[:post][:origin_id]).short
+      @orig = OrigPost.new
+      @orig.url = params[:url]
+      @orig.origin_id = params[:post][:origin_id]
+      @orig.user_id = @current_user.id
+      if @orig.origin_id == params[:post][:ted_id]
+        flash[:error] = 'Cannot translate from and to the same language.'
+        render :action => "index"
+      end
+      from = Language.find_by_id(params[:post][:origin_id]).short
 
-	  web = Hpricot(open(@orig.url))
+      web = Hpricot(open(@orig.url))
 
-          @orig.title = web.at("title").inner_text
+      @orig.title = web.at("title").inner_text
 
-          #remove all images (shall I or not?)
-	  #web.search("img").remove
+      #remove all images (shall I or not?)
+      #web.search("img").remove
 	                    
-	  #Wordpress's main body has "entry" div id
-	  body = web.search("div.entry/p")
-	  if body.inner_text.length == 0
-	  	body = web.search("/html/body//p")
-	  end
-	  #body = web.search("/html/body/")
+      #Wordpress's main body has "entry" div id
+      body = web.search("div.entry/p")
+      if body.inner_text.length == 0
+	body = web.search("/html/body//p")
+      end
+      #body = web.search("/html/body/")
 
-	  @orig.content = body.to_html
-	  #ted_content = ""
-	  #body.each do |p|
-		  #ted_content += Translate.t(cleanup(p.to_html), from, to)
-	  #end
+      @orig.content = body.to_html
+      #ted_content = ""
+      #body.each do |p|
+        #ted_content += Translate.t(cleanup(p.to_html), from, to)
+      #end
 
-	  if !@orig.save
-		  flash[:error] = 'Oops! Something happened! Same article perhaps?'
-		  redirect_to posts_path
-	  else
-	    @post = @orig.posts.new
-	  end
+      if !@orig.save
+        flash[:error] = 'Oops! Something happened! Same article perhaps?'
+        redirect_to posts_path
+      else
+        @post = @orig.posts.new
+      end
     elsif @post = Post.find_by_orig_post_id_and_ted_id(@orig.id, params[:post][:ted_id])
-	#Original exists and target language was already done before.
-      	render :action => "edit"
+      #Original exists and target language was already done before.
+      render :action => "edit"
     else
-	#Original exists, but target language was not done before.
-	@post = @orig.posts.new
-	from = @orig.orig_lang.short
-	body = Hpricot(@orig.content).search("/p")
+      #Original exists, but target language was not done before.
+      @post = @orig.posts.new
+      from = @orig.orig_lang.short
+      body = Hpricot(@orig.content).search("/p")
     end
 
     to = Language.find_by_id(params[:post][:ted_id]).short
@@ -147,20 +147,28 @@ class PostsController < ApplicationController
   end
 
   def show
-	  @post = Post.find(params[:id])
-	  if params[:version] 
-		  @post.revert_to(params[:version])
-	  end
-	  @ted_user = User.find_by_id(@post.user_id)
-	  @original_post = OrigPost.find(@post.orig_post_id)
-	  @languages = Language.find(:all, :order => "language ASC")
-	  @twitterurl = tweetthis(@post)
+    @post = Post.find(params[:id])
+    if params[:version] 
+      @post.revert_to(params[:version])
+    end
+    @ted_user = User.find_by_id(@post.user_id)
+    @original_post = OrigPost.find(@post.orig_post_id)
+    @languages = Language.find(:all, :order => "language ASC")
+    @twitterurl = tweetthis(@post)
   end
 
   def rate
-	  user = User.find_by_id(params[:id])
- 	  user.rate(params[:rating].to_i, @current_user)
-	  render :partial => "users/user_rating", :locals => {:user => user}
+    post = Post.find(params[:id])
+    if post.user_id == @current_user.id 
+      flash[:error] = "You cannot rate yourself!"
+      redirect_to post_path(post)
+    else
+      #user = User.find(post.user_id) 
+      #user.rate(params[:rating].to_i, @current_user) 
+      post.rate(params[:rating].to_i, @current_user) if !post.rated_by?(@current_user)
+      #redirect_to post_path(post)
+    end
+    render :partial => "post_rating", :locals => {:post => post}
   end
 
   def showorig

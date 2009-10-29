@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
 
-	acts_as_rated :no_rater => true
+	#acts_as_rated :no_rater => true
+	acts_as_rated :with_stats_table => true, :no_rater => true
 
 	has_many :posts
 	has_many :orig_posts
@@ -9,6 +10,7 @@ class User < ActiveRecord::Base
 	validates_uniqueness_of :email, :case_sensitive => false
 
 	after_create :register_user_to_fb
+
 
 	#find the user in the database, first by the facebook user id and if that fails through the email hash
 	def self.find_by_fb_user(fb_user)

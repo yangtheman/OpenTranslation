@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091001213257) do
+ActiveRecord::Schema.define(:version => 20091027221611) do
 
   create_table "facebook_templates", :force => true do |t|
     t.string "template_name", :null => false
@@ -65,6 +65,9 @@ ActiveRecord::Schema.define(:version => 20091001213257) do
     t.integer  "ted_id"
     t.integer  "user_id"
     t.integer  "orig_post_id"
+    t.integer  "rating_count"
+    t.integer  "rating_total", :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "rating_avg",                 :precision => 10, :scale => 2
   end
 
   add_index "post_versions", ["post_id"], :name => "index_post_versions_on_post_id"
@@ -81,7 +84,20 @@ ActiveRecord::Schema.define(:version => 20091001213257) do
     t.integer  "ted_id"
     t.integer  "user_id"
     t.integer  "orig_post_id"
+    t.integer  "rating_count"
+    t.integer  "rating_total", :limit => 10, :precision => 10, :scale => 0
+    t.decimal  "rating_avg",                 :precision => 10, :scale => 2
   end
+
+  create_table "rating_statistics", :force => true do |t|
+    t.integer "rated_id"
+    t.string  "rated_type"
+    t.integer "rating_count"
+    t.integer "rating_total", :limit => 10, :precision => 10, :scale => 0
+    t.decimal "rating_avg",                 :precision => 10, :scale => 2
+  end
+
+  add_index "rating_statistics", ["rated_type", "rated_id"], :name => "index_rating_statistics_on_rated_type_and_rated_id"
 
   create_table "ratings", :force => true do |t|
     t.integer "rater_id"

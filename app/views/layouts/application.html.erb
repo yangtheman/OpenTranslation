@@ -28,7 +28,7 @@
 	Please log in using either
 	<p>
 	<%= fb_login_button('window.location = "/fb_login";')%> or 
-	<!-- Points to Developement Server (localhost) 
+	<!-- Points to Developement Server (localhost) --> 
 	<style> @import 'http://www.clickpass.com/stylesheets/container.css'; </style>
         <div id="clickpass_button" style="width: 176px; height: 28px; position: relative; z-index : 9999 ;">
 		<iframe src="http://www.clickpass.com/embedded_buttons/login-standard/CNxswsAO8P" width="176" height="28" frameborder="0" allowtransparency="true" scrolling="no" style="z-index:9999;position: absolute; top: 0; left: 0;"></iframe>
@@ -37,9 +37,8 @@
         <script type="text/javascript"> 
 		var clickpassPanel = new ClickpassPanel('clickpass_button');> 
 	</script>
-	-->	
 	<!-- Points to Production Server (Heroku) -->
-	<style> @import 'http://www.clickpass.com/stylesheets/container.css'; </style>
+	<!-- <style> @import 'http://www.clickpass.com/stylesheets/container.css'; </style>
 	<div id="clickpass_button" style="width: 176px; height: 28px; position: relative; z-index : 9999 ;">
 	<iframe src="http://www.clickpass.com/embedded_buttons/login-standard/rzMQEOe8gQ" width="176" height="28" frameborder="0" allowtransparency="true" scrolling="no" style="z-index:9999;position: absolute; top: 0; left: 0;"></iframe> 
 	</div>
@@ -48,6 +47,7 @@
 	  var clickpassPanel = new ClickpassPanel('clickpass_button');   
 	</script>
 	</p>
+	-->
 <% end %>
 <% unless flash[:error].blank? %>
 	<div id="notification"><strong><em><%= flash[:error] %></em></strong></div>

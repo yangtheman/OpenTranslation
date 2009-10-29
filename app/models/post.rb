@@ -6,6 +6,8 @@ class Post < ActiveRecord::Base
   #validates_format_of :url, :with => %r{\Ahttp://[A-Za-z0-9][\w./]*\.[\w./]*\Z}
 
   acts_as_versioned :if_changed => [:title, :content]
+  
+  acts_as_rated :with_stats_table => true, :rater_class => 'User'
 
   #validates_uniqueness_of :url, :scope => :ted_id, :case_sensitive => false
 end

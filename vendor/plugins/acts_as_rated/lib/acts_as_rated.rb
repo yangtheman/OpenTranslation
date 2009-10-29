@@ -190,7 +190,7 @@ module ActiveRecord #:nodoc:
         def rate value, rater = nil
           # Sanity checks for the parameters
           rating_class = acts_as_rated_options[:rating_class].constantize
-          with_rater = rating_class.column_names.include? "rater_id"
+          with_rater = rating_class.column_names.include? "rater_id" if rater
           raise RateError, "rating with no rater cannot accept a rater as a parameter" if !with_rater && !rater.nil?
           if with_rater && !(acts_as_rated_options[:rater_class].constantize === rater)
             raise RateError, "the rater object must be the one used when defining acts_as_rated (or a descendent of it). other objects are not acceptable"

@@ -39,6 +39,7 @@ ActionController::Routing::Routes.draw do |map|
   map.logout	'/logout', :controller => "sessions", :action => "destroy"
   map.fb_login	'/fb_login', :controller => "sessions", :action => "fb_login"
   map.cp_login	'/cp_login', :controller => "sessions", :action => "create"
+  map.search	'/search', :controller => "posts", :action => "search"
   map.external_request	'/external_request', :controller => "posts", :action => "external_request"
   map.exception	'/exception', :controller => "posts", :action => "exception"
 

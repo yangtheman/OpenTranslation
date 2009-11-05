@@ -20,6 +20,8 @@ Rails::Initializer.run do |config|
   # config.gem "sqlite3-ruby", :lib => "sqlite3"
   # config.gem "aws-s3", :lib => "aws/s3"
   config.gem "ruby-openid", :lib => "openid"
+  config.gem 'will_paginate', :version => '~> 2.3.11', :source => 'http://gemcutter.org'
+  config.gem 'acts_as_ferret', :version => '~> 0.4.4'
 
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named
@@ -40,6 +42,7 @@ Rails::Initializer.run do |config|
   # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}')]
   # config.i18n.default_locale = :de
 end
+require 'acts_as_ferret'
+require 'will_paginate'
 
 ExceptionNotifier.exception_recipients = %w(yangtheman@gmail.com)
-

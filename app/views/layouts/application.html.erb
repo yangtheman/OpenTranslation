@@ -14,6 +14,10 @@
 </head>
 <body>
   <div id="header">
+    <div id="nav">
+      <p><%= link_to "Home", root_url %></p>
+    </div>
+    <div id="loginout">
     <% if logged_in? %>
 	<% if @current_user.facebook_user? %>
 		 <p>
@@ -28,7 +32,7 @@
 	Please log in using either
 	<p>
 	<%= fb_login_button('window.location = "/fb_login";')%> or 
-	<!-- Points to Developement Server (localhost)  
+	<!-- Points to Developement Server (localhost)-->
 	<style> @import 'http://www.clickpass.com/stylesheets/container.css'; </style>
         <div id="clickpass_button" style="width: 176px; height: 28px; position: relative; z-index : 9999 ;">
 		<iframe src="http://www.clickpass.com/embedded_buttons/login-standard/CNxswsAO8P" width="176" height="28" frameborder="0" allowtransparency="true" scrolling="no" style="z-index:9999;position: absolute; top: 0; left: 0;"></iframe>
@@ -37,8 +41,8 @@
         <script type="text/javascript"> 
 		var clickpassPanel = new ClickpassPanel('clickpass_button');> 
 	</script>
-	-->
 	<!-- Points to Production Server (Heroku) -->
+	<!--
 	<style> @import 'http://www.clickpass.com/stylesheets/container.css'; </style>
 	<div id="clickpass_button" style="width: 176px; height: 28px; position: relative; z-index : 9999 ;">
 	<iframe src="http://www.clickpass.com/embedded_buttons/login-standard/rzMQEOe8gQ" width="176" height="28" frameborder="0" allowtransparency="true" scrolling="no" style="z-index:9999;position: absolute; top: 0; left: 0;"></iframe> 
@@ -48,8 +52,17 @@
 	  var clickpassPanel = new ClickpassPanel('clickpass_button');   
 	</script>
 	</p>
-	
+	-->
+      <% end %>
+    </div>
+<div id="search">
+<p>
+<% form_tag(search_path) do %> 
+  <%= text_field_tag 'query' %>
+  <%= submit_tag 'Search for articles' %>
 <% end %>
+</p>
+</div>
 <% unless flash[:error].blank? %>
 	<div id="notification"><strong><em><%= flash[:error] %></em></strong></div>
       <% end %>

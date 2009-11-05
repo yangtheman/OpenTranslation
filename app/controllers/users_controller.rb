@@ -9,5 +9,9 @@ class UsersController < ApplicationController
 	  @current_user.update_attributes(params[:user])
 	  redirect_to posts_path
   end
+  
+  def index
+    @users = User.find(:all)
+  end
 
 end

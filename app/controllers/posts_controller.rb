@@ -109,22 +109,22 @@ class PostsController < ApplicationController
   end
 
   def add_trans
-	  @orig = OrigPost.find(params[:orig_post_id])
-	  if @post = @orig.posts.find_by_ted_id(params[:post][:ted_id])
-	    flash[:error] = "Translation already exists"
-	    redirect_to post_path(@post)
-	  else 
-	    @post = @orig.posts.new
-	  end
+    @orig = OrigPost.find(params[:orig_post_id])
+    if @post = @orig.posts.find_by_ted_id(params[:post][:ted_id])
+      flash[:error] = "Translation already exists"
+      redirect_to post_path(@post)
+    else 
+      @post = @orig.posts.new
+    end
 
-	  from = @orig.orig_lang.short
-	  @post.ted_id = params[:post][:ted_id]
-	  to = Language.find(@post.ted_id).short
+    from = @orig.orig_lang.short
+    @post.ted_id = params[:post][:ted_id]
+    to = Language.find(@post.ted_id).short
 
-	  @post.title = Translate.t(@orig.title, from, to)
-	  @post.content = translate(Hpricot(@orig.content).search("/p"), from, to)
+    @post.title = Translate.t(@orig.title, from, to)
+    @post.content = translate(Hpricot(@orig.content).search("/p"), from, to)
 
-	  render :action => "new"
+    render :action => "new"
   end
 
   def edit
@@ -175,6 +175,12 @@ class PostsController < ApplicationController
     post = Post.find(params[:id])
     orig = OrigPost.find(post.orig_post_id)
     @posts = orig
+  end
+
+  def search
+    @query=params[:query]
+    @total_hits = Post.total_hits(@query)
+    @posts = Post.paginate_with_ferret(@query, :page => params[:page], :per_page => 5)
   end
 
   #Expects two parameters. :url is URL of a blog. :target is target language in two-letter form such as "en" for English

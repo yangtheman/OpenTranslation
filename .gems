@@ -1,5 +1,6 @@
 acts_as_versioned --version 0.2.3
 sishen-rtranslate --source gems.github.com
 shorturl
-acts_as_ferret --version 0.4.4
+ferret
+acts_as_ferret
 will_paginate

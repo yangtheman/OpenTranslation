@@ -8,11 +8,23 @@ body {
 }
 
 #header {
+  border-bottom: solid;
+}
+
+#header #nav {
+}
+
+#header #loginout {
+}
+
+#header #search {
+  padding-bottom: 10px;
 }
 
 #main {
   height: 250px;
   margin: 10px auto;
+  border-bottom: solid;
 }
 
 #latest {

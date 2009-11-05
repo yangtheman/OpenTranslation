@@ -9,6 +9,9 @@ class Post < ActiveRecord::Base
   
   acts_as_rated :with_stats_table => true, :rater_class => 'User'
 
+  acts_as_ferret :fields => [:title, :content, :url]
+
   #validates_uniqueness_of :url, :scope => :ted_id, :case_sensitive => false
+ 
 end
                                              

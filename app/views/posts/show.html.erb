@@ -21,8 +21,8 @@ Translated by <em><%= @ted_user.username %></em><br />
 <p>
 <em>based on <%= @ted_user.rating_count %> ratings </em>
 </p>
-<p>
 <% end %>
+<p>
 <% form_tag '/posts/add_trans' do %>
   To: <%= collection_select(:post, :ted_id, @languages, :id, :language) %> 
   <%= hidden_field_tag 'orig_post_id', @post.orig_post_id %>
@@ -34,7 +34,8 @@ Content: <br />
 <%= @post.content %>
 </p>
 <h2>Previous Versions</h2>
-<% for version in @post.versions.reverse %>
-		Version <%= link_to version.version, :action => "show", :version => version.version, :id => @post.id %>, 
-		updated at <%= version.updated_at %><br />
+<% @post.versions.reverse.each do |version| %>
+  Version <%= link_to version.version, :action => "show", :version => version.version, :id => @post.id %>, 
+  translated by <%= User.find(@post.user_id).username %>, 
+  updated at <%= version.updated_at %><br />
 <% end %>

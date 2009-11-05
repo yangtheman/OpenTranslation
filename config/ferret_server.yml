@@ -5,12 +5,12 @@
 # pid_file: location of the server's pid file (relative to RAILS_ROOT)
 # log_file: log file (default: RAILS_ROOT/log/ferret_server.log
 # log_level: log level for the server's logger
-production:
-  host: localhost
-  port: 9010
-  pid_file: log/ferret.pid
-  log_file: log/ferret_server.log
-  log_level: warn
+#production:
+#  host: localhost
+#  port: 9010
+#  pid_file: log/ferret.pid
+#  log_file: log/ferret_server.log
+#  log_level: warn
 
 # aaf won't try to use the DRb server in environments that are not 
 # configured here.

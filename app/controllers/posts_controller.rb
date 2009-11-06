@@ -116,22 +116,22 @@ class PostsController < ApplicationController
   end
 
   def edit
-	  @post = Post.find(params[:id])
-	  @orig = OrigPost.find(@post.orig_post_id)
+    @post = Post.find(params[:id])
+    @orig = OrigPost.find(@post.orig_post_id)
   end
 
   def update
-	  @post = Post.find(params[:id])
-	  @post.user_id = @current_user.id
-	  if @post.update_attributes(params[:post])
-	    if @current_user.facebook_user? && params[:fbfeed]
-	      flash[:user_action_to_publish] = FacebookPublisher.create_publish_tx(@post, OrigPost.find(@post.orig_post_id).title, session[:facebook_session])
-	    end
-	    redirect_to post_path(@post)
-	  else 
-	    flash[:error] = 'Update failed'
-	    render :action => "edit"
-	  end
+    @post = Post.find(params[:id])
+    @post.user_id = @current_user.id
+    if @post.update_attributes(params[:post])
+      if @current_user.facebook_user? && params[:fbfeed]
+        flash[:user_action_to_publish] = FacebookPublisher.create_publish_tx(@post, OrigPost.find(@post.orig_post_id).title, session[:facebook_session])
+      end
+      redirect_to post_path(@post)
+    else 
+      flash[:error] = 'Update failed'
+      render :action => "edit"
+    end
   end
 
   def show

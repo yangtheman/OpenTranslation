@@ -171,6 +171,10 @@ class PostsController < ApplicationController
     @posts = Post.paginate_with_ferret(@query, :page => params[:page], :per_page => 10, :order => 'updated_at DESC')
   end
 
+  def showall 
+    @posts = Post.paginate :page => params[:page], :order => 'created_at DESC', :per_page => 10
+  end
+  
   #Expects two parameters. :url is URL of a blog. :target is target language in two-letter form such as "en" for English
   def external_request
     url = params[:url]

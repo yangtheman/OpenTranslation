@@ -24,8 +24,9 @@
 </p>
 </div>
 <div id="latest">
-<h2>Latest Translations</h2>
-<%= render :partial => @posts %>
+  <h2>Latest Translations</h2>
+  <%= render :partial => @posts %>
+  <%= link_to 'More...', showall_posts_path %>
 </div>
 <div id="most">
   <h2>Most Translated Blog</h2>

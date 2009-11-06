@@ -3,7 +3,7 @@ class PostsController < ApplicationController
   uses_yui_editor
   local_addresses.clear
 
-  before_filter :login_required, :except => [:index, :show]
+  before_filter :login_required, :except => [:index, :show, :search]
 
   require 'hpricot'
   require 'open-uri'
@@ -14,28 +14,16 @@ class PostsController < ApplicationController
   end
 
   def index
-    	  @the_url = params[:url]
-	  @languages = Language.find(:all, :order => "language ASC")
-	  @posts = Post.find(:all, :order => "created_at DESC", :limit => 5)
+    @the_url = params[:url]
+    @languages = Language.find(:all, :order => "language ASC")
+    @posts = Post.find(:all, :order => "created_at DESC", :limit => 5)
 
-	  orig_cols = OrigPost.column_names.collect {|c| "orig_posts.#{c}"}.join(",")
-	  @top_origs = OrigPost.find_by_sql("SELECT #{orig_cols}, count(posts.id) AS post_count FROM orig_posts LEFT OUTER JOIN posts ON posts.orig_post_id = orig_posts.id GROUP BY orig_posts.id, #{orig_cols} ORDER BY post_count DESC LIMIT 5")
+    orig_cols = OrigPost.column_names.collect {|c| "orig_posts.#{c}"}.join(",")
+    @top_origs = OrigPost.find_by_sql("SELECT #{orig_cols}, count(posts.id) AS post_count FROM orig_posts LEFT OUTER JOIN posts ON posts.orig_post_id = orig_posts.id GROUP BY orig_posts.id, #{orig_cols} ORDER BY post_count DESC LIMIT 5")
 
-	  user_cols = User.column_names.collect {|c| "users.#{c}"}.join(",")
-	  @top_users = User.find_by_sql("SELECT #{user_cols}, count(posts.id) AS post_count FROM users LEFT OUTER JOIN posts ON posts.user_id = users.id GROUP BY users.id, #{user_cols} ORDER BY post_count DESC LIMIT 5")
+    user_cols = User.column_names.collect {|c| "users.#{c}"}.join(",")
+    @top_users = User.find_by_sql("SELECT #{user_cols}, count(posts.id) AS post_count FROM users LEFT OUTER JOIN posts ON posts.user_id = users.id GROUP BY users.id, #{user_cols} ORDER BY post_count DESC LIMIT 5")
 	  
-	  #@top_origs = OrigPost.find(:all, 
-	#			      :select => 'orig_posts.*, count(posts.id) as post_count', 
-	#			      :joins => 'left outer join posts on posts.orig_post_id = orig_posts.id', 
-	#			      :group => 'orig_posts.id', 
-	#			      :order => 'post_count DESC',
-	#			      :limit => 5)
-	  #@top_users = User.find(:all, 
-	#			 :select => 'users.*, count(posts.id) as post_count',
-	#			 :joins => 'left outer join posts on posts.user_id = users.id',
-	#			 :group => 'users.id',
-	#			 :order => 'post_count DESC',
-	#			 :limit => 5)
   end
 
   def new
@@ -180,7 +168,7 @@ class PostsController < ApplicationController
   def search
     @query=params[:query]
     @total_hits = Post.total_hits(@query)
-    @posts = Post.paginate_with_ferret(@query, :page => params[:page], :per_page => 5)
+    @posts = Post.paginate_with_ferret(@query, :page => params[:page], :per_page => 10, :order => 'updated_at DESC')
   end
 
   #Expects two parameters. :url is URL of a blog. :target is target language in two-letter form such as "en" for English

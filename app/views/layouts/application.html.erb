@@ -14,9 +14,17 @@
 </head>
 <body>
   <div id="header">
-    <div id="nav">
-      <p><%= link_to "Home", root_url %></p>
+    <div id="logo">
+      <h1><%= link_to "Bloglation", root_url %></h1>
     </div>
+<div id="search">
+<p>
+<% form_tag(search_path) do %> 
+  <%= text_field_tag 'query' %>
+  <%= submit_tag 'Search for articles' %>
+<% end %>
+</p>
+</div>
     <div id="loginout">
     <% if logged_in? %>
 	<% if @current_user.facebook_user? %>
@@ -57,19 +65,13 @@
 	
       <% end %>
     </div>
-<div id="search">
-<p>
-<% form_tag(search_path) do %> 
-  <%= text_field_tag 'query' %>
-  <%= submit_tag 'Search for articles' %>
-<% end %>
-</p>
-</div>
 <% unless flash[:error].blank? %>
-	<div id="notification"><strong><em><%= flash[:error] %></em></strong></div>
-      <% end %>
-    </div>
+  <div id="notification"><strong><em><%= flash[:error] %></em></strong></div>
+<% end %>
+</div>
+
 <%= yield %>
+
 <div id="footer">
 </div>
 </body>

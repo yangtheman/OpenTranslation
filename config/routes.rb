@@ -49,6 +49,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :posts, :member => {:rate => :put}, :collection => {:showall => :get}
   map.resources :users
   map.resources :orig_posts
+  map.resources :infos, :collection => {:about => :get, :tos => :get}
   map.resource :session, :member => {:destroy => :get, :add_openid => :post, :openid_reg => :get}
   map.connect ':controller/:action/:id'
   map.connect ':controller/:action/:id.:format'

@@ -2,8 +2,8 @@
 <em><%= link_to 'Original Article', @orig.url, :target => '_blank' %></em>
 <p>
 <% form_tag '/posts/add_trans' do %>
-  To: <%= collection_select(:post, :ted_id, Language.all, :id, :language) %>
-  <%= hidden_field_tag 'orig_post_id', @orig.origin_id %>
+  To: <%= collection_select(:post, :ted_id, @languages, :id, :language) %>
+  <%= hidden_field_tag 'orig_post_id', @orig.id %>
   <%= submit_tag 'Translate to another language' %>
 <% end %>
 </p>

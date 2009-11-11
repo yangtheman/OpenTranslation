@@ -11,6 +11,10 @@ class User < ActiveRecord::Base
 
 	after_create :register_user_to_fb
 
+	def self.top(num)
+	  user_cols = User.column_names.collect {|c| "users.#{c}"}.join(",")
+	  return User.find_by_sql("SELECT #{user_cols}, count(posts.id) AS post_count FROM users LEFT OUTER JOIN posts ON posts.user_id = users.id GROUP BY users.id, #{user_cols} ORDER BY post_count DESC LIMIT 5")
+	end
 
 	#find the user in the database, first by the facebook user id and if that fails through the email hash
 	def self.find_by_fb_user(fb_user)

@@ -18,11 +18,13 @@ class PostsController < ApplicationController
     @languages = Language.find(:all, :order => "language ASC")
     @posts = Post.find(:all, :order => "created_at DESC", :limit => 5)
 
-    orig_cols = OrigPost.column_names.collect {|c| "orig_posts.#{c}"}.join(",")
-    @top_origs = OrigPost.find_by_sql("SELECT #{orig_cols}, count(posts.id) AS post_count FROM orig_posts LEFT OUTER JOIN posts ON posts.orig_post_id = orig_posts.id GROUP BY orig_posts.id, #{orig_cols} ORDER BY post_count DESC LIMIT 5")
+    @top_origs = OrigPost.top(5)
+    #orig_cols = OrigPost.column_names.collect {|c| "orig_posts.#{c}"}.join(",")
+    #@top_origs = OrigPost.find_by_sql("SELECT #{orig_cols}, count(posts.id) AS post_count FROM orig_posts LEFT OUTER JOIN posts ON posts.orig_post_id = orig_posts.id GROUP BY orig_posts.id, #{orig_cols} ORDER BY post_count DESC LIMIT 5")
 
-    user_cols = User.column_names.collect {|c| "users.#{c}"}.join(",")
-    @top_users = User.find_by_sql("SELECT #{user_cols}, count(posts.id) AS post_count FROM users LEFT OUTER JOIN posts ON posts.user_id = users.id GROUP BY users.id, #{user_cols} ORDER BY post_count DESC LIMIT 5")
+    @top_users = User.top(5)
+    #user_cols = User.column_names.collect {|c| "users.#{c}"}.join(",")
+    #@top_users = User.find_by_sql("SELECT #{user_cols}, count(posts.id) AS post_count FROM users LEFT OUTER JOIN posts ON posts.user_id = users.id GROUP BY users.id, #{user_cols} ORDER BY post_count DESC LIMIT 5")
 	  
   end
 

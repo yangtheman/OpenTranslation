@@ -8,48 +8,55 @@ body {
 }
 
 #header {
-  height: 100px;
-  border-bottom: solid;
+  height: 110px;
 }
 
 #header #logo {
   float: left;
-  width: 300px;
-}
-
-#header #search {
-  float: left;
-  text-align: center;
-  width: 300px;
-  padding-bottom: 10px;
 }
 
 #header #loginout {
   float: right;
+  text-align: right;
+}
+
+#header #search {
+  clear: both;
+  float: left;
+  padding: 5px 10px;
 }
 
 #main {
-  height: 250px;
+  clear: both;
   margin: 10px auto;
+  border-top: solid;
   border-bottom: solid;
-  text-align: center;
 }
 
 #main p#url {
+  padding-top: 30px;
+  text-align: center;
 }
 
 #main p#from {
   float: left;
   width: 440px;
+  text-align: center;
 }
 
 #main p#to {
   float: right;
   width: 440px;
+  text-align: center;
 }
 
 #main p#submit {
   padding-bottom: 20px;
+  text-align: center;
+}
+
+#main p.notetobloggers {
+  text-align: center;
 }
 
 #latest {
@@ -85,6 +92,13 @@ body {
   background-color: #cfc;
   padding: 5px;
   margin: 10px 0;
+}
+
+#footer {
+  clear: both;
+  border-top: solid;
+  text-align: center;
+  padding: 10px 0;
 }
 
 /* CSS star rating */

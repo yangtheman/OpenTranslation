@@ -14,17 +14,9 @@
 </head>
 <body>
   <div id="header">
-    <div id="logo">
-      <h1><%= link_to "Bloglation", root_url %></h1>
+    <div id = "logo">
+      <%= link_to(image_tag("logo.jpg", :border => 0), root_url) %>
     </div>
-<div id="search">
-<p>
-<% form_tag(search_path) do %> 
-  <%= text_field_tag 'query' %>
-  <%= submit_tag 'Search for articles' %>
-<% end %>
-</p>
-</div>
     <div id="loginout">
     <% if logged_in? %>
 	<% if @current_user.facebook_user? %>
@@ -65,14 +57,23 @@
 	
       <% end %>
     </div>
+<div id="search">
+<p>
+<% form_tag(search_path) do %> 
+  <%= text_field_tag 'query' %>
+  <%= submit_tag 'Search for an article' %>
+<% end %>
+</p>
+</div>
 <% unless flash[:error].blank? %>
   <div id="notification"><strong><em><%= flash[:error] %></em></strong></div>
 <% end %>
-</div>
-
+</div> <!-- end of header div -->
+<div id = "main">
 <%= yield %>
-
+</div>
 <div id="footer">
+  <%= link_to 'About', about_infos_path %> | <%= link_to 'Terms', tos_infos_path %>
 </div>
 </body>
 </html>

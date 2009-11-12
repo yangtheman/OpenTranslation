@@ -113,16 +113,11 @@ class PostsController < ApplicationController
 
   def rate
     post = Post.find(params[:id])
-    if post.user_id == @current_user.id 
-      flash[:error] = "You cannot rate yourself!"
-      redirect_to post_path(post)
-    else
-      #user = User.find(post.user_id) 
-      #user.rate(params[:rating].to_i, @current_user) 
-      post.rate(params[:rating].to_i, @current_user) if !post.rated_by?(@current_user)
-      #redirect_to post_path(post)
-      render :partial => "post_rating", :locals => {:post => post}
-    end
+    #user = User.find(post.user_id) 
+    #user.rate(params[:rating].to_i, @current_user) 
+    post.rate(params[:rating].to_i, @current_user) if !post.rated_by?(@current_user)
+    #redirect_to post_path(post)
+    render :partial => "post_rating", :locals => {:post => post}
   end
 
   def showorig

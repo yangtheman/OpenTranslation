@@ -15,7 +15,7 @@ Version: <%= @post.version %>
 Translated by <em><%= @ted_user.username %></em><br />
 <% average = (@ted_user.rating_average.blank? ? 0 : @ted_user.rating_average) * 100 / 5 %>
 <ul class = 'stars'>
-          <li class='current_rating' style='width: <%= "#{average}" %>%'> <%="#{average}"%>%</li>
+  <li class='current_rating' style='width: <%= "#{average}" %>%'> <%="#{average}"%>%</li>
 </ul><br />
 </p>
 <p>

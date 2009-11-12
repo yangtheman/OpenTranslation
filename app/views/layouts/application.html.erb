@@ -21,14 +21,14 @@
     <% if logged_in? %>
 	<% if @current_user.facebook_user? %>
 		 <p>
-		 <fb:profile-pic uid="<%= @current_user.fb_user_id%>" facebook-logo="true" size="thumb" ></fb:profile-pic><br />
+		 <fb:profile-pic uid="<%= @current_user.fb_user_id %>" facebook-logo="true" size="thumb" ></fb:profile-pic><br />
 		 <a href="#" onclick='FB.Connect.logoutAndRedirect("/logout")'>Logout</a><br />
 		 </p>
         <% else %>
 	         Logged in as: <%= link_to @current_user.username, user_path(@current_user) %> |
 	         <em><%= link_to "Logout", "/logout" %></em>
 	<% end %>
-<% else %>
+    <% else %>
 	Please log in using either
 	<p>
 	<%= fb_login_button('window.location = "/fb_login";')%> or 
@@ -73,7 +73,7 @@
 <%= yield %>
 </div>
 <div id="footer">
-  <%= link_to 'About', about_info_path %> | <%= link_to 'Terms', tos_info_path %>
+  <%= link_to 'About', '/about' %> | <%= link_to 'Terms', '/tos' %>
 </div>
 </body>
 </html>

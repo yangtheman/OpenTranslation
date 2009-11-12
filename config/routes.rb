@@ -40,6 +40,8 @@ ActionController::Routing::Routes.draw do |map|
   map.fb_login	'/fb_login', :controller => "sessions", :action => "fb_login"
   map.cp_login	'/cp_login', :controller => "sessions", :action => "create"
   map.search	'/search', :controller => "posts", :action => "search"
+  map.about     '/about', :controller => "info", :action => "about"
+  map.tos	'/tos', :controller => "info", :action => "tos"
   map.external_request	'/external_request', :controller => "posts", :action => "external_request"
   map.exception	'/exception', :controller => "posts", :action => "exception"
 
@@ -49,7 +51,6 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :posts, :member => {:rate => :put}, :collection => {:showall => :get}
   map.resources :users
   map.resources :orig_posts
-  map.resources :info, :collection => {:about => :get, :tos => :get}
   map.resource :session, :member => {:destroy => :get, :add_openid => :post, :openid_reg => :get}
   map.connect ':controller/:action/:id'
   map.connect ':controller/:action/:id.:format'

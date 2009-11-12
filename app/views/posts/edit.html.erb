@@ -11,7 +11,7 @@
 	<%= f.hidden_field :ted_id, :value => @post.ted_id %>
 	<%= f.hidden_field :origin_id, :value => @orig.origin_id %>
 	<%= f.hidden_field :orig_post_id, :value => @orig.id %>
-	<% if facebook_user? %>
+	<% if @current_user.facebook_user? %>
 	  <p>
 	  <%= check_box_tag :fbfeed %> Publish this in Facebook Feed?
 	  </p>

@@ -9,10 +9,10 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-	  if @current_user.facebook_user?
-		  clear_fb_cookies!
-		  clear_facebook_session_information
-	  end           
+    if @current_user.facebook_user?
+	  clear_fb_cookies!
+	  clear_facebook_session_information
+    end
 	  session[:user_id] = nil
 	  @current_user = false
 	  redirect_to(root_url)

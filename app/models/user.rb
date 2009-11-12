@@ -62,6 +62,6 @@ class User < ActiveRecord::Base
 	end
 	
 	def facebook_user?
-		return !fb_user_id.nil? && fb_user_id > 0
+		return @current_user && !@current_user.fb_user_id.nil? && @current_user.fb_user_id > 0
 	end
 end

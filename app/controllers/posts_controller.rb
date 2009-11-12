@@ -1,17 +1,16 @@
 class PostsController < ApplicationController
   
   uses_yui_editor
-  local_addresses.clear
+  #local_addresses.clear
 
   before_filter :login_required, :except => [:index, :show, :search]
 
   require 'hpricot'
-  require 'open-uri'
   require 'rtranslate'
 
-  def exception
-    raise(Exception, "Forced Exception from NodesController")
-  end
+  #def exception
+  #  raise(Exception, "Forced Exception from NodesController")
+  #end
 
   def index
     @the_url = params[:url]
@@ -19,66 +18,31 @@ class PostsController < ApplicationController
     @posts = Post.find(:all, :order => "created_at DESC", :limit => 5)
 
     @top_origs = OrigPost.top(5)
-    #orig_cols = OrigPost.column_names.collect {|c| "orig_posts.#{c}"}.join(",")
-    #@top_origs = OrigPost.find_by_sql("SELECT #{orig_cols}, count(posts.id) AS post_count FROM orig_posts LEFT OUTER JOIN posts ON posts.orig_post_id = orig_posts.id GROUP BY orig_posts.id, #{orig_cols} ORDER BY post_count DESC LIMIT 5")
-
     @top_users = User.top(5)
-    #user_cols = User.column_names.collect {|c| "users.#{c}"}.join(",")
-    #@top_users = User.find_by_sql("SELECT #{user_cols}, count(posts.id) AS post_count FROM users LEFT OUTER JOIN posts ON posts.user_id = users.id GROUP BY users.id, #{user_cols} ORDER BY post_count DESC LIMIT 5")
 	  
   end
 
   def new
+    if params[:post][:origin_id] == params[:post][:ted_id]
+        flash[:error] = 'Cannot translate from and to the same language.'
+        render :action => "index"
+    end
+
+    # Original post exist?
     @orig = OrigPost.find_by_url(params[:url])
 
     # New translation
     if @orig.nil?
-      @orig = OrigPost.new
-      @orig.url = params[:url]
-      @orig.origin_id = params[:post][:origin_id]
-      @orig.user_id = @current_user.id
-      if @orig.origin_id == params[:post][:ted_id]
-        flash[:error] = 'Cannot translate from and to the same language.'
-        render :action => "index"
-      end
-      from = Language.find_by_id(params[:post][:origin_id]).short
-
-      web = Hpricot(open(@orig.url))
-
-      @orig.title = web.at("title").inner_text
-
-      #remove all images (shall I or not?)
-      #web.search("img").remove
-	                    
-      #Wordpress's main body has "entry" div id
-      body = web.search("div.entry/p")
-      if body.inner_text.length == 0
-	body = web.search("/html/body//p")
-      end
-      #body = web.search("/html/body/")
-
-      @orig.content = body.to_html
-      #ted_content = ""
-      #body.each do |p|
-        #ted_content += Translate.t(cleanup(p.to_html), from, to)
-      #end
-
-      if !@orig.save
-        flash[:error] = 'Oops! Something happened! Same article perhaps?'
-        redirect_to posts_path
-      else
-        @post = @orig.posts.new
-      end
+      @orig = OrigPost.newentry(@current_user, params)
+    #Original exists and target language was already translated before.
     elsif @post = Post.find_by_orig_post_id_and_ted_id(@orig.id, params[:post][:ted_id])
-      #Original exists and target language was already done before.
       render :action => "edit"
-    else
-      #Original exists, but target language was not done before.
-      @post = @orig.posts.new
-      from = @orig.orig_lang.short
-      body = Hpricot(@orig.content).search("/p")
     end
 
+    @post = @orig.posts.new
+
+    body = Hpricot(@orig.content).search("/p")
+    from = @orig.orig_lang.short
     to = Language.find_by_id(params[:post][:ted_id]).short
 
     @post.title = Translate.t(@orig.title, from, to)
@@ -100,9 +64,9 @@ class PostsController < ApplicationController
 
   def add_trans
     @orig = OrigPost.find(params[:orig_post_id])
-    if @post = @orig.posts.find_by_ted_id(params[:post][:ted_id])
+    if post = @orig.posts.find_by_ted_id(params[:post][:ted_id])
       flash[:error] = "Translation already exists"
-      redirect_to post_path(@post)
+      redirect_to post_path(post)
     else 
       @post = @orig.posts.new
     end

@@ -72,8 +72,4 @@ class ApplicationController < ActionController::Base
 	  !@current_user.nil?
   end
 
-  def facebook_user?
-    return @current_user && !@current_user.fb_user_id.nil? && @current_user.fb_user_id > 0
-  end
-
 end

@@ -1,41 +1,45 @@
-<h1><%= @post.title %></h1>
-<span id="post_rating_<%= @post.id %>"><%= render :partial => 'post_rating', :locals => {:post => @post} %></span>
-<p>
-Original post: <%= link_to @original_post.title, orig_post_path(@original_post) %><br />
-</p>
-<p>
-Version: <%= @post.version %>  
-<% if logged_in? %>
-	<%= link_to '(edit)', edit_post_path(@post) %>
-<% end %>
- | <%= link_to "Tweet this", @twitterurl, :target => "_blank" %> 
-</p>
-<% if !@ted_user.nil? %>
-<p>
-Translated by <em><%= @ted_user.username %></em><br />
-<% average = (@ted_user.rating_average.blank? ? 0 : @ted_user.rating_average) * 100 / 5 %>
-<ul class = 'stars'>
-  <li class='current_rating' style='width: <%= "#{average}" %>%'> <%="#{average}"%>%</li>
-</ul><br />
-</p>
-<p>
-<em>based on <%= @ted_user.rating_count %> ratings </em>
-</p>
-<% end %>
-<p>
-<% form_tag '/posts/add_trans' do %>
-  To: <%= collection_select(:post, :ted_id, @languages, :id, :language) %> 
-  <%= hidden_field_tag 'orig_post_id', @post.orig_post_id %>
-  <%= submit_tag 'Translate to another language' %>
-<% end %>
-</p>
-<p>
-Content: <br />
-<%= @post.content %>
-</p>
-<h2>Previous Versions</h2>
+<div id="main">
+  <p class="show_title"><%= @post.title %></p>
+  <p class="show_info">Original post: <%= link_to @original_post.title, orig_post_path(@original_post) %></p>
+  <p class="show_info">Version: <%= @post.version %>
+    <% if logged_in? %>
+      <%= link_to '(edit)', edit_post_path(@post) %>
+    <% end %>
+  </p>
+  <div id="tweet"><%= link_to(image_tag("tweet.gif", :border => 0), @twitterurl, :target => "_blank") %></div>
+</div>
+
+<div id="show_middle">
+  <div id="add_trans">
+    <% form_tag '/posts/add_trans' do %>
+      <p><%= collection_select(:post, :ted_id, @languages, :id, :language) %></p> 
+      <%= hidden_field_tag 'orig_post_id', @post.orig_post_id %>
+      <%= image_submit_tag 'tran.gif' %>
+    <% end %>
+  </div>
+  <div id="user_info">
+    <p class="info">
+      Translated by <em><%= @ted_user.username %></em><br />
+      <span id="post_rating_<%= @post.id %>"><%= render :partial => 'post_rating', :locals => {:post => @post} %></span>
+      <!--
+      <% average = (@ted_user.rating_average.blank? ? 0 : @ted_user.rating_average) * 100 / 5 %>
+      <ul class = 'stars'>
+	<li class='current_rating' style='width: <%= "#{average}" %>%'> <%="#{average}"%>%</li>
+      </ul><br />
+       -->
+    </p>
+  </div>
+</div>
+
+<div id="show_content">
+  <%= @post.content %>
+</div>
+
+<div id="previous">
+  <p class="info"><strong>Previous Versions</strong></p>
 <% @post.versions.reverse.each do |version| %>
   Version <%= link_to version.version, :action => "show", :version => version.version, :id => @post.id %>, 
   translated by <%= User.find(@post.user_id).username %>, 
   updated at <%= version.updated_at %><br />
 <% end %>
+</div>

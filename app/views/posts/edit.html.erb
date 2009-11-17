@@ -2,7 +2,7 @@
 <h1>Translate </h1>
 <% form_for @post, :url => { :action => 'update' } do |f| %>
 	<p>
-	Title: <%= f.text_field :title, :value => @post.title %>
+	Title: <%= f.text_field :title, :size => 45, :value => @post.title %>
 	</p>
 	<p>
 	Content: <br />
@@ -17,7 +17,7 @@
 	  </p>
 	<% end %>
 	<p>
-	<%= submit_tag 'Update' %>
+	<%= image_submit_tag('create.gif') %>
 	</p>
 <% end %>
 </div>

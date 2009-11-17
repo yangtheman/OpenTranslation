@@ -73,6 +73,11 @@ body {
   height: 274px;
 }
 
+#main #main_text {
+  width: 890px;
+  height: 200px;
+}
+
 #main p {
   color: #FFFFFF;
   font-weight: bold;
@@ -103,9 +108,11 @@ body {
 }
 
 #main #tweet {
-  float: right;
-  margin-right: 10px;
-  margin-bottom: 10px;
+  width: 94px;
+  height: 79px;
+  position: relative;
+  left: 780px;
+  bottom: 20px;
 }
 
 #main p.show_title {

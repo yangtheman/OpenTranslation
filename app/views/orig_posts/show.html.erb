@@ -1,10 +1,11 @@
-<h2><%= @orig.title %></h2>
-<em><%= link_to 'Original Article', @orig.url, :target => '_blank' %></em>
-<p>
+<h2><%= link_to @orig.title, @orig.url, :target => '_blank' %></h2>
+<div id="add_trans">
 <% form_tag '/posts/add_trans' do %>
-  To: <%= collection_select(:post, :ted_id, @languages, :id, :language) %>
+  <p><%= collection_select(:post, :ted_id, @languages, :id, :language) %></p>
   <%= hidden_field_tag 'orig_post_id', @orig.id %>
-  <%= submit_tag 'Translate to another language' %>
+  <%= image_submit_tag 'tran.gif' %>
 <% end %>
-</p>
-<%= render :partial => 'posts/post', :collection => @posts %>
+</div>
+<div id="show_content">
+  <%= render :partial => 'posts/post', :collection => @posts %>
+</div>

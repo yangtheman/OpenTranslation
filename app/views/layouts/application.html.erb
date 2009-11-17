@@ -15,7 +15,7 @@
 <body>
   <div id="header">
     <div id = "logo">
-      <%= link_to(image_tag("logo.jpg", :border => 0), root_url) %>
+      <%= link_to(image_tag("logo.gif", :border => 0), root_url) %>
     </div>
     <div id="loginout">
     <% if logged_in? %>
@@ -61,7 +61,7 @@
 <p>
 <% form_tag(search_path) do %> 
   <%= text_field_tag 'query' %>
-  <%= submit_tag 'Search for an article' %>
+  <%= image_submit_tag("search.gif", :class => 'submit_button') %>
 <% end %>
 </p>
 </div>
@@ -69,11 +69,9 @@
   <div id="notification"><strong><em><%= flash[:error] %></em></strong></div>
 <% end %>
 </div> <!-- end of header div -->
-<div id = "main">
 <%= yield %>
-</div>
 <div id="footer">
-  <%= link_to 'About', '/about' %> | <%= link_to 'Terms', '/tos' %>
+  <p class="info"><%= link_to 'About', '/about' %> | <%= link_to 'Terms', '/tos' %></p>
 </div>
 </body>
 </html>

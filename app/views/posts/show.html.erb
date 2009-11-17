@@ -1,11 +1,13 @@
 <div id="main">
-  <p class="show_title"><%= @post.title %></p>
-  <p class="show_info">Original post: <%= link_to @original_post.title, orig_post_path(@original_post) %></p>
-  <p class="show_info">Version: <%= @post.version %>
+  <div id="main_text">
+    <p class="show_title"><%= @post.title %></p>
+    <p class="show_info">Original post: <%= link_to @original_post.title, orig_post_path(@original_post) %></p>
+    <p class="show_info">Version: <%= @post.version %>
     <% if logged_in? %>
       <%= link_to '(edit)', edit_post_path(@post) %>
     <% end %>
-  </p>
+    </p>
+  </div>
   <div id="tweet"><%= link_to(image_tag("tweet.gif", :border => 0), @twitterurl, :target => "_blank") %></div>
 </div>
 

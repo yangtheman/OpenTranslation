@@ -12,6 +12,14 @@ body {
   color:#BE5653;
 }
 
+.link a {
+  text-decoration: none;
+}
+
+.link a:hover {
+  text-decoration: underline;
+}
+
 .info {
   font-size: 14px; 
   color: #848484;

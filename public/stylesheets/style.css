@@ -190,6 +190,7 @@ body {
 }
 
 #edit {
+  margin-bottom: 10px;
   padding: 5px;
   width: 435px;
   float: left;
@@ -197,6 +198,7 @@ body {
 
 #original {
   background: #D6D6D6;
+  margin-bottom: 10px;
   padding: 5px;
   width: 435px;
   float: right;

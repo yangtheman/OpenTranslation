@@ -72,4 +72,12 @@ class ApplicationController < ActionController::Base
 	  !@current_user.nil?
   end
 
+  def ua_identifier(ua_string)
+    return "Chrome" if ua_string =~ /Chrome/i
+    return "Internet Explorer" if ua_string =~ /MSIE/
+    return "Safari" if ua_string =~ /Safari/
+    return "Firefox" if ua_string =~ /Firefox/i
+    return "Opera" if ua_string =~ /Opera/i
+    return "Other"
+  end
 end

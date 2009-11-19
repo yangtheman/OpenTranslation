@@ -3,7 +3,7 @@ class PostsController < ApplicationController
   uses_yui_editor
   #local_addresses.clear
 
-  before_filter :login_required, :except => [:index, :show, :search]
+  before_filter :check_browser, :login_required, :except => [:index, :show, :search]
 
   require 'hpricot'
   require 'rtranslate'
@@ -135,7 +135,13 @@ class PostsController < ApplicationController
   def showall 
     @posts = Post.paginate :page => params[:page], :order => 'created_at DESC', :per_page => 10
   end
-  
+    
+  def check_browser
+    browser_type = ua_identifier(request.user_agent)
+    #redirect_to browser_path if browser_type != "Firefox"
+    redirect_to browser_path if !(browser_type == "Firefox" || browser_type == "Opera")
+  end
+
   #Expects two parameters. :url is URL of a blog. :target is target language in two-letter form such as "en" for English
   def external_request
     url = params[:url]

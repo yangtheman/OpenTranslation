@@ -2,6 +2,9 @@ class SessionsController < ApplicationController
 
   protect_from_forgery :except => [:create, :add_openid, :openid_reg]
 
+  def new
+  end
+
   def create
 	  #Begin OpenID authentication
 	  openid_url = params[:openid_url]

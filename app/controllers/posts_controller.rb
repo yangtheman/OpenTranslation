@@ -158,64 +158,6 @@ class PostsController < ApplicationController
     redirect_to browser_path if !(browser_type == "Firefox" || browser_type == "Opera")
   end
 
-  #Expects two parameters. :url is URL of a blog. :target is target language in two-letter form such as "en" for English
-  def external_request
-    url = params[:url]
-    to = params[:target]
-    ted_id = Language.find_by_short(to).id
-
-    post = Post.find_by_url(url)
-    if post 
-      #Target translation exists
-      if post.versions.find_by_ted_id(ted_id)
-      	version = post.versions.find_by_ted_id(ted_id).version
-	if version == 1
-	  version += 1
-      	end
-	post.revert_to(version)
-	@title = post.title
-	@content = post.content
-      else
-	#A translation has been done, but target translation does not exist
-      	post.revert_to('1')
-	from = post.orig_lang.short
-      	@title = Translate.t(post.title, from, to)
-      	@content = translate(Hpricot(post.content).search("/p"), from, to)
-      end
-    else
-      #No translation has ever been done
-      @post = Post.new
-      @post.url = url
-      @post.ted_id = ted_id
-
-      web = Hpricot(open(url))
-      @post.title = web.at("title").inner_text
-      from = Detection.detect(@post.title)
-      @post.origin_id = Language.find_by_short(from).id
-
-      if @post.origin_id == @post.ted_id
-	flash[:error] = 'Cannot translate from and to the same language.'
-	#Send error message
-      end
-
-      #Wordpress's main body has "entry" div id
-      body = web.search("div.entry/p")
-      if body.inner_text.length == 0
-	body = web.search("/html/body//p")
-      end
-      @post.content = body.to_html
-
-      #Save version 1 first.
-      if @post.save 
-	@title = Translate.t(@post.title, from, to)
-	@content = translate(body, from, to)
-      else 
-	#Send error message
-      end
-    end
-    #Send translated contents over...post.id, post.title, post.content
-  end
-
   class FacebookPublisher < Facebooker::Rails::Publisher
     def publish_tx_template
       one_line_story_template "{*actor*} translated/edited: {*post_title*}"

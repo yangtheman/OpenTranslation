@@ -43,7 +43,6 @@ ActionController::Routing::Routes.draw do |map|
   map.about     '/about', :controller => "info", :action => "about"
   map.tos	'/tos', :controller => "info", :action => "tos"
   map.browser	'/browser', :controller => "info", :action => "browser"
-  map.external_request	'/external_request', :controller => "posts", :action => "external_request"
   map.exception	'/exception', :controller => "posts", :action => "exception"
 
   # Install the default routes as the lowest priority.

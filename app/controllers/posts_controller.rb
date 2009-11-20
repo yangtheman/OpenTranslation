@@ -71,10 +71,9 @@ class PostsController < ApplicationController
   def add_trans
     @orig = OrigPost.find(params[:orig_post_id])
     # Trying to translate to original language
-    if !params[:id].nil? && @orig.origin_id.to_s == params[:post][:ted_id] 
-      current_post = Post.find(params[:id])
+    if @orig.origin_id.to_s == params[:post][:ted_id] 
       flash[:error] = "Cannot translate to the same language!"
-      redirect_to post_path(current_post)
+      redirect_to :back
     # Tranlsation already exists
     elsif post = @orig.posts.find_by_ted_id(params[:post][:ted_id])
       flash[:error] = "Translation already exists!"

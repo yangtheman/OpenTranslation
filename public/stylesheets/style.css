@@ -192,7 +192,7 @@ body {
 #edit {
   margin-bottom: 10px;
   padding: 5px;
-  width: 435px;
+  width: 48%;
   float: left;
 }
 
@@ -200,7 +200,7 @@ body {
   background: #D6D6D6;
   margin-bottom: 10px;
   padding: 5px;
-  width: 435px;
+  width: 48%;
   float: right;
 } 
 

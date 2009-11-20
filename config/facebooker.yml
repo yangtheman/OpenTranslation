@@ -38,8 +38,8 @@ test:
 production:
   api_key: 15dc2923bfca6d98261150700de65148
   secret_key: 5fe782ee246ed96334422ffa80485f21 
-  canvas_page_name: opentranslation
-  callback_url: http://opent.heroku.com/
+  canvas_page_name: bloglation
+  callback_url: http://alpha.bloglation.com
   set_asset_host_to_callback_url: false  
   tunnel:
     public_host_username: 

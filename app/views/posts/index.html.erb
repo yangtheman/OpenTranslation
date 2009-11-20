@@ -1,12 +1,12 @@
 <div id="main">
 <% form_tag '/posts/new' do %>
 	<p id="url">
-	Which blog? <br />
+	Which blog post? <br />
 	<%=  text_field_tag 'url', @the_url, :size => 80 %>
 	</p>
 	<p id = "from">
 	From: <br />
-	<%= collection_select(:post, :origin_id, @languages, :id, :language, {:selected => "1"}) %>
+	<%= collection_select(:post, :origin_id, @languages, :id, :language, {:selected => 1}) %>
 	</p>
 	<p id = "to">
 	To: <br />

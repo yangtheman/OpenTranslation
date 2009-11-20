@@ -25,51 +25,51 @@ class ApplicationController < ActionController::Base
   end
 
   def cleanup(txt)
-	  txt.gsub!(/\&\#8211\;/, '–')
-	  txt.gsub!(/\&\#8212\;/, '—')
-	  txt.gsub!(/\&\#8216\;/, '‘')
-	  txt.gsub!(/\&\#8217\;/, '’')
-	  txt.gsub!(/\&\#8218\;/, '‚')
-	  txt.gsub!(/\&\#8220\;/, '“')
-	  txt.gsub!(/\&\#8221\;/, '”')
-	  txt.gsub!(/\&\#8222\;/, '„')
-	  txt.gsub!(/\&\#8224\;/, '†')
-	  txt.gsub!(/\&\#8225\;/, '‡')
-	  txt.gsub!(/\&\#8226\;/, '•')
-	  txt.gsub!(/\&\#8230\;/, '…')
-	  txt.gsub!(/\&\#8240\;/, '‰')
-	  txt.gsub!(/\&\#8364\;/, '€')
-	  txt.gsub!(/\&\#8482\;/, '™')
-	  txt
+    txt.gsub!(/\&\#8211\;/, '–')
+    txt.gsub!(/\&\#8212\;/, '—')
+    txt.gsub!(/\&\#8216\;/, '‘')
+    txt.gsub!(/\&\#8217\;/, '’')
+    txt.gsub!(/\&\#8218\;/, '‚')
+    txt.gsub!(/\&\#8220\;/, '“')
+    txt.gsub!(/\&\#8221\;/, '”')
+    txt.gsub!(/\&\#8222\;/, '„')
+    txt.gsub!(/\&\#8224\;/, '†')
+    txt.gsub!(/\&\#8225\;/, '‡')
+    txt.gsub!(/\&\#8226\;/, '•')
+    txt.gsub!(/\&\#8230\;/, '…')
+    txt.gsub!(/\&\#8240\;/, '‰')
+    txt.gsub!(/\&\#8364\;/, '€')
+    txt.gsub!(/\&\#8482\;/, '™')
+    txt
   end
 
   def translate(body, from, to)
-	  ted_content = ""
-	  body.each do |p|
-		  ted_content += Translate.t(cleanup(p.to_html), from, to)
-	  end
-	  ted_content
+    ted_content = ""
+    body.each do |p|
+      ted_content += Translate.t(cleanup(p.to_html), from, to)
+    end
+    ted_content
   end
 
   def tweetthis(post)
     twitter_title = OrigPost.find(post.orig_post_id).title.gsub(/[ \t]+/, '+') # change to twitter-friendly title                   
-    url = "http://opent.heroku.com/posts/#{post.id}?version=#{post.version}"
+    url = "http://alpha.bloglation.com/posts/#{post.id}?version=#{post.version}"
     url = ( ShortURL.shorten(url) rescue nil ) || url
     "http://www.twitter.com/home/?status=Just+translated+to+#{post.target_lang.language}!+-+#{twitter_title}+#{url}"
   end         
 
   protected
   def fetch_logged_in_user
-	  if facebook_session
-		  @current_user = User.find_by_fb_user(facebook_session.user)
-	  else
-		  return unless session[:user_id]
-		  @current_user = User.find_by_id(session[:user_id])
-	  end
+    if facebook_session
+      @current_user = User.find_by_fb_user(facebook_session.user)
+    else
+      return unless session[:user_id]
+      @current_user = User.find_by_id(session[:user_id])
+    end
   end
 
   def logged_in?
-	  !@current_user.nil?
+    !@current_user.nil?
   end
 
   def ua_identifier(ua_string)

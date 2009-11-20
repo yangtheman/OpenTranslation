@@ -11,6 +11,7 @@
   <% init_fb_connect "XFBML", "Api" do %>
      <%= fb_user_action(flash[:user_action_to_publish]) if flash[:user_action_to_publish] %>
   <% end %>
+
 </head>
 <body>
   <div id="header">
@@ -57,21 +58,61 @@
 	
       <% end %>
     </div>
-<div id="search">
-<p>
-<% form_tag(search_path) do %> 
-  <%= text_field_tag 'query' %>
-  <%= image_submit_tag("search.gif", :class => 'submit_button') %>
-<% end %>
-</p>
-</div>
+  <div id="search">
+    <p>
+    <% form_tag(search_path) do %> 
+    <%= text_field_tag 'query' %>
+    <%= image_submit_tag("search.gif", :class => 'submit_button') %>
+    <% end %>
+    </p>
+  </div>
+</div> <!-- end of header div -->
 <% unless flash[:error].blank? %>
   <div id="notification"><strong><em><%= flash[:error] %></em></strong></div>
 <% end %>
-</div> <!-- end of header div -->
 <%= yield %>
 <div id="footer">
   <p class="info"><%= link_to 'Blog', 'http://blog.bloglation.com', :target => '_blank' %> | <%= link_to 'About', '/about' %> | <%= link_to 'Terms', '/tos' %></p>
 </div>
+
+<!-- Uservoice -->
+<script type="text/javascript">
+  var uservoiceOptions = {
+    /* required */
+    key: 'bloglation',
+    host: 'bloglation.uservoice.com', 
+    forum: '34170',
+    showTab: true,  
+    /* optional */
+    alignment: 'left',
+    background_color: '#06C', 
+    text_color: 'white',
+    hover_color: '#f00',
+    lang: 'en'
+  };
+
+  function _loadUserVoice() {
+    var s = document.createElement('script');
+    s.setAttribute('type', 'text/javascript');
+    s.setAttribute('src', ("https:" == document.location.protocol ? "https://" : "http://") + "cdn.uservoice.com/javascripts/widgets/tab.js");
+    document.getElementsByTagName('head')[0].appendChild(s);
+  }
+
+  _loadSuper = window.onload;
+  window.onload = (typeof window.onload != 'function') ? _loadUserVoice : function() { _loadSuper(); _loadUserVoice(); };
+</script>
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+  document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+  try {
+    var pageTracker = _gat._getTracker("UA-10418051-5");
+    pageTracker._trackPageview();
+  } catch(err) {}
+</script>
+
 </body>
 </html>

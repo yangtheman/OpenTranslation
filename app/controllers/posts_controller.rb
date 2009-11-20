@@ -24,8 +24,8 @@ class PostsController < ApplicationController
 
   def new
     if params[:post][:origin_id] == params[:post][:ted_id]
-        flash[:error] = 'Cannot translate from and to the same language.'
-        render :action => "index"
+      flash[:error] = 'Cannot translate from and to the same language.'
+      render :action => "index"
     end
 
     # Original post exist?
@@ -41,13 +41,19 @@ class PostsController < ApplicationController
 
     @post = @orig.posts.new
 
-    body = Hpricot(@orig.content).search("/p")
     from = @orig.orig_lang.short
     to = Language.find_by_id(params[:post][:ted_id]).short
 
+    # Refactor this
     @post.title = Translate.t(@orig.title, from, to)
-    @post.content = translate(body, from, to)
-    @post.ted_id = params[:post][:ted_id] 
+    # Capture the error message 
+    if @post.title =~ /^Error\: Translation from.*supported yet\!/
+      flash[:error] = "#{@post.title}"
+      redirect_to(root_url)
+    else 
+      @post.content = translate(Hpricot(@orig.content).search("/p"), from, to)
+      @post.ted_id = params[:post][:ted_id] 
+    end
   end
 
   def create
@@ -64,21 +70,31 @@ class PostsController < ApplicationController
 
   def add_trans
     @orig = OrigPost.find(params[:orig_post_id])
-    if post = @orig.posts.find_by_ted_id(params[:post][:ted_id])
-      flash[:error] = "Translation already exists"
+    # Trying to translate to original language
+    if !params[:id].nil? && @orig.origin_id.to_s == params[:post][:ted_id] 
+      current_post = Post.find(params[:id])
+      flash[:error] = "Cannot translate to the same language!"
+      redirect_to post_path(current_post)
+    # Tranlsation already exists
+    elsif post = @orig.posts.find_by_ted_id(params[:post][:ted_id])
+      flash[:error] = "Translation already exists!"
       redirect_to post_path(post)
-    else 
+    else 	
       @post = @orig.posts.new
+      from = @orig.orig_lang.short
+      @post.ted_id = params[:post][:ted_id]
+      to = Language.find(@post.ted_id).short
+
+      # Refactor this
+      @post.title = Translate.t(@orig.title, from, to)
+      if @post.title =~ /^Error\: Translation from.*supported yet\!/
+	flash[:error] = "#{@post.title}"
+	redirect_to :back 
+      else 
+	@post.content = translate(Hpricot(@orig.content).search("/p"), from, to)
+	render :action => "new"
+      end
     end
-
-    from = @orig.orig_lang.short
-    @post.ted_id = params[:post][:ted_id]
-    to = Language.find(@post.ted_id).short
-
-    @post.title = Translate.t(@orig.title, from, to)
-    @post.content = translate(Hpricot(@orig.content).search("/p"), from, to)
-
-    render :action => "new"
   end
 
   def edit
@@ -108,6 +124,7 @@ class PostsController < ApplicationController
     @ted_user = User.find_by_id(@post.user_id)
     @original_post = OrigPost.find(@post.orig_post_id)
     @languages = Language.find(:all, :order => "language ASC")
+    @current_lang = @post.target_lang.language
     @twitterurl = tweetthis(@post)
   end
 

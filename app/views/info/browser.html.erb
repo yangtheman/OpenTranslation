@@ -1,0 +1,9 @@
+<p>
+<strong>
+<% if @browser_type == "Internet Explorer" %>
+  Internet Explorer is not supported on blolgation, and frankly you should really use something else, anything else like <%= link_to 'Firefox', 'http://www.firefox.com', :target => '_blank'%>, <%= link_to 'Chrome', 'http://www.chrome.com', :target => '_blank'%>, <%= link_to 'Safari', 'http://www.safari.com', :target => '_blank'%>, or even <%= link_to 'Opera', 'http://www.opera.com', :target => '_blank'%>. Do not support the evil IE.
+<% else %>
+  Sorry, but <%= @browser_type %> is not supported. Please use <%= link_to 'Firefox', 'http://www.firefox.com', :target => '_blank'%> instead.
+<% end %>
+</strong>
+</p>

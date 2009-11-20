@@ -1,21 +1,21 @@
 <div id="main">
   <div id="main_text">
     <p class="show_title"><%= @post.title %></p>
-    <p class="show_info">Original post: <%= link_to @original_post.title, orig_post_path(@original_post) %></p>
+    <p class="show_info">Original blog: <%= link_to @original_post.title, orig_post_path(@original_post) %></p>
     <p class="show_info">Version: <%= @post.version %>
     <% if logged_in? %>
       <%= link_to '(edit)', edit_post_path(@post) %>
     <% end %>
     </p>
+    <p class="show_info">Language: <%= @current_lang %></p>
   </div>
   <div id="tweet"><%= link_to(image_tag("tweet.gif", :border => 0), @twitterurl, :target => "_blank") %></div>
 </div>
 
 <div id="show_middle">
   <div id="add_trans">
-    <% form_tag '/posts/add_trans' do %>
+    <% form_tag :action => 'add_trans', :id => @post.id, :orig_post_id => @post.orig_post_id do %>
       <p><%= collection_select(:post, :ted_id, @languages, :id, :language) %></p> 
-      <%= hidden_field_tag 'orig_post_id', @post.orig_post_id %>
       <%= image_submit_tag 'tran.gif' %>
     <% end %>
   </div>

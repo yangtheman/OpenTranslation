@@ -55,8 +55,11 @@ class SessionsController < ApplicationController
       redirect_to edit_user_path(user)
     else
       #User in db
-      @current_user.link_fb_connect(facebook_session.user.id) unless @current_user.fb_user_id == facebook_session.user.id
-      redirect_to :back
+      if @current_user.fb_user_id == facebook_session.user.id
+	redirect_to :back
+      else 
+	redirect_to new_session_path
+      end
     end
   end
 

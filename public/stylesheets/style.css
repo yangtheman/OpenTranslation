@@ -221,7 +221,6 @@ body {
 /* CSS star rating */
 
 ul.stars {
-  right: -45px;
     display: block;
     margin: 0 auto;
     padding: 0;

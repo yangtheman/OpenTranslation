@@ -251,7 +251,7 @@ ul.stars li.current_rating {
     left: 0;
     height: 30px;
     line-height: 30px;
-    text-indent: -1000px;
+    text-indent: 1000px;
     overflow:hidden;
 }
 

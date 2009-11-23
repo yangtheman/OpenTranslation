@@ -28,23 +28,33 @@ class OrigPost < ActiveRecord::Base
     #remove all images (shall I or not?)
     #web.search("img").remove
 
-    #Wordpress's main body has "entry" div id
-    body = web.search("div.entry/p")
-    if body.inner_text.length == 0
-      body = web.search("/html/body//p")
+    #Paul Graham's essays built tables
+    if orig.url =~ /paulgraham\.com/
+      body = ""
+      bodyarr = web.at('body').inner_html.split('<br /><br />')
+      if bodyarr.nil?
+	return false
+      end
+      #Skip elements with table open and close tags
+      #Wrap each paragraph with <p></p> tags
+      bodyarr.each do |para|
+	if !(para =~ /<[\/]*table/)
+	  body << "<p>#{para}</p>"
+	end
+      end
+      orig.content = body
+    else 
+      #Wordpress's main body has "entry" div id
+      body = web.search("div.entry/p")
+      if body.inner_text.length == 0
+	body = web.search("/html/body//p")
+      end
+      orig.content = body.to_html
     end
-    #body = web.search("/html/body/")
-
-    orig.content = body.to_html
-    #ted_content = ""
-    #body.each do |p|
-      #ted_content += Translate.t(cleanup(p.to_html), from, to)
-    #end
 
     orig.save
 
     return orig
   end
-
 
 end

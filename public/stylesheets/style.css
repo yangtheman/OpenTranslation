@@ -117,25 +117,25 @@ body {
 
 #main p.show_title {
   font-size: 24px;  
+  font-weight: bold;
   padding: 50px 0 20px 10px; 
   text-align: left;
 }
 
 #main p.show_info {
   padding: 0 10px;
-  font-style: italic;
   font-weight: normal;
   text-align: left;
 }
 
 #main p.show_info a {
-  color: #B0B0B0;
   text-decoration: none;
 }
 
 #main p.show_info a:hover {
   text-decoration: underline;
 }
+
 
 #latest {
   background: #D3D3D3;

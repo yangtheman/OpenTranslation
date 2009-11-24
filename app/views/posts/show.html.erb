@@ -1,13 +1,16 @@
 <div id="main">
   <div id="main_text">
     <p class="show_title"><%= @post.title %></p>
-    <p class="show_info">Original blog: <%= link_to @original_post.title, orig_post_path(@original_post) %></p>
     <p class="show_info">Version: <%= @post.version %>
     <% if logged_in? %>
       <%= link_to '(edit)', edit_post_path(@post) %>
     <% end %>
     </p>
     <p class="show_info">Language: <%= @current_lang %></p>
+    <p class="show_info">
+    <%= link_to 'Additional translations', orig_post_path(@original_post) %> | 
+    <%= link_to 'Original blog', @original_post.url, :target => '_blank' %>
+    </p>
   </div>
   <div id="tweet"><%= link_to(image_tag("tweet.gif", :border => 0), @twitterurl, :target => "_blank") %></div>
 </div>

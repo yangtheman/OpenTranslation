@@ -17,6 +17,7 @@ class OrigPost < ActiveRecord::Base
   def self.newentry(user, params)
     orig = user.orig_posts.new
     orig.url = params[:url]
+    orig.author = params[:url].scan(/http:\/\/[\w.]+/)[0]
     orig.origin_id = params[:post][:origin_id]
 
     from = Language.find_by_id(params[:post][:origin_id]).short

@@ -121,6 +121,7 @@ class PostsController < ApplicationController
   end
 
   def show
+    response.headers['Cache-Control'] = 'public, max-age=300'
     @post = Post.find(params[:id])
     if params[:version] 
       @post.revert_to(params[:version])

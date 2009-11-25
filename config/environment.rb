@@ -42,9 +42,10 @@ Rails::Initializer.run do |config|
   # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}')]
   # config.i18n.default_locale = :de
 end
+require 'hpricot'
 require 'acts_as_ferret'
 ActsAsFerret.index_dir = "#{RAILS_ROOT}/tmp/index"
 
 require 'will_paginate'
 
-ExceptionNotifier.exception_recipients = %w(yangtheman@gmail.com)
+#ExceptionNotifier.exception_recipients = %w(yangtheman@gmail.com)

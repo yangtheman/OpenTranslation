@@ -47,6 +47,7 @@ class SessionsController < ApplicationController
     successful_login
   end
 
+  # Log-in method for fb users
   def fb_login
     if @current_user.nil?
       #User not in db

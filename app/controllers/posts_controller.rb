@@ -1,16 +1,16 @@
 class PostsController < ApplicationController
-  
-  uses_yui_editor
+
+  # Need to get sending email work with Heorku
   #local_addresses.clear
-
-  before_filter :check_browser, :login_required, :except => [:index, :show, :search]
-
-  require 'hpricot'
-  require 'rtranslate'
-
   #def exception
   #  raise(Exception, "Forced Exception from NodesController")
   #end
+  
+  uses_yui_editor
+
+  before_filter :check_browser, :login_required, :except => [:index, :show, :search]
+
+  require 'rtranslate'
 
   def index
     @the_url = params[:url]
@@ -19,7 +19,6 @@ class PostsController < ApplicationController
 
     @top_origs = OrigPost.top(5)
     @top_users = User.top(5)
-	  
   end
 
   def new
@@ -31,27 +30,31 @@ class PostsController < ApplicationController
     # Original post exist?
     @orig = OrigPost.find_by_url(params[:url])
 
-    # New translation
     if @orig.nil?
+      # First translation, thus create a original entry.
       @orig = OrigPost.newentry(@current_user, params)
-    #Original exists and target language was already translated before.
     elsif @post = Post.find_by_orig_post_id_and_ted_id(@orig.id, params[:post][:ted_id])
+      #Original exists and target language was already translated before.
       render :action => "edit"
     end
 
+    # New translation
     @post = @orig.posts.new
 
     from = @orig.orig_lang.short
     to = Language.find_by_id(params[:post][:ted_id]).short
 
     # Refactor this
+    # Translate title first
     @post.title = Translate.t(@orig.title, from, to)
+
     # Capture the error message 
     if @post.title =~ /^Error\: Translation from.*supported yet\!/
       flash[:error] = "#{@post.title}"
       redirect_to(root_url)
     else 
-      @post.content = translate(Hpricot(@orig.content).search("/p"), from, to)
+      # Send paragraphs in arrays so that translate is done by small chunks 
+      @post.content = translate(@orig.content, from, to)
       @post.ted_id = params[:post][:ted_id] 
     end
   end
@@ -70,12 +73,12 @@ class PostsController < ApplicationController
 
   def add_trans
     @orig = OrigPost.find(params[:orig_post_id])
-    # Trying to translate to original language
     if @orig.origin_id.to_s == params[:post][:ted_id] 
+      # Trying to translate to original language
       flash[:error] = "Cannot translate to the same language!"
       redirect_to :back
-    # Tranlsation already exists
     elsif post = @orig.posts.find_by_ted_id(params[:post][:ted_id])
+      # Tranlsation already exists
       flash[:error] = "Translation already exists!"
       redirect_to post_path(post)
     else 	
@@ -85,12 +88,14 @@ class PostsController < ApplicationController
       to = Language.find(@post.ted_id).short
 
       # Refactor this
+      # Translate title first
       @post.title = Translate.t(@orig.title, from, to)
       if @post.title =~ /^Error\: Translation from.*supported yet\!/
 	flash[:error] = "#{@post.title}"
 	redirect_to :back 
       else 
-	@post.content = translate(Hpricot(@orig.content).search("/p"), from, to)
+	# Send paragraphs in arrays so that translate is done by small chunks 
+	@post.content = translate(@orig.content, from, to)
 	render :action => "new"
       end
     end
@@ -154,7 +159,6 @@ class PostsController < ApplicationController
     
   def check_browser
     browser_type = ua_identifier(request.user_agent)
-    #redirect_to browser_path if browser_type != "Firefox"
     redirect_to browser_path if !(browser_type == "Firefox" || browser_type == "Opera" || browser_type == "Safari")
   end
 

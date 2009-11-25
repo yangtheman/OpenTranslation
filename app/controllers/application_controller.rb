@@ -5,15 +5,15 @@ class ApplicationController < ActionController::Base
 
   require 'shorturl'
 
-  include ExceptionNotifiable
+  # Need to get sending email work on Heroku
+  #include ExceptionNotifiable
+  #local_addresses.clear
 
   helper :all # include all helpers, all the time
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
 
   before_filter :set_facebook_session, :fetch_logged_in_user
   helper_method :logged_in?, :facebook_session
-
-  local_addresses.clear
 
   # Scrub sensitive parameters from your log
   # filter_parameter_logging :password
@@ -44,8 +44,9 @@ class ApplicationController < ActionController::Base
   end
 
   def translate(body, from, to)
+    paras = Hpricot(body).search("/p")
     ted_content = ""
-    body.each do |p|
+    paras.each do |p|
       ted_content += Translate.t(cleanup(p.to_html), from, to)
     end
     ted_content
@@ -80,4 +81,5 @@ class ApplicationController < ActionController::Base
     return "Opera" if ua_string =~ /Opera/i
     return "Other"
   end
+
 end

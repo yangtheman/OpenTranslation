@@ -1,6 +1,5 @@
 class OrigPost < ActiveRecord::Base
 
-  require 'hpricot'
   require 'open-uri'
 
   has_many :posts
@@ -29,15 +28,12 @@ class OrigPost < ActiveRecord::Base
     #remove all images (shall I or not?)
     #web.search("img").remove
 
-    #Paul Graham's essays built tables
+    # Paul Graham's essays built tables
     if orig.url =~ /paulgraham\.com/
       body = ""
       bodyarr = web.at('body').inner_html.split('<br /><br />')
-      if bodyarr.nil?
-	return false
-      end
-      #Skip elements with table open and close tags
-      #Wrap each paragraph with <p></p> tags
+      # Skip elements with table open and close tags
+      # Wrap each paragraph with <p></p> tags
       bodyarr.each do |para|
 	if !(para =~ /<[\/]*table/)
 	  body << "<p>#{para}</p>"

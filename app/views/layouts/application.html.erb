@@ -26,7 +26,7 @@
 		 <a href="#" onclick='FB.Connect.logoutAndRedirect("/logout")'>Logout</a><br />
 		 </p>
         <% else %>
-	         Logged in as: <%= link_to @current_user.username, user_path(@current_user) %> |
+	         Logged in as: <%= @current_user.username %> |
 	         <em><%= link_to "Logout", "/logout" %></em>
 	<% end %>
     <% else %>

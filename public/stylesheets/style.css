@@ -196,6 +196,10 @@ body {
   float: left;
 }
 
+#edit .yui-skin-sam {
+  width: 430px;
+}
+
 #original {
   background: #D6D6D6;
   margin-bottom: 10px;

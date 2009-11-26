@@ -8,7 +8,7 @@ class OrigPost < ActiveRecord::Base
 
   validates_uniqueness_of :url, :case_sensitive => false
 
-  def self.top(num)
+  def self.top(num=5)
     orig_cols = OrigPost.column_names.collect {|c| "orig_posts.#{c}"}.join(",")
     return OrigPost.find_by_sql("SELECT #{orig_cols}, count(posts.id) AS post_count FROM orig_posts LEFT OUTER JOIN posts ON posts.orig_post_id = orig_posts.id GROUP BY orig_posts.id, #{orig_cols} ORDER BY post_count DESC LIMIT #{num}")
   end

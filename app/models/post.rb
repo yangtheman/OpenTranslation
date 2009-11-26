@@ -13,5 +13,22 @@ class Post < ActiveRecord::Base
 
   #validates_uniqueness_of :url, :scope => :ted_id, :case_sensitive => false
  
+  def self.top(limit = 5)
+    self.find(:all, :order => "created_at DESC", :limit => limit)
+  end
+
+  def self.prep(params, orig)
+    post = orig.posts.new
+
+    from = orig.orig_lang.short
+    to = Language.find_by_id(params[:post][:ted_id]).short
+
+    # Translate title first
+    post.title = Translate.t(orig.title, from, to)
+    post.content = translate(orig.content, from, to)
+    post.ted_id = params[:post][:ted_id]
+    
+    post
+  end 
 end
                                              

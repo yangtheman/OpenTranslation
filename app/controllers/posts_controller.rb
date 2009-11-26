@@ -14,23 +14,27 @@ class PostsController < ApplicationController
 
   def index
     @the_url = params[:url]
-    @languages = Language.find(:all, :order => "language ASC")
-    @posts = Post.find(:all, :order => "created_at DESC", :limit => 5)
-
-    @top_origs = OrigPost.top(5)
-    @top_users = User.top(5)
+    @languages = Language.all
+    @top_posts = Post.top
+    @top_origs = OrigPost.top
+    @top_users = User.top
   end
 
   def new
+    unless params[:post] && params[:url]
+      flash[:error] = 'Input parameters are empty'
+      render :action => "index"
+    end
+
     if params[:post][:origin_id] == params[:post][:ted_id]
       flash[:error] = 'Cannot translate from and to the same language.'
       render :action => "index"
     end
 
-    # Original post exist?
     @orig = OrigPost.find_by_url(params[:url])
 
-    if @orig.nil?
+    # Original post exist?
+    if !(@orig = OrigPost.find_by_url(params[:url]))
       # First translation, thus create a original entry.
       @orig = OrigPost.newentry(@current_user, params)
     elsif @post = Post.find_by_orig_post_id_and_ted_id(@orig.id, params[:post][:ted_id])
@@ -39,24 +43,12 @@ class PostsController < ApplicationController
     end
 
     # New translation
-    @post = @orig.posts.new
-
-    from = @orig.orig_lang.short
-    to = Language.find_by_id(params[:post][:ted_id]).short
-
-    # Refactor this
-    # Translate title first
-    @post.title = Translate.t(@orig.title, from, to)
-
-    # Capture the error message 
+    @post = Post.prep(params, @orig)
+    
     if @post.title =~ /^Error\: Translation from.*supported yet\!/
       flash[:error] = "#{@post.title}"
       redirect_to(root_url)
-    else 
-      # Send paragraphs in arrays so that translate is done by small chunks 
-      @post.content = translate(@orig.content, from, to)
-      @post.ted_id = params[:post][:ted_id] 
-    end
+    end 
   end
 
   def create
@@ -128,7 +120,7 @@ class PostsController < ApplicationController
     end
     @ted_user = User.find_by_id(@post.user_id)
     @original_post = OrigPost.find(@post.orig_post_id)
-    @languages = Language.find(:all, :order => "language ASC")
+    @languages = Language.all
     @current_lang = @post.target_lang.language
     @twitterurl = tweetthis(@post)
   end

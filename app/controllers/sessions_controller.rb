@@ -51,9 +51,13 @@ class SessionsController < ApplicationController
   def fb_login
     if @current_user.nil?
       #User not in db
-      User.create_from_fb_connect(facebook_session.user)
-      user = User.find_by_fb_user(facebook_session.user)
-      redirect_to edit_user_path(user)
+      if User.create_from_fb_connect(facebook_session.user)
+	user = User.find_by_fb_user(facebook_session.user)
+	redirect_to edit_user_path(user)
+      else
+	flash[:error] = "Failed to create an account from your FB account credentials"
+	redirect_to new_session_path
+      end
     else
       #User in db
       if @current_user.fb_user_id == facebook_session.user.id

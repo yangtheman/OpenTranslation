@@ -42,9 +42,11 @@ class SessionsController < ApplicationController
     @current_user.email = params[:email]
     @current_user.openid_url = params[:clickpass_openid]
 
-    #Force save
-    @current_user.save
-    successful_login
+    if @current_user.save
+      successful_login
+    else 
+      failed_login('Failed to create a user account with OpenID')
+    end
   end
 
   # Log-in method for fb users
@@ -76,10 +78,7 @@ class SessionsController < ApplicationController
 	  successful_login
 	else
 	  #If users is not found based on OpenID, Clickpass will ask your if new account should be opened or merged
-	  #Development Server      
-	  #redirect_to "http://www.clickpass.com/process_new_openid?site_key=CNxswsAO8P&process_openid_registration_url=http%3A%2F%2F127.0.0.1%3A3000%2Fsessions%2Fopenid_reg&requested_fields=nickname%2Cemail&required_fields=&nickname_label=Nickname&email_label=Email"
-	  #Production Server
-	  redirect_to "http://www.clickpass.com/process_new_openid?site_key=rzMQEOe8gQ&process_openid_registration_url=http%3A%2F%2Falpha.bloglation.com%2Fsession%2Fopenid_reg&site_name=Bloglation&requested_fields=nickname%2Cemail&required_fields=&nickname_label=Nickname&email_label=Email"
+	  redirect_to "http://www.clickpass.com/process_new_openid?site_key=#{@clickpass_site_key}&process_openid_registration_url=http%3A%2F%2F#{@clickpass_callback_url}%2Fsessions%2Fopenid_reg&requested_fields=nickname%2Cemail&required_fields=&nickname_label=Nickname&email_label=Email"
 	end
       else
         failed_login result.message

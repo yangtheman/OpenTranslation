@@ -12,11 +12,21 @@ class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
 
-  before_filter :set_facebook_session, :fetch_logged_in_user
+  before_filter :set_facebook_session, :fetch_logged_in_user, :clickpass_params
   helper_method :logged_in?, :facebook_session
 
   # Scrub sensitive parameters from your log
   # filter_parameter_logging :password
+
+  def clickpass_params
+    if ENV['RAILS_ENV'] == 'production'
+      @clickpass_site_key = 'rzMQEOe8gQ'
+      @clickpass_callback_url = '127.0.0.1%3A3000'
+    else
+      @clickpass_site_key = 'CNxswsAO8P'
+      @clickpass_callback_url = 'alpha.bloglation.com'
+    end
+  end 
 
   def login_required
     return true if logged_in?

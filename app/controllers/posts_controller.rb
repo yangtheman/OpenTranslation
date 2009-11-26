@@ -160,7 +160,7 @@ class PostsController < ApplicationController
     
   def check_browser
     browser_type = ua_identifier(request.user_agent)
-    #redirect_to browser_path if !(browser_type == "Firefox" || browser_type == "Opera" || browser_type == "Safari")
+    redirect_to browser_path if browser_type == "Internet Explorer"
   end
 
   class FacebookPublisher < Facebooker::Rails::Publisher

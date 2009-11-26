@@ -63,7 +63,7 @@ class SessionsController < ApplicationController
     else
       #User in db
       if @current_user.fb_user_id == facebook_session.user.id
-	redirect_to :back
+	successful_login
       else 
 	redirect_to new_session_path
       end

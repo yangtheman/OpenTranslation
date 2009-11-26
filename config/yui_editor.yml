@@ -12,6 +12,7 @@ additional_yui_javascripts:
 editor_config_javascript: "
 {
   handleSubmit: true,
+  width: '430px',
   autoHeight: true,
   dompath: false,
   collapse: true,

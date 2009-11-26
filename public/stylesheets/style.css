@@ -192,12 +192,8 @@ body {
 #edit {
   margin-bottom: 10px;
   padding: 5px;
-  width: 48%;
-  float: left;
-}
-
-.yui-skin-sam .yui-editor-container {
   width: 430px;
+  float: left;
 }
 
 #original {

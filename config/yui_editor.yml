@@ -15,6 +15,9 @@ editor_config_javascript: "
   autoHeight: true,
   dompath: false,
   collapse: true,
+  css: {
+    width: 48%;
+  }
   toolbar: {
     collapse: true,
     titlebar: 'Text Editing Tools',

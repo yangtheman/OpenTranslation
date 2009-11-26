@@ -34,7 +34,7 @@ class PostsController < ApplicationController
     @orig = OrigPost.find_by_url(params[:url])
 
     # Original post exist?
-    if !(@orig = OrigPost.find_by_url(params[:url]))
+    if !@orig 
       # First translation, thus create a original entry.
       @orig = OrigPost.newentry(@current_user, params)
     elsif @post = Post.find_by_orig_post_id_and_ted_id(@orig.id, params[:post][:ted_id])

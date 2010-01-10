@@ -1,11 +1,12 @@
 class User < ActiveRecord::Base
 
-  #acts_as_rated :no_rater => true
-  acts_as_rated :with_stats_table => true, :no_rater => true
+  acts_as_rated :no_rater => true
+  #acts_as_rated 
 
   has_many :posts
-  has_many :orig_posts
+  has_many :origs
 
+  validates_presence_of :username, :email
   validates_uniqueness_of :username, :case_sensitive => false
   validates_uniqueness_of :email, :case_sensitive => false
 
@@ -27,7 +28,7 @@ class User < ActiveRecord::Base
     new_facebooker.fb_user_id = fb_user.uid.to_i
 	
     #We need to save without validations
-    new_facebooker.save
+    new_facebooker.save(false)
   end
 	
   def facebook_user?

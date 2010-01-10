@@ -1,0 +1,8 @@
+<div id = "show_content">
+  <h2><%= @user.username %></h2>
+  <p>Total number of translations: <%= @user.posts.all.size %></p>
+  <p>Average rating: <%= @user.rating_average %></p>
+  <h3>Translated by <%= @user.username %></h3>
+  <%= render :partial => "posts/post", :collection => @posts %>
+</div>
+<p><%= will_paginate @posts %></p>

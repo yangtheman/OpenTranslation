@@ -1,0 +1,10 @@
+<h2 class="link"><%= link_to @orig.title, @orig.url, :target => '_blank' %></h2>
+<div id="add_trans">
+  <% form_tag :controller => 'posts', :action => 'add_trans', :orig_post_id => @orig.id do %>
+    <p><%= collection_select(:post, :ted_id, @languages, :id, :name) %></p>
+    <%= image_submit_tag 'tran.gif' %>
+  <% end %>
+</div>
+<div id="show_content">
+  <%= render :partial => 'posts/post', :collection => @posts %>
+</div>

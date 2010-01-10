@@ -32,25 +32,27 @@ ActionController::Routing::Routes.draw do |map|
 
   # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
   # map.root :controller => "welcome"
-  map.root :controller => "posts"
+  map.root :controller => "welcome"
 
   # See how all your routes lay out with "rake routes"
-  map.login	'/login', :controller => "sessions", :action => "new"
-  map.logout	'/logout', :controller => "sessions", :action => "destroy"
-  map.fb_login	'/fb_login', :controller => "sessions", :action => "fb_login"
-  map.cp_login	'/cp_login', :controller => "sessions", :action => "create"
-  map.search	'/search', :controller => "posts", :action => "search"
-  map.about     '/about', :controller => "info", :action => "about"
-  map.tos	'/tos', :controller => "info", :action => "tos"
-  map.browser	'/browser', :controller => "info", :action => "browser"
-  map.exception	'/exception', :controller => "posts", :action => "exception"
+  map.login	'/login',     :controller => "sessions",  :action => "new"
+  map.logout	'/logout',    :controller => "sessions",  :action => "destroy"
+  map.fb_login	'/fb_login',  :controller => "sessions",  :action => "fb_login"
+  map.cp_login	'/cp_login',  :controller => "sessions",  :action => "create"
+  map.search	'/search',    :controller => "posts",	  :action => "search"
+  map.about     '/about',     :controller => "info",	  :action => "about"
+  map.tos	'/tos',	      :controller => "info",	  :action => "tos"
+  map.browser	'/browser',   :controller => "info",	  :action => "browser"
+  #map.exception	'/exception', :controller => "posts", :action => "exception"
 
   # Install the default routes as the lowest priority.
   # Note: These default routes make all actions in every controller accessible via GET requests. You should
   # consider removing the them or commenting them out if you're using named routes and resources.
-  map.resources :posts, :member => {:rate => :put}, :collection => {:showall => :get}
+  map.resources :origs do |orig|
+    orig.resources :posts, :member => {:rate => :put}, :collection => {:add_trans => :post}
+  end
   map.resources :users
-  map.resources :orig_posts
+  map.resources :welcome, :collection => {:allposts => :get}
   map.resource :session, :member => {:destroy => :get, :add_openid => :post, :openid_reg => :get}
   map.connect ':controller/:action/:id'
   map.connect ':controller/:action/:id.:format'

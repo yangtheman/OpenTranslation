@@ -1,0 +1,31 @@
+<div id = "edit">
+<h1>Translate </h1>
+<% form_for @post do |f| %>
+	<p>
+	Title: <%= f.text_field :title %>
+	</p>
+	<p>
+	Content: <br />
+	<!--<%= f.text_area :content, :cols => 60, :rows => 40, :class => 'rich_text_editor' %>-->
+	<%= ckeditor_textarea(“post", “content”, :width => ‘100%’, :height => ‘200px’) %> 
+	</p>
+	<%= f.hidden_field :ted_id, :value => @post.ted_id %>
+	<p>
+	<%= check_box_tag :fbfeed %> Publish this in Facebook Feed?
+	</p>
+	<p>
+	<%= submit_tag 'Update' %>
+	</p>
+<% end %>
+</div>
+
+<div id = "original">
+<h1> Original </h1>
+<p>
+Title: <%= @post.versions.earliest.title %>
+</p>
+<p>
+Content: <br />
+<%= @post.versions.earliest.content %>
+</p>
+</div>

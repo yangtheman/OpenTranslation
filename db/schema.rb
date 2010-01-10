@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091125070435) do
+ActiveRecord::Schema.define(:version => 20100109085416) do
 
   create_table "facebook_templates", :force => true do |t|
     t.string "template_name", :null => false
@@ -20,7 +20,7 @@ ActiveRecord::Schema.define(:version => 20091125070435) do
   add_index "facebook_templates", ["template_name"], :name => "index_facebook_templates_on_template_name", :unique => true
 
   create_table "languages", :force => true do |t|
-    t.string   "language"
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "short"
@@ -41,7 +41,7 @@ ActiveRecord::Schema.define(:version => 20091125070435) do
     t.string  "salt",       :null => false
   end
 
-  create_table "orig_posts", :force => true do |t|
+  create_table "origs", :force => true do |t|
     t.string   "url"
     t.string   "title"
     t.text     "content"
@@ -52,7 +52,8 @@ ActiveRecord::Schema.define(:version => 20091125070435) do
     t.datetime "updated_at"
   end
 
-  add_index "orig_posts", ["url", "origin_id", "user_id"], :name => "index_orig_posts_on_url_and_origin_id_and_user_id"
+  add_index "origs", ["url", "origin_id", "user_id"], :name => "index_orig_posts_on_url_and_origin_id_and_user_id"
+  add_index "origs", ["url", "origin_id", "user_id"], :name => "index_origs_on_url_and_origin_id_and_user_id"
 
   create_table "post_versions", :force => true do |t|
     t.integer  "post_id"
@@ -66,7 +67,7 @@ ActiveRecord::Schema.define(:version => 20091125070435) do
     t.integer  "origin_id"
     t.integer  "ted_id"
     t.integer  "user_id"
-    t.integer  "orig_post_id"
+    t.integer  "orig_id"
     t.integer  "rating_count"
     t.integer  "rating_total", :limit => 10, :precision => 10, :scale => 0
     t.decimal  "rating_avg",                 :precision => 10, :scale => 2
@@ -82,16 +83,15 @@ ActiveRecord::Schema.define(:version => 20091125070435) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "version"
-    t.integer  "origin_id"
     t.integer  "ted_id"
     t.integer  "user_id"
-    t.integer  "orig_post_id"
+    t.integer  "orig_id"
     t.integer  "rating_count"
     t.integer  "rating_total", :limit => 10, :precision => 10, :scale => 0
     t.decimal  "rating_avg",                 :precision => 10, :scale => 2
   end
 
-  add_index "posts", ["ted_id", "user_id", "orig_post_id"], :name => "index_posts_on_ted_id_and_user_id_and_orig_post_id"
+  add_index "posts", ["ted_id", "user_id", "orig_id"], :name => "index_posts_on_ted_id_and_user_id_and_orig_post_id"
 
   create_table "rating_statistics", :force => true do |t|
     t.integer "rated_id"
@@ -108,6 +108,7 @@ ActiveRecord::Schema.define(:version => 20091125070435) do
     t.integer "rated_id"
     t.string  "rated_type"
     t.integer "rating",     :limit => 10, :precision => 10, :scale => 0
+    t.integer "rated_ver"
   end
 
   add_index "ratings", ["rated_type", "rated_id"], :name => "index_ratings_on_rated_type_and_rated_id"

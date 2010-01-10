@@ -1,0 +1,15 @@
+Tue Jul 28 15:56:00 PDT 2009  cygnus@janrain.com
+  tagged 2.1.8
+  Ignore-this: 78b408c0a3f669247b4a392ed9cf6d81
+
+Tue Jul 28 15:55:49 PDT 2009  cygnus@janrain.com
+  * Set version to 2.1.8
+  Ignore-this: a04ea38290e25148cd13dc6ea0dd819e
+
+Tue Jul 28 15:45:14 PDT 2009  cygnus@janrain.com
+  * Allow explicit OpenID 1.1 namespace URI in id_res responses
+  Ignore-this: f5039238ccff04b87aaa0958fc86627e
+
+Wed Jul  1 15:07:23 PDT 2009  chowells@janrain.com
+  tagged 2.1.7
+  Ignore-this: 9bef91a9c9d6232961500dd4b9416c14

@@ -8,104 +8,106 @@ class PostsController < ApplicationController
   
   uses_yui_editor
 
+  # Check client browser only in new and update
   before_filter :check_browser, :login_required, :except => [:index, :show, :search]
-
-  require 'rtranslate'
-
-  def index
-    @the_url = params[:url]
-    @languages = Language.all
-    @top_posts = Post.top
-    @top_origs = OrigPost.top
-    @top_users = User.top
-  end
+  #before_filter :find_orig_post, :except => :new
+  #before_filter :find_post, :only => [:edit, :update, :show, :rate]
+  
+  #def index
+  #  @posts = @orig.posts.paginate :page => params[:page], :order => 'created_at DESC', :per_page => 10
+  #end
 
   def new
     unless params[:post] && params[:url]
-      flash[:error] = 'Input parameters are empty'
-      render :action => "index"
+      flash[:error] = 'Input parameters are empty.'
+      redirect_to root_url and return
     end
 
-    if params[:post][:origin_id] == params[:post][:ted_id]
+    unless params[:post][:origin_id] != params[:post][:ted_id]
       flash[:error] = 'Cannot translate from and to the same language.'
-      render :action => "index"
+      redirect_to root_url and return
     end
 
-    @orig = OrigPost.find_by_url(params[:url])
+    @orig = Orig.find_by_url(params[:url])
+    target_lang_id = params[:post][:ted_id]
 
     # Original post exist?
     if !@orig 
-      # First translation, thus create a original entry.
-      @orig = OrigPost.newentry(@current_user, params)
-    elsif @post = Post.find_by_orig_post_id_and_ted_id(@orig.id, params[:post][:ted_id])
+      # First translation ever, thus create a original entry.
+      @orig = Orig.new(:origin_id => params[:post][:origin_id], 
+		       :url => params[:url],
+		       :user_id => @current_user.id)
+      if !@orig.newentry
+	flash[:error] = "Error in retrieving information about #{params[:url]}!"
+	redirect_to root_url and return
+      end
+    elsif @post = @orig.posts.find_by_ted_id(target_lang_id)
       #Original exists and target language was already translated before.
-      render :action => "edit"
+      render :action => "edit" and return
     end
 
     # New translation
-    @post = Post.prep(params, @orig)
-    
-    if @post.title =~ /^Error\: Translation from.*supported yet\!/
-      flash[:error] = "#{@post.title}"
+    @post = @orig.posts.new
+    if !@post.prep(target_lang_id, @orig)
+      flash[:error] = "Translation not supported yet."
       redirect_to(root_url)
     end 
   end
 
   def create
-    @orig = OrigPost.find(params[:post][:orig_post_id])
-    @post = @orig.posts.new(params[:post])
+    @orig = Orig.find(params[:orig_id])
+    @post = @orig.posts.build(params[:post])
     @post.user_id = @current_user.id
+
     if @post.save
-      redirect_to post_path(@post)
+      if @current_user.facebook_user? && params[:fbfeed]
+        flash[:user_action_to_publish] = FacebookPublisher.create_publish_tx(@post, @orig.title, session[:facebook_session])
+      end
+      redirect_to([@orig, @post])
     else
-      flash[:error] = "Save failed"
+      flash[:error] = "Save failed."
       render :action => "new"
     end
   end
 
   def add_trans
-    @orig = OrigPost.find(params[:orig_post_id])
-    if @orig.origin_id.to_s == params[:post][:ted_id] 
+    @orig = Orig.find(params[:orig_id])
+    target_lang_id = params[:post][:ted_id]
+
+    # Refactor this
+    if @orig.origin_id == params[:post][:ted_id] 
       # Trying to translate to original language
       flash[:error] = "Cannot translate to the same language!"
-      redirect_to :back
-    elsif post = @orig.posts.find_by_ted_id(params[:post][:ted_id])
-      # Tranlsation already exists
-      flash[:error] = "Translation already exists!"
-      redirect_to post_path(post)
+      redirect_to :back and return
+    elsif @post = @orig.posts.find_by_ted_id(target_lang_id)
+      # Tranlsation already exists, and thus bring up edit page
+      redirect_to edit_orig_post_path(@orig, @post) and return
     else 	
       @post = @orig.posts.new
-      from = @orig.orig_lang.short
-      @post.ted_id = params[:post][:ted_id]
-      to = Language.find(@post.ted_id).short
-
-      # Refactor this
-      # Translate title first
-      @post.title = Translate.t(@orig.title, from, to)
-      if @post.title =~ /^Error\: Translation from.*supported yet\!/
-	flash[:error] = "#{@post.title}"
+      if !@post.prep(target_lang_id, @orig)
+	flash[:error] = "Translation not supported yet."
 	redirect_to :back 
       else 
-	# Send paragraphs in arrays so that translate is done by small chunks 
-	@post.content = translate(@orig.content, from, to)
 	render :action => "new"
       end
     end
   end
 
   def edit
-    @post = Post.find(params[:id])
-    @orig = OrigPost.find(@post.orig_post_id)
+    @orig = Orig.find(params[:orig_id])
+    @post = @orig.posts.find(params[:id])
   end
 
   def update
-    @post = Post.find(params[:id])
+    @orig = Orig.find(params[:orig_id])
+    @post = @orig.posts.find(params[:id])
     @post.user_id = @current_user.id
+
     if @post.update_attributes(params[:post])
       if @current_user.facebook_user? && params[:fbfeed]
-        flash[:user_action_to_publish] = FacebookPublisher.create_publish_tx(@post, OrigPost.find(@post.orig_post_id).title, session[:facebook_session])
+        flash[:user_action_to_publish] = FacebookPublisher.create_publish_tx(@post, @orig.title, session[:facebook_session])
       end
-      redirect_to post_path(@post)
+      redirect_to([@orig, @post])
     else 
       flash[:error] = 'Update failed'
       render :action => "edit"
@@ -113,43 +115,36 @@ class PostsController < ApplicationController
   end
 
   def show
+    # HTTP cache
     response.headers['Cache-Control'] = 'public, max-age=300'
-    @post = Post.find(params[:id])
+
+    @orig = Orig.find(params[:orig_id])
+    @post = @orig.posts.find(params[:id])
+
     if params[:version] 
       @post.revert_to(params[:version])
     end
-    @ted_user = User.find_by_id(@post.user_id)
-    @original_post = OrigPost.find(@post.orig_post_id)
+    @ted_user = User.find(@post.user_id)
     @languages = Language.all
-    @current_lang = @post.target_lang.language
-    @twitterurl = tweetthis(@post)
   end
 
   def rate
-    post = Post.find(params[:id])
-    #user = User.find(post.user_id) 
-    #user.rate(params[:rating].to_i, @current_user) 
-    post.rate(params[:rating].to_i, @current_user) if !post.rated_by?(@current_user)
-    #redirect_to post_path(post)
-    render :partial => "post_rating", :locals => {:post => post}
-  end
+    @orig = Orig.find(params[:orig_id])
+    @post = @orig.posts.find(params[:id])
 
-  def showorig
-    post = Post.find(params[:id])
-    orig = OrigPost.find(post.orig_post_id)
-    @posts = orig
+    #user = User.find(@post.user_id) 
+    #user.rate(params[:rating].to_i, @current_user) 
+    @post.rate(params[:rating].to_i, @current_user) if !@post.rated_by?(@current_user)
+    #redirect_to post_path(post)
+    render :partial => "post_rating", :locals => {:orig => @orig, :post => @post}
   end
 
   def search
-    @query=params[:query]
+    @query = params[:query]
     @total_hits = Post.total_hits(@query)
     @posts = Post.paginate_with_ferret(@query, :page => params[:page], :per_page => 10, :order => 'updated_at DESC')
   end
-
-  def showall 
-    @posts = Post.paginate :page => params[:page], :order => 'created_at DESC', :per_page => 10
-  end
-    
+   
   def check_browser
     browser_type = ua_identifier(request.user_agent)
     redirect_to browser_path if !(browser_type == "Firefox" || browser_type == "Opera" || browser_type == "Safari")
@@ -158,7 +153,7 @@ class PostsController < ApplicationController
   class FacebookPublisher < Facebooker::Rails::Publisher
     def publish_tx_template
       one_line_story_template "{*actor*} translated/edited: {*post_title*}"
-      short_story_template "{*actor*} translated/edited: <a href='http://opent.heroku.com/posts/{*post_id*}?version={*post_version*}'>{*post_title*}</a> to {*post_language*}",
+      short_story_template "{*actor*} translated/edited: <a href='http://bloglation.com/posts/{*post_id*}?version={*post_version*}'>{*post_title*}</a> to {*post_language*}",
 			   "Read it, rate it and/or make it better. Help spread the knowledge in other cultures!"
     end
 
@@ -168,5 +163,14 @@ class PostsController < ApplicationController
       data :actor => facebook_session.user.first_name, :post_id => post.id, :post_title => orig_title, :post_version => post.version, :post_language => post.target_lang.language
     end
   end
+
+  private
+    def find_orig_post
+      @orig = Orig.find(params[:orig_id])
+    end
+
+    def find_post
+      @post = @orig.posts.find(params[:id])
+    end
 
 end

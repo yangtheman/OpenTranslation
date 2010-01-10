@@ -23,10 +23,11 @@ development:
     server_alive_interval: 0
 
 test:
-  api_key: 
-  secret_key: 
-  canvas_page_name: 
-  callback_url:
+  api_key: 85f4e5112f9e85d063f21434c61141d6
+  secret_key: a62a2117a57cc5769728ee9397554ede
+  canvas_page_name: opentranslation
+  callback_url: http://127.0.0.1:3000/
+  pretty_errors: true
   set_asset_host_to_callback_url: true
   tunnel:
     public_host_username: 

@@ -1,34 +1,31 @@
 <div id = "edit">
-<h1>Translate </h1>
-<% form_for @post, :url => { :action => 'update' } do |f| %>
-	<p>
-	Title: <%= f.text_field :title, :size => 45, :value => @post.title %>
-	</p>
-	<p>
-	Content: <br />
-	<%= f.text_area :content, :cols => 60, :rows => 40, :class => 'rich_text_editor', :value => @post.content %>
-	</p>
-	<%= f.hidden_field :ted_id, :value => @post.ted_id %>
-	<%= f.hidden_field :origin_id, :value => @orig.origin_id %>
-	<%= f.hidden_field :orig_post_id, :value => @orig.id %>
-	<% if @current_user.facebook_user? %>
-	  <p>
-	  <%= check_box_tag :fbfeed %> Publish this in Facebook Feed?
-	  </p>
-	<% end %>
-	<p>
-	<%= image_submit_tag('create.gif') %>
-	</p>
-<% end %>
+  <h1>Translate </h1>
+  <% form_for [@orig, @post] do |f| %>
+    <p>
+    Title: <%= f.text_field :title, :size => 45, :value => @post.title %>
+    </p>
+    <p>
+    Content: <br />
+    <%= f.text_area :content, :cols => 60, :rows => 40, :class => 'rich_text_editor', :value => @post.content %>
+    </p>
+    <% if @current_user.facebook_user? %>
+      <p>
+      <%= check_box_tag :fbfeed %> Publish this in Facebook Feed?
+      </p>
+    <% end %>
+    <p>
+    <%= image_submit_tag('create.gif') %>
+    </p>
+  <% end %>
 </div>
 
 <div id = "original">
-<h1> Original </h1>
-<p>
-Title: <%= @orig.title %>
-</p>
-<p>
-Content: <br />
-<%= @orig.content %>
-</p>
+  <h1> Original </h1>
+  <p>
+  Title: <%= @orig.title %>
+  </p>
+  <p>
+  Content: <br />
+  <%= @orig.content %>
+  </p>
 </div>

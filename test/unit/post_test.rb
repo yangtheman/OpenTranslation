@@ -134,6 +134,9 @@ class PostTest < ActiveSupport::TestCase
       assert_equal 1, @post.version
       @post.rate(4, @user)
       assert_equal 4, @post.rated_total
+
+      @post.revert_to(2)
+      assert_equal 5, @post.rated_total
     end
 
     should "not be rated more than once by the same user" do

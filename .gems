@@ -3,7 +3,5 @@ sishen-rtranslate --source gems.github.com
 shorturl
 acts_as_ferret
 will_paginate
-thoughtbot-shoulda --source => "http://gems.github.com"
-thoughtbot-factory_girl --source => "http://gems.github.com"
-mocha --version => '>=0.9.8', :lib => false
+mocha --version 0.9.8
 

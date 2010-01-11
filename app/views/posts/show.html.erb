@@ -3,29 +3,29 @@
     <p class="show_title"><%= @post.title %></p>
     <p class="show_info">Version: <%= @post.version %>
     <% if logged_in? %>
-      <%= link_to '(edit)', edit_post_path(@post) %>
+      <%= link_to '(edit)', edit_orig_post_path(@orig, @post) %>
     <% end %>
     </p>
-    <p class="show_info">Language: <%= @current_lang %></p>
+    <p class="show_info">Language: <%= @post.language.name %></p>
     <p class="show_info">
-    <%= link_to 'Additional translations', orig_post_path(@original_post) %> | 
-    <%= link_to 'Original blog', @original_post.url, :target => '_blank' %>
+    <%= link_to 'Additional translations', orig_path(@orig) %> | 
+    <%= link_to 'Original blog', @orig.url, :target => '_blank' %>
     </p>
   </div>
-  <div id="tweet"><%= link_to(image_tag("tweet.gif", :border => 0), @twitterurl, :target => "_blank") %></div>
+  <div id="tweet"><%= link_to(image_tag("tweet.gif", :border => 0), tweetthis(@orig, @post), :target => "_blank") %></div>
 </div>
 
 <div id="show_middle">
   <div id="add_trans">
-    <% form_tag :action => 'add_trans', :id => @post.id, :orig_post_id => @post.orig_post_id do %>
-      <p><%= collection_select(:post, :ted_id, @languages, :id, :language) %></p> 
+    <% form_tag :action => 'add_trans' do %>
+      <p><%= collection_select(:post, :ted_id, @languages, :id, :name) %></p> 
       <%= image_submit_tag 'tran.gif' %>
     <% end %>
   </div>
   <div id="user_info">
     <p class="info">
       Translated by <em><%= @ted_user.username %></em><br />
-      <span id="post_rating_<%= @post.id %>"><%= render :partial => 'post_rating', :locals => {:post => @post} %></span>
+      <span id="post_rating_<%= @post.id %>"><%= render :partial => 'post_rating', :locals => {:orig => @orig, :post => @post} %></span>
       <!--
       <% average = (@ted_user.rating_average.blank? ? 0 : @ted_user.rating_average) * 100 / 5 %>
       <ul class = 'stars'>

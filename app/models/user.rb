@@ -1,17 +1,18 @@
 class User < ActiveRecord::Base
 
-  #acts_as_rated :no_rater => true
-  acts_as_rated :with_stats_table => true, :no_rater => true
+  acts_as_rated :no_rater => true
+  #acts_as_rated 
 
   has_many :posts
-  has_many :orig_posts
+  has_many :origs
 
+  validates_presence_of :username, :email
   validates_uniqueness_of :username, :case_sensitive => false
   validates_uniqueness_of :email, :case_sensitive => false
 
-  def self.top(num)
+  def self.top(num=5)
     user_cols = User.column_names.collect {|c| "users.#{c}"}.join(",")
-    return User.find_by_sql("SELECT #{user_cols}, count(posts.id) AS post_count FROM users LEFT OUTER JOIN posts ON posts.user_id = users.id GROUP BY users.id, #{user_cols} ORDER BY post_count DESC LIMIT 5")
+    return User.find_by_sql("SELECT #{user_cols}, count(posts.id) AS post_count FROM users LEFT OUTER JOIN posts ON posts.user_id = users.id GROUP BY users.id, #{user_cols} ORDER BY post_count DESC LIMIT #{num}")
   end
 
   #find the user in the database by the facebook user id
@@ -26,7 +27,8 @@ class User < ActiveRecord::Base
     new_facebooker = User.new(:username => "fb_#{fb_user.uid}")
     new_facebooker.fb_user_id = fb_user.uid.to_i
 	
-    new_facebooker.save
+    #We need to save without validations
+    new_facebooker.save(false)
   end
 	
   def facebook_user?

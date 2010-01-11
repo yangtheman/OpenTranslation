@@ -1,17 +1,73 @@
 class Post < ActiveRecord::Base
-  belongs_to :orig_lang,   :class_name => 'Language', :foreign_key => 'origin_id'
-  belongs_to :target_lang, :class_name => 'Language', :foreign_key => 'ted_id'
-  belongs_to :users
-  belongs_to :origposts
-  #validates_format_of :url, :with => %r{\Ahttp://[A-Za-z0-9][\w./]*\.[\w./]*\Z}
+  #after_save :send_facebook_feed
 
-  acts_as_versioned :if_changed => [:title, :content]
-  
-  acts_as_rated :with_stats_table => true, :rater_class => 'User'
+  require 'rtranslate'
 
-  acts_as_ferret :fields => [:title, :content, :url]
+  belongs_to :orig
+  belongs_to :user
+  belongs_to :language, :foreign_key => "ted_id"
 
-  #validates_uniqueness_of :url, :scope => :ted_id, :case_sensitive => false
+  acts_as_rated
+
+  #acts_as_versioned :if_changed => [:title, :content]
+  acts_as_versioned :if_changed => [:title, :content] do
+    def self.included(base)
+      base.belongs_to :user
+      base.belongs_to :language, :foreign_key => "ted_id"
+      base.belongs_to :orig_post
+    end
+  end
+
+  acts_as_ferret :fields => [:title, :content]
+
+  validates_presence_of :orig_id, :user_id
  
+  def self.top(limit = 5)
+    self.find(:all, :order => "created_at DESC", :limit => limit)
+  end
+
+  def prep(target_lang_id, orig)
+    self.ted_id = target_lang_id
+
+    from = orig.language.short
+    to = self.language.short
+
+    # Translate title first
+    self.title = Translate.t(orig.title, from, to)
+    if self.title =~ /^Error\: Translation from.*supported yet\!/
+      return false
+    else 
+      self.content = para_translate(orig.content, from, to)
+    end
+  end 
+
+  def cleanup(txt)
+    txt.gsub!(/\&\#8211\;/, '–')
+    txt.gsub!(/\&\#8212\;/, '—')
+    txt.gsub!(/\&\#8216\;/, '‘')
+    txt.gsub!(/\&\#8217\;/, '’')
+    txt.gsub!(/\&\#8218\;/, '‚')
+    txt.gsub!(/\&\#8220\;/, '“')
+    txt.gsub!(/\&\#8221\;/, '”')
+    txt.gsub!(/\&\#8222\;/, '„')
+    txt.gsub!(/\&\#8224\;/, '†')
+    txt.gsub!(/\&\#8225\;/, '‡')
+    txt.gsub!(/\&\#8226\;/, '•')
+    txt.gsub!(/\&\#8230\;/, '…')
+    txt.gsub!(/\&\#8240\;/, '‰')
+    txt.gsub!(/\&\#8364\;/, '€')
+    txt.gsub!(/\&\#8482\;/, '™')
+    txt
+  end
+
+  def para_translate(body, from, to)
+    paras = Hpricot(body).search("/p")
+    ted_content = ""
+    paras.each do |p|
+      ted_content += Translate.t(cleanup(p.to_html), from, to)
+    end
+    ted_content
+  end
+
 end
-                                             
+

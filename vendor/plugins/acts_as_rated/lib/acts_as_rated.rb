@@ -95,6 +95,7 @@ module ActiveRecord #:nodoc:
           rater_class  = options[:rater_class]  || 'User'
           stats_class  = options[:stats_class]  || 'RatingStatistic' if options[:with_stats_table]
 
+	  # Skip belongs_to rater relationship if rated is User class
           unless Object.const_defined?(rating_class)
             Object.class_eval <<-EOV
               class #{rating_class} < ActiveRecord::Base
@@ -104,6 +105,7 @@ module ActiveRecord #:nodoc:
             EOV
           end
 
+	  # Skip this step and use ratings columns in each model
           unless stats_class.nil? || Object.const_defined?(stats_class)
             Object.class_eval <<-EOV
               class #{stats_class} < ActiveRecord::Base
@@ -120,9 +122,10 @@ module ActiveRecord #:nodoc:
                                            :rater_class => rater_class } )
           class_inheritable_reader :acts_as_rated_options
           
+	  # Skip has_many raters relationship if rated is User class
           class_eval do
             has_many :ratings, :as => :rated, :dependent => :delete_all, :class_name => rating_class.to_s
-            has_many(:raters, :through => :ratings, :class_name => rater_class.to_s) unless options[:no_rater]
+            has_many(:raters, :through => :ratings, :class_name => rater_class.to_s) unless options[:no_rater] 
             has_one(:rating_statistic, :class_name => stats_class.to_s, :as => :rated, :dependent => :delete) unless stats_class.nil?
 
             before_create :init_rating_fields
@@ -132,9 +135,9 @@ module ActiveRecord #:nodoc:
           return if options[:no_rater] 
           rater_as_class = rater_class.constantize
           return if rater_as_class.instance_methods.include?('find_in_ratings')
-          rater_as_class.class_eval <<-EOS
-            has_many :ratings, :foreign_key => :rater_id, :class_name => #{rating_class.to_s}
-          EOS
+	  rater_as_class.class_eval <<-EOS
+	    has_many :ratings, :foreign_key => :rater_id, :class_name => #{rating_class.to_s}
+	  EOS
         end
       end
 
@@ -143,6 +146,14 @@ module ActiveRecord #:nodoc:
         def self.included(base) #:nodoc:
           base.extend ClassMethods
         end
+
+	def versioned?
+	  self.attributes.has_key?('version')
+	end
+
+	def user_class?
+	  self.class.to_s == "User"
+	end
 
         # Get the average based on the special fields, 
         # or with a SQL query if the rated objects doesn't have the avg and count fields
@@ -196,9 +207,14 @@ module ActiveRecord #:nodoc:
             raise RateError, "the rater object must be the one used when defining acts_as_rated (or a descendent of it). other objects are not acceptable"
           end
           raise RateError, "rating with rater must receive a rater as parameter" if with_rater && (rater.nil? || rater.id.nil?)
-          r = with_rater ? ratings.find(:first, :conditions => ['rater_id = ?', rater.id]) : nil
+	  # Find one with version
+	  if versioned?
+	    r = with_rater ? ratings.find(:first, :conditions => ['rater_id = ? and rated_ver = ?', rater.id, self.version]) : nil
+	  else
+	    r = with_rater ? ratings.find(:first, :conditions => ['rater_id = ?', rater.id]) : nil
+	  end
           raise RateError, "value is out of range!" unless acts_as_rated_options[:rating_range].nil? || acts_as_rated_options[:rating_range] === value
-          
+
           # Find the place to store the rating statistics if any...
           # Take care of the case of a separate statistics table
           unless acts_as_rated_options[:stats_class].nil? || @rating_statistic.class.to_s == acts_as_rated_options[:stats_class]
@@ -210,6 +226,8 @@ module ActiveRecord #:nodoc:
             if r.nil?
               rate = rating_class.new
               rate.rater_id = rater.id if with_rater
+	      # Add version
+	      rate.rated_ver = self.version if versioned?
               if target
                 target.rating_count = (target.rating_count || 0) + 1 
                 target.rating_total = (target.rating_total || 0) + value
@@ -244,7 +262,11 @@ module ActiveRecord #:nodoc:
           end
           raise RateError, "Rater must be a valid and existing object" if rater.nil? || rater.id.nil?
           raise RateError, 'Cannot unrate if not using a rater' if !rating_class.column_names.include? "rater_id"
-          r = ratings.find(:first, :conditions => ['rater_id = ?', rater.id])
+	  if versioned?
+	    r = ratings.find(:first, :conditions => ['rater_id = ? and rated_ver = ?', rater.id, self.version])
+	  else 
+	    r = ratings.find(:first, :conditions => ['rater_id = ?', rater.id])
+	  end
           if !r.nil?
             target = self if attributes.has_key? 'rating_total'
             target ||= self.rating_statistic if acts_as_rated_options[:stats_class]
@@ -271,7 +293,11 @@ module ActiveRecord #:nodoc:
           end
           raise RateError, "Rater must be a valid and existing object" if rater.nil? || rater.id.nil?
           raise RateError, 'Rater must be a valid rater' if !rating_class.column_names.include? "rater_id"
-          ratings.count(:conditions => ['rater_id = ?', rater.id]) > 0
+          if versioned?
+	    ratings.count(:conditions => ['rater_id = ? and rated_ver = ?', rater.id, self.version]) > 0
+	  else 
+	    ratings.count(:conditions => ['rater_id = ?', rater.id]) > 0
+	  end
         end
             
         private

@@ -19,31 +19,31 @@
       <%= link_to(image_tag("logo.gif", :border => 0), root_url) %>
     </div>
     <div id="loginout">
-    <% if logged_in? %>
+      <% if logged_in? %>
+	<p>Logged in as: <%= link_to @current_user.username, user_path(@current_user) %> | <%= link_to 'Edit', edit_user_path(@current_user) %></p>
 	<% if @current_user.facebook_user? %>
-		 <p>
-		 <fb:profile-pic uid="<%= @current_user.fb_user_id %>" facebook-logo="true" size="thumb" ></fb:profile-pic><br />
-		 <a href="#" onclick='FB.Connect.logoutAndRedirect("/logout")'>Logout</a><br />
-		 </p>
-        <% else %>
-	         Logged in as: <%= @current_user.username %> |
-	         <em><%= link_to "Logout", "/logout" %></em>
+	  <p>
+	  <fb:profile-pic uid="<%= @current_user.fb_user_id %>" facebook-logo="true" size="thumb" ></fb:profile-pic><br />
+	  <a href="#" onclick='FB.Connect.logoutAndRedirect("/logout")'>Logout</a><br />
+	  </p>
+	<% else %>
+	  <em><%= link_to "Logout", "/logout" %></em><br />
 	<% end %>
-    <% else %>
+      <% else %>
 	Please log in using either
 	<p>
 	<!-- Facebook login -->
 	<%= fb_login_button('window.location = "/fb_login";')%> or 
 
 	<!-- Clickpass login -->
-        <style> @import 'http://www.clickpass.com/stylesheets/container.css'; </style>
-        <div id="clickpass_button" style="width: 176px; height: 28px; position: relative; z-index : 9999 ;">
-	<iframe src="http://www.clickpass.com/embedded_buttons/login-standard/<%= @clickpass_site_key %>" width="176" height="28" frameborder="0" allowtransparency="true" scrolling="no" style="z-index:9999;position: absolute; top: 0; left: 0;"></iframe>
-        </div>
-        <script type="text/javascript" src="http://www.clickpass.com/javascripts/ClickpassPanel.class.external.js?v1"></script>
-        <script type="text/javascript"> 
-                var clickpassPanel = new ClickpassPanel('clickpass_button');> 
-        </script>
+	<style> @import 'http://www.clickpass.com/stylesheets/container.css'; </style>
+	<div id="clickpass_button" style="width: 176px; height: 28px; position: relative; z-index : 9999 ;">
+	  <iframe src="http://www.clickpass.com/embedded_buttons/login-standard/<%= @clickpass_site_key %>" width="176" height="28" frameborder="0" allowtransparency="true" scrolling="no" style="z-index:9999;position: absolute; top: 0; left: 0;"></iframe> 
+	</div>
+	<script type="text/javascript" src="http://www.clickpass.com/javascripts/ClickpassPanel.class.external.js?v1"></script>
+	<script type="text/javascript">  
+	  var clickpassPanel = new ClickpassPanel('clickpass_button');   
+	</script>
 	</p>
       <% end %>
     </div>
@@ -90,6 +90,7 @@
   _loadSuper = window.onload;
   window.onload = (typeof window.onload != 'function') ? _loadUserVoice : function() { _loadSuper(); _loadUserVoice(); };
 </script>
+<!-- end of Uservoice -->
 
 <!-- Google Analytics -->
 <script type="text/javascript">
@@ -102,6 +103,7 @@
     pageTracker._trackPageview();
   } catch(err) {}
 </script>
+<!-- end of Google Analytics -->
 
 </body>
 </html>

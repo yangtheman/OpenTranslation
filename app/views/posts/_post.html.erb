@@ -1,1 +1,2 @@
-<p><%= link_to post.title, post %>, translated to <%= post.target_lang.language %>, created on <%= post.created_at %></p>
+<p><%= link_to post.title, orig_post_path(post.orig_id, post) %>, translated to <%= post.language.name %>, created on <%= post.created_at %></p>
+

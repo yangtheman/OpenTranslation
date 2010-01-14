@@ -33,8 +33,8 @@ class PostTest < ActiveSupport::TestCase
     end
 
     should "be rated by a user" do 
-      post = Factory.build(:post)
-      post.rate(5, @user)
+      post = Factory.create(:post)
+      post.rate 5, @user
 
       assert_equal 1, post.rated_count
       assert_equal 5, post.rated_total
@@ -127,12 +127,14 @@ class PostTest < ActiveSupport::TestCase
 
       @post.revert_to(2)
       assert_equal 2, @post.version
-      @post.rate(5, @user)
+      @post.rate 5, @user2
+      assert_equal 2, @post.version
       assert_equal 5, @post.rated_total
 
       @post.revert_to(1)
       assert_equal 1, @post.version
-      @post.rate(4, @user)
+      @post.rate 4, @user2
+      assert_equal 1, @post.version
       assert_equal 4, @post.rated_total
 
       @post.revert_to(2)

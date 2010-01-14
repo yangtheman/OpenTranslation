@@ -89,7 +89,12 @@ class SessionsController < ApplicationController
   private
     def successful_login
       session[:user_id] = @current_user.id
-      redirect_to(root_url)
+      if session[:return_to]
+	redirect_to session[:return_to]
+	session[:return_to] = nil
+      else
+	redirect_to(root_url)
+      end
     end
   
     def failed_login(message)

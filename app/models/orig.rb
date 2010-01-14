@@ -36,7 +36,14 @@ class Orig < ActiveRecord::Base
 	end
       end
       return body
-    else 
+    elsif url =~ /googleblog\.blogspot\.com/ 
+      body = ""
+      bodyarr = web.search("div.post-body").to_html.split('<br /><br />')
+      bodyarr.each do |para|
+	body << "<p>#{para}</p>"
+      end
+      return body 
+    else
       #Wordpress's main body has "entry" div id
       body = web.search("div.entry/p")
       if body.inner_text.length == 0

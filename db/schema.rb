@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100109085416) do
+ActiveRecord::Schema.define(:version => 20100113000246) do
 
   create_table "facebook_templates", :force => true do |t|
     t.string "template_name", :null => false
@@ -58,7 +58,6 @@ ActiveRecord::Schema.define(:version => 20100109085416) do
   create_table "post_versions", :force => true do |t|
     t.integer  "post_id"
     t.integer  "version"
-    t.string   "url"
     t.string   "title"
     t.text     "content"
     t.string   "author"
@@ -68,15 +67,11 @@ ActiveRecord::Schema.define(:version => 20100109085416) do
     t.integer  "ted_id"
     t.integer  "user_id"
     t.integer  "orig_id"
-    t.integer  "rating_count"
-    t.integer  "rating_total", :limit => 10, :precision => 10, :scale => 0
-    t.decimal  "rating_avg",                 :precision => 10, :scale => 2
   end
 
   add_index "post_versions", ["post_id"], :name => "index_post_versions_on_post_id"
 
   create_table "posts", :force => true do |t|
-    t.string   "url"
     t.string   "title"
     t.text     "content"
     t.string   "author"
@@ -86,9 +81,6 @@ ActiveRecord::Schema.define(:version => 20100109085416) do
     t.integer  "ted_id"
     t.integer  "user_id"
     t.integer  "orig_id"
-    t.integer  "rating_count"
-    t.integer  "rating_total", :limit => 10, :precision => 10, :scale => 0
-    t.decimal  "rating_avg",                 :precision => 10, :scale => 2
   end
 
   add_index "posts", ["ted_id", "user_id", "orig_id"], :name => "index_posts_on_ted_id_and_user_id_and_orig_post_id"
@@ -99,6 +91,7 @@ ActiveRecord::Schema.define(:version => 20100109085416) do
     t.integer "rating_count"
     t.integer "rating_total", :limit => 10, :precision => 10, :scale => 0
     t.decimal "rating_avg",                 :precision => 10, :scale => 2
+    t.integer "rated_ver"
   end
 
   add_index "rating_statistics", ["rated_type", "rated_id"], :name => "index_rating_statistics_on_rated_type_and_rated_id"
@@ -132,9 +125,6 @@ ActiveRecord::Schema.define(:version => 20100109085416) do
     t.string   "email_hash"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "rating_count"
-    t.integer  "rating_total", :limit => 10, :precision => 10, :scale => 0
-    t.decimal  "rating_avg",                 :precision => 10, :scale => 2
   end
 
 end

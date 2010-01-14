@@ -1,7 +1,6 @@
 class User < ActiveRecord::Base
 
-  acts_as_rated :no_rater => true
-  #acts_as_rated 
+  acts_as_rated :with_stats_table => true, :no_rater => true
 
   has_many :posts
   has_many :origs

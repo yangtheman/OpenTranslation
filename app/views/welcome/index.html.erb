@@ -1,21 +1,21 @@
 <div id="main">
-<% form_tag '/posts/new' do %>
-  <p id="url">
-  Which blog post? <br />
-  <%=  text_field_tag 'url', @the_url, :size => 80 %>
-  </p>
-  <p id = "from">
-  From: <br />
-  <%= collection_select(:post, :origin_id, @languages, :id, :name, {:selected => 1}) %>
-  </p>
-  <p id = "to">
-  To: <br />
-  <%= collection_select(:post, :ted_id, @languages, :id, :name) %>
-  </p>
-  <p id = "submit">
-  <%= image_submit_tag("submit.gif") %>
-  </p>
-<% end %>
+  <% form_tag '/posts/new' do %>
+    <p id="url">
+    Which blog post? <br />
+    <%=  text_field_tag 'url', @the_url, :size => 80 %>
+    </p>
+    <p id = "from">
+    From: <br />
+    <%= collection_select(:post, :origin_id, @languages, :id, :name, {:selected => 1}) %>
+    </p>
+    <p id = "to">
+    To: <br />
+    <%= collection_select(:post, :ted_id, @languages, :id, :name) %>
+    </p>
+    <p id = "submit">
+    <%= image_submit_tag("submit.gif") %>
+    </p>
+  <% end %>
 </div>
 
 <!--

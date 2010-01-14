@@ -95,7 +95,6 @@ module ActiveRecord #:nodoc:
           rater_class  = options[:rater_class]  || 'User'
           stats_class  = options[:stats_class]  || 'RatingStatistic' if options[:with_stats_table]
 
-	  # Skip belongs_to rater relationship if rated is User class
           unless Object.const_defined?(rating_class)
             Object.class_eval <<-EOV
               class #{rating_class} < ActiveRecord::Base
@@ -105,7 +104,6 @@ module ActiveRecord #:nodoc:
             EOV
           end
 
-	  # Skip this step and use ratings columns in each model
           unless stats_class.nil? || Object.const_defined?(stats_class)
             Object.class_eval <<-EOV
               class #{stats_class} < ActiveRecord::Base
@@ -115,19 +113,18 @@ module ActiveRecord #:nodoc:
           end
          
           raise RatedError, ":rating_range must be a range object" unless options[:rating_range].nil? || (Range === options[:rating_range])
-          write_inheritable_attribute( :acts_as_rated_options , 
+          write_inheritable_attribute( :acts_as_rated_options, 
                                          { :rating_range => options[:rating_range], 
                                            :rating_class => rating_class,
                                            :stats_class => stats_class,
                                            :rater_class => rater_class } )
           class_inheritable_reader :acts_as_rated_options
           
-	  # Skip has_many raters relationship if rated is User class
           class_eval do
+            has_many(:rating_statistics, :as => :rated, :dependent => :delete_all, :class_name => stats_class.to_s) unless stats_class.nil?
             has_many :ratings, :as => :rated, :dependent => :delete_all, :class_name => rating_class.to_s
             has_many(:raters, :through => :ratings, :class_name => rater_class.to_s) unless options[:no_rater] 
-            has_one(:rating_statistic, :class_name => stats_class.to_s, :as => :rated, :dependent => :delete) unless stats_class.nil?
-
+	    #has_one(:rating_statistic, :class_name => stats_class.to_s, :as => :rated, :dependent => :delete) unless stats_class.nil?
             before_create :init_rating_fields
           end
 
@@ -155,11 +152,19 @@ module ActiveRecord #:nodoc:
 	  self.class.to_s == "User"
 	end
 
+	def find_stat
+	  if versioned?
+	    return self.rating_statistics.find_by_rated_ver(self.version)
+	  else
+	    return self.rating_statistics
+	  end
+	end
+
         # Get the average based on the special fields, 
         # or with a SQL query if the rated objects doesn't have the avg and count fields
         def rating_average
           return self.rating_avg if attributes.has_key?('rating_avg')
-          return (rating_statistic.rating_avg || 0) rescue 0 if acts_as_rated_options[:stats_class]
+	  return ((find_stat.rating_avg || 0) rescue 0) if acts_as_rated_options[:stats_class]
           avg = ratings.average(:rating) 
           avg = 0 if avg.nan?
           avg
@@ -169,7 +174,7 @@ module ActiveRecord #:nodoc:
         def rated?
           return (!self.rating_count.nil? && self.rating_count > 0) if attributes.has_key? 'rating_count'
           if acts_as_rated_options[:stats_class]
-            stats = (rating_statistic.rating_count || 0) rescue 0
+	    stats = (find_stat.rating_count || 0) rescue 0
             return stats > 0
           end
 
@@ -181,7 +186,7 @@ module ActiveRecord #:nodoc:
         # or with a SQL query if the rated objects doesn't have the avg and count fields
         def rated_count
           return self.rating_count || 0 if attributes.has_key? 'rating_count'
-          return (rating_statistic.rating_count || 0) rescue 0 if acts_as_rated_options[:stats_class]
+	  return ((find_stat.rating_count || 0) rescue 0) if acts_as_rated_options[:stats_class]
           ratings.count 
         end
 
@@ -189,7 +194,7 @@ module ActiveRecord #:nodoc:
         # or with a SQL query if the rated objects doesn't have the avg and count fields
         def rated_total
           return self.rating_total || 0 if attributes.has_key? 'rating_total'
-          return (rating_statistic.rating_total || 0) rescue 0 if acts_as_rated_options[:stats_class]
+	  return ((find_stat.rating_total || 0) rescue 0) if acts_as_rated_options[:stats_class]
           ratings.sum(:rating) 
         end
             
@@ -218,11 +223,17 @@ module ActiveRecord #:nodoc:
           # Find the place to store the rating statistics if any...
           # Take care of the case of a separate statistics table
           unless acts_as_rated_options[:stats_class].nil? || @rating_statistic.class.to_s == acts_as_rated_options[:stats_class]
-            self.rating_statistic = acts_as_rated_options[:stats_class].constantize.new    
+	    #self.rating_statistics = acts_as_rated_options[:stats_class].constantize.new    
+	    stat = self.rating_statistics.new
+	    if versioned?
+	      stat.rated_ver = self.version
+	    end
           end
+	  # target is now rating stats
           target = self if attributes.has_key? 'rating_total'
-          target ||= self.rating_statistic if acts_as_rated_options[:stats_class]
-          rating_class.transaction do
+	  target ||= find_stat if acts_as_rated_options[:stats_class]
+
+	  rating_class.transaction do
             if r.nil?
               rate = rating_class.new
               rate.rater_id = rater.id if with_rater
@@ -269,7 +280,7 @@ module ActiveRecord #:nodoc:
 	  end
           if !r.nil?
             target = self if attributes.has_key? 'rating_total'
-            target ||= self.rating_statistic if acts_as_rated_options[:stats_class]
+	    target ||= find_stat if acts_as_rated_options[:stats_class]
             if target
               rating_class.transaction do
                 target.rating_count -= 1

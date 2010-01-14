@@ -7,9 +7,9 @@ class Post < ActiveRecord::Base
   belongs_to :user
   belongs_to :language, :foreign_key => "ted_id"
 
-  acts_as_rated
+  acts_as_rated :with_stats_table => true
+  acts_as_ferret :fields => [:title, :content]
 
-  #acts_as_versioned :if_changed => [:title, :content]
   acts_as_versioned :if_changed => [:title, :content] do
     def self.included(base)
       base.belongs_to :user
@@ -17,8 +17,6 @@ class Post < ActiveRecord::Base
       base.belongs_to :orig_post
     end
   end
-
-  acts_as_ferret :fields => [:title, :content]
 
   validates_presence_of :orig_id, :user_id
  

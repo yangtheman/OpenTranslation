@@ -120,10 +120,11 @@ class PostsController < ApplicationController
 
     @orig = Orig.find(params[:orig_id])
     @post = @orig.posts.find(params[:id])
-
     if params[:version] 
       @post.revert_to(params[:version])
     end
+
+    @prevs = @post.versions.reverse
     @ted_user = User.find(@post.user_id)
     @languages = Language.all
   end
@@ -131,6 +132,9 @@ class PostsController < ApplicationController
   def rate
     @orig = Orig.find(params[:orig_id])
     @post = @orig.posts.find(params[:id])
+    if params[:version] 
+      @post.revert_to(params[:version])
+    end
 
     #user = User.find(@post.user_id) 
     #user.rate(params[:rating].to_i, @current_user) 

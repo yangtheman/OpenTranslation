@@ -4,11 +4,11 @@ module PostsHelper
     html = "<ul class = 'stars'>"
     html += "<li class = 'current_rating' style ='width: #{average}%'>#{average}%</li>"
     if logged_in? && !post.rated_by?(@current_user) && post.user_id != @current_user.id 
-      html += "<li>#{link_to_remote "One", :update => "post_rating_#{post.id}", :url => rate_orig_post_path(orig, post, :rating => 1), :html => {:class => "one_star"}, :method => :put}</li>"
-      html += "<li>#{link_to_remote "Two", :update => "post_rating_#{post.id}", :url => rate_orig_post_path(orig, post, :rating => 2), :html => {:class => "two_stars"}, :method => :put}</li>"
-      html += "<li>#{link_to_remote "Three", :update => "post_rating_#{post.id}", :url => rate_orig_post_path(orig, post, :rating => 3), :html => {:class => "three_stars"}, :method => :put}</li>"
-      html += "<li>#{link_to_remote "Four", :update => "post_rating_#{post.id}", :url => rate_orig_post_path(orig, post, :rating => 4), :html => {:class => "four_stars"}, :method => :put}</li>"
-      html += "<li>#{link_to_remote "Five", :update => "post_rating_#{post.id}", :url => rate_orig_post_path(orig, post, :rating => 5), :html => {:class => "five_stars"}, :method => :put}</li>"
+      html += "<li>#{link_to_remote "One", :update => "post_rating_#{post.id}", :url => rate_orig_post_path(orig, post, :version => post.version, :rating => 1), :html => {:class => "one_star"}, :method => :put}</li>"
+      html += "<li>#{link_to_remote "Two", :update => "post_rating_#{post.id}", :url => rate_orig_post_path(orig, post, :version => post.version, :rating => 2), :html => {:class => "two_stars"}, :method => :put}</li>"
+      html += "<li>#{link_to_remote "Three", :update => "post_rating_#{post.id}", :url => rate_orig_post_path(orig, post, :version => post.version, :rating => 3), :html => {:class => "three_stars"}, :method => :put}</li>"
+      html += "<li>#{link_to_remote "Four", :update => "post_rating_#{post.id}", :url => rate_orig_post_path(orig, post, :version => post.version, :rating => 4), :html => {:class => "four_stars"}, :method => :put}</li>"
+      html += "<li>#{link_to_remote "Five", :update => "post_rating_#{post.id}", :url => rate_orig_post_path(orig, post, :version => post.version, :rating => 5), :html => {:class => "five_stars"}, :method => :put}</li>"
     end
     html += "</ul>"
     html += "<br /><p><i>based on #{post.rated_count} ratings</i></p>"

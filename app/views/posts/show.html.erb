@@ -42,9 +42,5 @@
 
 <div id="previous">
   <p class="info"><strong>Previous Versions</strong></p>
-<% @post.versions.reverse.each do |version| %>
-  Version <%= link_to version.version, :action => "show", :version => version.version, :id => @post.id %>, 
-  translated by <%= User.find(version.user_id).username %>, 
-  updated at <%= version.updated_at %><br />
-<% end %>
+  <%= render :partial => "previous", :collection => @prevs %>
 </div>

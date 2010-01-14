@@ -115,9 +115,6 @@ class PostsController < ApplicationController
   end
 
   def show
-    # HTTP cache
-    response.headers['Cache-Control'] = 'public, max-age=300'
-
     @orig = Orig.find(params[:orig_id])
     @post = @orig.posts.find(params[:id])
     if params[:version] 

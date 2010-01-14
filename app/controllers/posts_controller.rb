@@ -121,7 +121,7 @@ class PostsController < ApplicationController
       @post.revert_to(params[:version])
     end
 
-    @prevs = @post.versions.reverse
+    @prevs = @post.versions
     @ted_user = User.find(@post.user_id)
     @languages = Language.all
   end

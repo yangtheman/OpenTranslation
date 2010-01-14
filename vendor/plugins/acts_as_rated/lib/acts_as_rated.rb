@@ -212,7 +212,7 @@ module ActiveRecord #:nodoc:
             raise RateError, "the rater object must be the one used when defining acts_as_rated (or a descendent of it). other objects are not acceptable"
           end
           raise RateError, "rating with rater must receive a rater as parameter" if with_rater && (rater.nil? || rater.id.nil?)
-	  # Find one with version
+	  # Find an existing rating by the rater
 	  if versioned?
 	    r = with_rater ? ratings.find(:first, :conditions => ['rater_id = ? and rated_ver = ?', rater.id, self.version]) : nil
 	  else
@@ -229,12 +229,13 @@ module ActiveRecord #:nodoc:
 	      stat.rated_ver = self.version
 	    end
           end
-	  # target is now rating stats
+	  # target is a new stats object
           target = self if attributes.has_key? 'rating_total'
-	  target ||= find_stat if acts_as_rated_options[:stats_class]
+	  target ||= (find_stat || stat) if acts_as_rated_options[:stats_class]
 
 	  rating_class.transaction do
             if r.nil?
+	      # New rating
               rate = rating_class.new
               rate.rater_id = rater.id if with_rater
 	      # Add version

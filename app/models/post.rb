@@ -14,7 +14,7 @@ class Post < ActiveRecord::Base
     def self.included(base)
       base.belongs_to :user
       base.belongs_to :language, :foreign_key => "ted_id"
-      base.belongs_to :orig_post
+      base.belongs_to :orig
     end
   end
 

@@ -17,7 +17,7 @@ module PostsHelper
 
   def tweetthis(orig, post)
     twitter_title = orig.title.gsub(/[ \t]+/, '+') # change to twitter-friendly title                   
-    url = "http://alpha.bloglation.com/origs/#{post.orig_id}/posts/#{post.id}?version=#{post.version}"
+    url = "http://bloglation.com/origs/#{post.orig_id}/posts/#{post.id}?version=#{post.version}"
     url = ( ShortURL.shorten(url) rescue nil ) || url
     "http://www.twitter.com/home/?status=#{twitter_title}+was+just+translated+to+#{post.language.name}!+-+#{url}"
   end

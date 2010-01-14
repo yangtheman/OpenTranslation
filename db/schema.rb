@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100113000246) do
+ActiveRecord::Schema.define(:version => 20100114084048) do
 
   create_table "facebook_templates", :force => true do |t|
     t.string "template_name", :null => false
@@ -121,7 +121,7 @@ ActiveRecord::Schema.define(:version => 20100113000246) do
     t.string   "username"
     t.string   "email"
     t.string   "openid_url"
-    t.integer  "fb_user_id"
+    t.integer  "fb_user_id", :limit => 8
     t.string   "email_hash"
     t.datetime "created_at"
     t.datetime "updated_at"

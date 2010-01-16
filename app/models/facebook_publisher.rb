@@ -8,6 +8,6 @@ class FacebookPublisher < Facebooker::Rails::Publisher
   def publish_tx(post, orig_title, facebook_session)
     send_as :user_action
     from facebook_session.user
-    data :actor => facebook_session.user.first_name, :post_id => post.id, :post_title => orig_title, :post_version => post.version, :post_language => post.target_lang.language
+    data :actor => facebook_session.user.first_name, :post_id => post.id, :post_title => orig_title, :post_version => post.version, :post_language => post.language.name
   end
 end

@@ -3,6 +3,8 @@ class Post < ActiveRecord::Base
 
   require 'rtranslate'
 
+  named_scope :top, :order => "created_at DESC", :limit => 5
+
   belongs_to :orig
   belongs_to :user
   belongs_to :language, :foreign_key => "ted_id"
@@ -20,10 +22,6 @@ class Post < ActiveRecord::Base
 
   validates_presence_of :orig_id, :user_id
  
-  def self.top(limit = 5)
-    self.find(:all, :order => "created_at DESC", :limit => limit)
-  end
-
   def prep(target_lang_id, orig)
     self.ted_id = target_lang_id
 
@@ -38,6 +36,11 @@ class Post < ActiveRecord::Base
       self.content = para_translate(orig.content, from, to)
     end
   end 
+
+  def para_translate(body, from, to)
+    paras = Hpricot(body).search("/p")
+    paras.map {|p| Translate.t(cleanup(p.to_html), from, to)}.join
+  end
 
   def cleanup(txt)
     txt.gsub!(/\&\#8211\;/, '–')
@@ -56,15 +59,6 @@ class Post < ActiveRecord::Base
     txt.gsub!(/\&\#8364\;/, '€')
     txt.gsub!(/\&\#8482\;/, '™')
     txt
-  end
-
-  def para_translate(body, from, to)
-    paras = Hpricot(body).search("/p")
-    ted_content = ""
-    paras.each do |p|
-      ted_content += Translate.t(cleanup(p.to_html), from, to)
-    end
-    ted_content
   end
 
 end

@@ -7,7 +7,7 @@ class OrigsController < ApplicationController
   def show
     @orig = Orig.find(params[:id])
     @posts = @orig.posts.find(:all, :order => "updated_at DESC")
-    @languages = Language.all
+    @languages = Language.all_ordered
   end
 
 end

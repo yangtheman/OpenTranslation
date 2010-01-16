@@ -243,7 +243,6 @@ class PostsControllerTest < ActionController::TestCase
   context "On PUT to :rate on a post" do
     setup do
       getready
-      User.any_instance.expects(:rate).returns(true)
       Post.any_instance.expects(:rate).returns(true)
       put :rate, :orig_id => @oldorig.id, :id => @oldpost.id, :rating => 1
     end

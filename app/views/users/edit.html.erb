@@ -1,6 +1,5 @@
-<% form_for @user do |f| %>
-	<p>Please pick a pretty name: <%= f.text_field :username %></p>
-	<p>Email: <%= f.text_field :email %></p>
-	<p><%= submit_tag 'Update' %></p>
+<% form_for @current_user do |f| %>
+  <p>Please pick a pretty name: <%= f.text_field :username %></p>
+  <p>Email: <%= f.text_field :email %></p>
+  <p><%= submit_tag 'Update' %></p>
 <% end %> 
-

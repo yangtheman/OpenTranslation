@@ -1,8 +1,8 @@
 class Language < ActiveRecord::Base
+
   has_many :posts
   has_many :origs
 
-  def all 
-    self.find(:all, :order => "language ASC")
-  end
+  named_scope :all_ordered, :order => "name ASC"
+
 end

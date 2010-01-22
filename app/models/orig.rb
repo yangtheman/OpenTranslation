@@ -1,7 +1,6 @@
 class Orig < ActiveRecord::Base
 
   require 'open-uri'
-  #acts_as_ferret :fields => [:title, :content, :url]
 
   has_many :posts
   belongs_to :user

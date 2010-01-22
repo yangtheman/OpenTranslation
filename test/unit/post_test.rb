@@ -68,11 +68,7 @@ class PostTest < ActiveSupport::TestCase
       @user = Factory.create(:user)
       @user2 = Factory.create(:user)
       @user3 = Factory.create(:user)
-      #@post = Factory.create(:post, :title => "Original Blog", :user => @user)
-      @post = @orig.posts.new
-      @post.title = "Original Blog"
-      @post.content = "Original Content"
-      @post.user_id = @user.id
+      @post = @orig.posts.new(:title => "Original Blog", :content => "Original Content", :user_id => @user_id)
       @post.save
     end
 

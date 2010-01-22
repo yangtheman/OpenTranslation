@@ -14,7 +14,6 @@ class PostsControllerTest < ActionController::TestCase
     @newpost = Factory.create(:post, :ted_id => 10, :orig => @neworig)
     Orig.stubs(:new).returns(@neworig)
     Post.stubs(:new).returns(@newpost)
-    #@controller.stubs(:find_orig_post).returns(@neworig)
   end
 
   context "On GET to :new with no post parameter" do

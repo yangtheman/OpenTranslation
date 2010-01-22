@@ -16,7 +16,7 @@ class WelcomeControllerTest < ActionController::TestCase
 	post = Factory.create(:post, :ted_id => @ko.id, :orig_id => orig, :user_id => user.id)
 	@posts << post
       end
-      Language.expects(:all).returns(@langs)
+      Language.expects(:all_ordered).returns(@langs)
       Orig.expects(:top).returns(@origs)
       Post.expects(:top).returns(@posts)
       User.expects(:top).returns(@users)

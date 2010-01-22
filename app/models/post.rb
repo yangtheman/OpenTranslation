@@ -8,7 +8,7 @@ class Post < ActiveRecord::Base
   belongs_to :language, :foreign_key => "ted_id"
 
   acts_as_rated :with_stats_table => true
-  acts_as_ferret :fields => [:title, :content]
+  #acts_as_ferret :fields => [:title, :content]
 
   acts_as_versioned :if_changed => [:title, :content] do
     def self.included(base)
@@ -19,7 +19,12 @@ class Post < ActiveRecord::Base
   end
 
   validates_presence_of :orig_id, :user_id
- 
+
+  index do
+    title
+    content
+  end
+  
   def self.top(limit = 5)
     self.find(:all, :order => "created_at DESC", :limit => limit)
   end

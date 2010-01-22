@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100114084048) do
+ActiveRecord::Schema.define(:version => 20100122100147) do
 
   create_table "facebook_templates", :force => true do |t|
     t.string "template_name", :null => false
@@ -52,8 +52,8 @@ ActiveRecord::Schema.define(:version => 20100114084048) do
     t.datetime "updated_at"
   end
 
-  add_index "origs", ["url", "origin_id", "user_id"], :name => "index_orig_posts_on_url_and_origin_id_and_user_id"
-  add_index "origs", ["url", "origin_id", "user_id"], :name => "index_origs_on_url_and_origin_id_and_user_id"
+  add_index "origs", ["origin_id", "url", "user_id"], :name => "index_orig_posts_on_url_and_origin_id_and_user_id"
+  add_index "origs", ["origin_id", "url", "user_id"], :name => "index_origs_on_url_and_origin_id_and_user_id"
 
   create_table "post_versions", :force => true do |t|
     t.integer  "post_id"
@@ -83,33 +83,33 @@ ActiveRecord::Schema.define(:version => 20100114084048) do
     t.integer  "orig_id"
   end
 
-  add_index "posts", ["ted_id", "user_id", "orig_id"], :name => "index_posts_on_ted_id_and_user_id_and_orig_post_id"
+  add_index "posts", ["orig_id", "ted_id", "user_id"], :name => "index_posts_on_ted_id_and_user_id_and_orig_post_id"
 
   create_table "rating_statistics", :force => true do |t|
     t.integer "rated_id"
     t.string  "rated_type"
     t.integer "rating_count"
-    t.integer "rating_total", :limit => 10, :precision => 10, :scale => 0
-    t.decimal "rating_avg",                 :precision => 10, :scale => 2
+    t.integer "rating_total"
+    t.decimal "rating_avg",   :precision => 10, :scale => 2
     t.integer "rated_ver"
   end
 
-  add_index "rating_statistics", ["rated_type", "rated_id"], :name => "index_rating_statistics_on_rated_type_and_rated_id"
+  add_index "rating_statistics", ["rated_id", "rated_type"], :name => "index_rating_statistics_on_rated_type_and_rated_id"
 
   create_table "ratings", :force => true do |t|
     t.integer "rater_id"
     t.integer "rated_id"
     t.string  "rated_type"
-    t.integer "rating",     :limit => 10, :precision => 10, :scale => 0
+    t.integer "rating"
     t.integer "rated_ver"
   end
 
-  add_index "ratings", ["rated_type", "rated_id"], :name => "index_ratings_on_rated_type_and_rated_id"
+  add_index "ratings", ["rated_id", "rated_type"], :name => "index_ratings_on_rated_type_and_rated_id"
   add_index "ratings", ["rater_id"], :name => "index_ratings_on_rater_id"
 
   create_table "sessions", :force => true do |t|
-    t.string   "session_id",                       :null => false
-    t.text     "data",       :limit => 2147483647
+    t.text     "session_id", :null => false
+    t.text     "data"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

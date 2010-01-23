@@ -20,9 +20,10 @@ class Post < ActiveRecord::Base
 
   validates_presence_of :orig_id, :user_id
 
+  # Fields for texticle to search
   index do
-    title
-    content
+    title   'A'
+    content 'B'
   end
   
   def self.top(limit = 5)

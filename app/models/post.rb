@@ -10,7 +10,7 @@ class Post < ActiveRecord::Base
   belongs_to :language, :foreign_key => "ted_id"
 
   acts_as_rated :with_stats_table => true
-  acts_as_ferret :fields => [:title, :content]
+  #acts_as_ferret :fields => [:title, :content]
 
   acts_as_versioned :if_changed => [:title, :content] do
     def self.included(base)
@@ -21,7 +21,13 @@ class Post < ActiveRecord::Base
   end
 
   validates_presence_of :orig_id, :user_id
- 
+
+  # Fields for texticle to search
+  index do
+    title   'A'
+    content 'B'
+  end
+  
   def prep(target_lang_id, orig)
     self.ted_id = target_lang_id
 

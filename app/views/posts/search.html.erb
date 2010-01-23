@@ -1,5 +1,4 @@
-<h2>Search result for term <em><%= @query %></em> resulted in <%= @total_hits %> hits</h2>
+<h2>Search result for term <em><%= @query %></em> resulted in <%= @posts.length %> hits</h2>
 <div id="show_content">
   <%= render :partial => 'post', :collection => @posts %>
 </div>
-<%= will_paginate @posts, :params => {:query => @query} %>

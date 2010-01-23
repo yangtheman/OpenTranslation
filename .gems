@@ -6,4 +6,4 @@ will_paginate
 mocha --version 0.9.8
 thoughtbot-shoulda --source gems.github.com
 thoughtbot-factory_girl --source gems.github.com
-texicle
+texticle

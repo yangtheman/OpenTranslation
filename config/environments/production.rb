@@ -26,5 +26,5 @@ config.action_view.cache_template_loading            = true
 
 # Enable threaded mode
 # config.threadsafe!
-require 'acts_as_ferret'
-ActsAsFerret.index_dir = "#{RAILS_ROOT}/tmp/index"
+#require 'acts_as_ferret'
+#ActsAsFerret.index_dir = "#{RAILS_ROOT}/tmp/index"

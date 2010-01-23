@@ -135,10 +135,9 @@ class PostsController < ApplicationController
   end
 
   def search
-    debugger
     @query = params[:query]
     @posts = Post.search(@query)
-    @posts = @posts.paginate :page => params[:page], :order => 'created_at DESC', :per_page => 10
+    #@posts = @posts.paginate :page => params[:page], :order => 'created_at DESC', :per_page => 10
     #@total_hits = Post.total_hits(@query)
     #@posts = Post.paginate_with_ferret(@query, :page => params[:page], :per_page => 10, :order => 'updated_at DESC')
   end

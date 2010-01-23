@@ -21,7 +21,7 @@ Rails::Initializer.run do |config|
   # config.gem "aws-s3", :lib => "aws/s3"
   config.gem "ruby-openid", :lib => "openid"
   config.gem 'will_paginate', :version => '~> 2.3.11', :source => 'http://gemcutter.org'
-  config.gem 'acts_as_ferret'
+  #config.gem 'acts_as_ferret'
   config.gem "thoughtbot-shoulda", :lib => "shoulda", :source => "http://gems.github.com"
   config.gem "thoughtbot-factory_girl", :lib => "factory_girl", :source => "http://gems.github.com"
   config.gem 'mocha', :version => '>=0.9.8', :lib => false
@@ -47,9 +47,8 @@ Rails::Initializer.run do |config|
   # config.i18n.default_locale = :de
 end
 require 'hpricot'
-require 'acts_as_ferret'
-ActsAsFerret.index_dir = "#{RAILS_ROOT}/tmp/index"
-
+#require 'acts_as_ferret'
+#ActsAsFerret.index_dir = "#{RAILS_ROOT}/tmp/index"
 require 'will_paginate'
 
 #ExceptionNotifier.exception_recipients = %w(yangtheman@gmail.com)

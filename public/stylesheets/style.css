@@ -187,6 +187,7 @@ body {
 #previous {
   clear: both; 
   padding: 10px;
+  /* border-bottom: black dotted; */
 }
 
 #edit {

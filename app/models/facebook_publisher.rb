@@ -1,7 +1,7 @@
 class FacebookPublisher < Facebooker::Rails::Publisher
   def publish_tx_template
     one_line_story_template "{*actor*} translated/edited: {*post_title*}"
-    short_story_template "{*actor*} translated/edited: <a href='http://bloglation.com/origs/{*orig_id*}/posts/{*post_id*}?version={*post_version*}'>{*post_title*}</a> to {*post_language*}",
+    short_story_template "{*actor*} translated/edited: <a href='http://www.bloglation.com/origs/{*orig_id*}/posts/{*post_id*}?version={*post_version*}'>{*post_title*}</a> to {*post_language*}",
 			   "Read it, rate it and/or make it better. Help spread the knowledge in other cultures!"
   end
 

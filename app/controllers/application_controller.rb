@@ -22,9 +22,11 @@ class ApplicationController < ActionController::Base
     if ENV['RAILS_ENV'] == 'production'
       @clickpass_site_key = 'rzMQEOe8gQ'
       @clickpass_callback_url = '127.0.0.1%3A3000'
+      @disqus_env = "0"
     else
       @clickpass_site_key = 'CNxswsAO8P'
       @clickpass_callback_url = 'alpha.bloglation.com'
+      @disqus_env = "1"
     end
   end 
 

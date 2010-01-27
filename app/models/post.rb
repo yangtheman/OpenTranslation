@@ -35,7 +35,7 @@ class Post < ActiveRecord::Base
     to = self.language.short
 
     # Translate title first
-    self.title = Translate.t(orig.title, from, to)
+    self.title = Translate.t(cleanup(orig.title), from, to)
     if self.title =~ /^Error\: Translation from.*supported yet\!/
       return false
     else 
@@ -54,16 +54,23 @@ class Post < ActiveRecord::Base
     txt.gsub!(/\&\#8216\;/, '‘')
     txt.gsub!(/\&\#8217\;/, '’')
     txt.gsub!(/\&\#8218\;/, '‚')
-    txt.gsub!(/\&\#8220\;/, '“')
-    txt.gsub!(/\&\#8221\;/, '”')
+    txt.gsub!(/\&\#8220\;/, '“') 
+    txt.gsub!(/\&\#8221\;/, '”') 
     txt.gsub!(/\&\#8222\;/, '„')
     txt.gsub!(/\&\#8224\;/, '†')
     txt.gsub!(/\&\#8225\;/, '‡')
     txt.gsub!(/\&\#8226\;/, '•')
     txt.gsub!(/\&\#8230\;/, '…')
     txt.gsub!(/\&\#8240\;/, '‰')
-    txt.gsub!(/\&\#8364\;/, '€')
+    txt.gsub!(/\&euro\;|\&\#8364\;/, '€')
     txt.gsub!(/\&\#8482\;/, '™')
+    txt.gsub!(/\&\#0160\;/, ' ')
+    txt.gsub!(/\&\#0?39\;/, '\'')
+    txt.gsub!(/\&quot\;/, '\"')
+    txt.gsub!(/\&lt\;/, '<')
+    txt.gsub!(/\&gt\;/, '>')
+    txt.gsub!(/\&amp\;|\&\#0?38\;/, 'and')
+    txt.gsub!(/\&/, 'and')
     txt
   end
 

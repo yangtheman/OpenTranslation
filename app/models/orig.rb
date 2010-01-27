@@ -34,21 +34,25 @@ class Orig < ActiveRecord::Base
 	  body << "<p>#{para}</p>"
 	end
       end
-      return body
+      body
     elsif url =~ /googleblog\.blogspot\.com/ 
       body = ""
       bodyarr = web.search("div.post-body").to_html.split('<br /><br />')
       bodyarr.each do |para|
 	body << "<p>#{para}</p>"
       end
-      return body 
+      body 
     else
-      #Wordpress's main body has "entry" div id
-      body = web.search("div.entry/p")
-      if body.inner_text.length == 0
+      #Wordpress's main body has "entry" div class
+      if web.search("div.entry/p").size > 0
+	body = web.search("div.entry/p")
+	#Typepad's main body has "entry-content" div class
+      elsif web.search("div.entry-body/p").size > 0
+	body = web.search("div.entry-body/p")
+      else
 	body = web.search("/html/body//p")
       end
-      return body.to_html
+      body.to_html
     end
   end
 

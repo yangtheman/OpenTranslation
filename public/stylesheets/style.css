@@ -161,6 +161,12 @@ body {
   float: left;
 }
 
+#explain {
+  margin: 10px 0;
+  text-align: middle;
+  font-size: 1.5em;
+}
+
 #show_middle {
   clear: both;
 }
@@ -175,6 +181,10 @@ body {
   margin-right: 10px;
   float: right;
   text-align: right;
+}
+
+#user_info a:hover {
+  text-decoration: underline;
 }
 
 #show_content {

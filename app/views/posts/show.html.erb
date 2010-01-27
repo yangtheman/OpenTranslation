@@ -14,7 +14,6 @@
   </div>
   <div id="tweet"><%= link_to(image_tag("tweet.gif", :border => 0), tweetthis(@orig, @post), :target => "_blank") %></div>
 </div>
-
 <div id="show_middle">
   <div id="add_trans">
     <% form_tag :action => 'add_trans' do %>
@@ -24,7 +23,7 @@
   </div>
   <div id="user_info">
     <p class="info">
-      Translated by <em><%= @ted_user.username %></em><br />
+      Translated by <em><%= link_to @ted_user.username, @ted_user %></em><br />
       <span id="post_rating_<%= @post.id %>"><%= render :partial => 'post_rating', :locals => {:orig => @orig, :post => @post} %></span>
       <!--
       <% average = (@ted_user.rating_average.blank? ? 0 : @ted_user.rating_average) * 100 / 5 %>

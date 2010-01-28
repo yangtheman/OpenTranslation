@@ -22,7 +22,13 @@ class PostsController < ApplicationController
       redirect_to root_url and return
     end
 
-    @orig = Orig.find_by_url(params[:url])
+    if params[:url] !~ /^http/
+      url = "http://" + params[:url]
+    else
+      url = params[:url]
+    end 
+
+    @orig = Orig.find_by_url(url)
     target_lang_id = params[:post][:ted_id]
 
     # Original post exist?
@@ -32,7 +38,7 @@ class PostsController < ApplicationController
 		       :url => params[:url],
 		       :user_id => @current_user.id)
       if !@orig.newentry
-	flash[:error] = "Error in retrieving information about #{params[:url]}!"
+	flash[:error] = "Error in retrieving information about #{params[:url]}!\n Please check your spelling!"
 	redirect_to root_url and return
       end
     elsif @post = @orig.posts.find_by_ted_id(target_lang_id)

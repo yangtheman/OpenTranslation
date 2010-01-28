@@ -63,7 +63,11 @@ class Orig < ActiveRecord::Base
   def newentry
     self.author = self.url.scan(/http:\/\/[\w.]+/)[0]
     
-    web = Hpricot(open(self.url))
+    begin
+      web = Hpricot(open(self.url))
+    rescue
+      return nil
+    end
 
     self.title = Orig.extract_title(web)
     self.content = Orig.extract_body(web, self.url)

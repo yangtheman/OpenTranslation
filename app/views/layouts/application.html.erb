@@ -60,7 +60,7 @@
   </div>
 </div> <!-- end of header div -->
 <% unless flash[:error].blank? %>
-  <div id="notification"><strong><em><%= flash[:error] %></em></strong></div>
+  <div id="error"><strong><em><%= flash[:error] %></em></strong></div>
 <% end %>
 <%= yield %>
 <div id="footer">

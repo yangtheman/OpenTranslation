@@ -222,6 +222,13 @@ body {
   margin: 10px 0;
 }
 
+#error {
+  border: 5px solid #cc0000;
+  background-color: #ff6600;
+  padding: 5px;
+  margin: 10px 0;
+}
+
 #footer {
   clear: both;
   background: #242023;

@@ -22,6 +22,10 @@ class Orig < ActiveRecord::Base
   def self.extract_body(web, url)
     #remove all images (shall I or not?)
     #web.search("img").remove
+
+    # Remove comments section
+    web.search("#comments").remove
+    web.search("div.comments").remove
     
     # Paul Graham's essays are built with tables
     if url =~ /paulgraham\.com/
@@ -43,10 +47,10 @@ class Orig < ActiveRecord::Base
       end
       body 
     else
-      #Wordpress's main body has "entry" div class
+      # Wordpress's main body has "entry" div class
       if web.search("div.entry/p").size > 0
 	body = web.search("div.entry/p")
-	#Typepad's main body has "entry-content" div class
+	# Typepad's main body has "entry-content" div class
       elsif web.search("div.entry-body/p").size > 0
 	body = web.search("div.entry-body/p")
       else

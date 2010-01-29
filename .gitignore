@@ -1,5 +1,7 @@
 config/database.yml
+config/facebooker.yml
 log/*
-tmp/*
+tmp/**/*
 index/*
 *~
+*.swp

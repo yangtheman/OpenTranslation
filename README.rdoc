@@ -1,0 +1,37 @@
+= Bloglation
+
+Bloglation is a rails application that allows a user to translate any web page, save the translation and share it with others.
+
+* http://www.bloglation.com
+
+== Motivation
+
+I started building it when I realized how bad Google Translate was while translating one of Paul Graham's essays. I had to make a lot of corrections to convey the same message and also to make it more readable. I also came across Ryan Tomayko's How I explained REST to my wife (http://tomayko.com/writings/rest-to-my-wife), and realized that there are people out there who are passionate about something and want non-English speakers to read and learn (and vice versa).
+
+Ultimately, I think it's all about spreading knowledge, ideas and concepts across any borders. My motivation for initial translation was to teach Korean-speaking folks about Silicon Valley's startup culture (because it's only other language I know besides English), especially why it's important to start and fail early. I really wish I could have read Paul Graham's "Why to not not start a startup" when I was in college. I probably wouldn't have made the same choices.
+
+== License
+
+(The MIT License)
+
+Copyright (c) 2010 Yang Chung
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+

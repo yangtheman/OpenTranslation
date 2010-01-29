@@ -10,6 +10,10 @@ I started building it when I realized how bad Google Translate was while transla
 
 Ultimately, I think it's all about spreading knowledge, ideas and concepts across any borders. My motivation for initial translation was to teach Korean-speaking folks about Silicon Valley's startup culture (because it's only other language I know besides English), especially why it's important to start and fail early. I really wish I could have read Paul Graham's "Why to not not start a startup" when I was in college. I probably wouldn't have made the same choices.
 
+== Caveats
+
+I am hosting the site at Heroku for free, thus not much horsepower. Worse yet, it scrapes other web pages and uses Google Translate API, thus it's will be slow. You may even get "connection timeout" error. I'd like to add "background job" or more "dynos" features to increase performance once I find a job. Currently it works well with Wordpress blog, Typepad blog, Google's official blog, and Paul Graham's essays. 
+
 == License
 
 (The MIT License)

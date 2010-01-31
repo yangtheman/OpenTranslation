@@ -15,46 +15,32 @@ class Orig < ActiveRecord::Base
     return Orig.find_by_sql("SELECT #{orig_cols}, count(posts.id) AS post_count FROM origs LEFT OUTER JOIN posts ON posts.orig_id = origs.id GROUP BY origs.id, #{orig_cols} ORDER BY post_count DESC LIMIT #{num}")
   end
 
-  def self.extract_title(web) 
-    web.at("title").inner_text
-  end
-
   def self.extract_body(web, url)
     #remove all images (shall I or not?)
     #web.search("img").remove
 
-    # Remove comments section
+    # Remove comments and footer section
     web.search("#comments").remove
     web.search("div.comments").remove
+    web.search("div.entry-footer").remove
     
     # Paul Graham's essays are built with tables
     if url =~ /paulgraham\.com/
-      body = ""
-      bodyarr = web.at('body').inner_html.split('<br /><br />')
       # Skip elements with table open and close tags
       # Wrap each paragraph with <p></p> tags
-      bodyarr.each do |para|
-	if !(para =~ /<[\/]*table/)
-	  body << "<p>#{para}</p>"
-	end
-      end
-      body
+      bodyarr = web.at('body').inner_html.split('<br /><br />').select {|para| para !~ /<[\/]*table/}
+      body = bodyarr.map {|para| "<p>#{para}</p>"}.join
     elsif url =~ /googleblog\.blogspot\.com/ 
-      body = ""
-      bodyarr = web.search("div.post-body").to_html.split('<br /><br />')
-      bodyarr.each do |para|
-	body << "<p>#{para}</p>"
-      end
-      body 
+      body = web.search("div.post-body").to_html.split('<br /><br />').map {|para| "<p>#{para}</p>"}.join
     else
-      # Wordpress's main body has "entry" div class
-      if web.search("div.entry/p").size > 0
-	body = web.search("div.entry/p")
-	# Typepad's main body has "entry-content" div class
-      elsif web.search("div.entry-body/p").size > 0
-	body = web.search("div.entry-body/p")
+      # Wordpress's main body has "post-content", "entry" or "entry-content" div class
+      # Typepad's main body has "entry-body" div class
+      if (body = web.search("div.post-content")).size > 0
+      elsif (body = web.search("div.entry-body")).size > 0 
+      elsif (body = web.search("div.entry-content")).size > 0 
+      elsif (body = web.search("div.entry")).size > 0
       else
-	body = web.search("/html/body//p")
+	body = web.search("/html/body")
       end
       body.to_html
     end
@@ -69,7 +55,7 @@ class Orig < ActiveRecord::Base
       return nil
     end
 
-    self.title = Orig.extract_title(web)
+    self.title = web.at("title").inner_text
     self.content = Orig.extract_body(web, self.url)
     
     save

@@ -39,14 +39,30 @@ class Post < ActiveRecord::Base
     if self.title =~ /^Error\: Translation from.*supported yet\!/
       return false
     else 
-      self.content = para_translate(orig.content, from, to)
+      #self.content = para_translate(orig.content, from, to)
+      #paras = Hpricot(orig.content).search("/p|/pre|/h[1-6]")
+      #self.content = paras.map {|p| Translate.t(cleanup(p.to_html), from, to)}.join
+      self.content = ""
+      paras = Hpricot(orig.content).search('*')
+      counter = 0
+      while paras.size > 0 && !paras[counter].nil?
+	elem = paras[counter]
+	if elem.name =~ /^(p|h[1-6]|span)$/ || (elem.class.to_s =~ /Text/ && elem.name =~ /^\w+/ && elem.name.size > 10)
+	  self.content << Translate.t(cleanup(elem.to_html), from, to)
+	  paras = elem.following
+	  counter = 0
+	elsif elem.name =~ /^(pre|code)$/
+	  self.content << elem.to_html
+	  paras = elem.following
+	  counter = 0
+	else
+	  counter += 1
+	end
+      end
+      self
     end
   end 
 
-  def para_translate(body, from, to)
-    paras = Hpricot(body).search("/p")
-    paras.map {|p| Translate.t(cleanup(p.to_html), from, to)}.join
-  end
 
   def cleanup(txt)
     txt.gsub!(/\&ndash\;|\&\#8211\;/, '–')

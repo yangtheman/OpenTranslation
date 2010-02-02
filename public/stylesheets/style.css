@@ -162,9 +162,20 @@ body {
 }
 
 #explain {
-  margin: 10px 0;
-  text-align: middle;
-  font-size: 1.5em;
+  width: 820px;
+  margin: 10px auto 20px auto;
+  line-height: 1;
+  letter-spacing: -.05em;
+  text-shadow: #bbd7e6 0px 1px 1px;
+  text-align: center;
+}
+
+#explain h1 {
+  font-size: 2.6em;
+}
+
+#explain h3 {
+  font-size: 2.0em;
 }
 
 #show_middle {

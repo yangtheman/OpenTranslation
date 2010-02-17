@@ -2,9 +2,7 @@
   <div id="main_text">
     <p class="show_title"><%= @post.title %></p>
     <p class="show_info">Version: <%= @post.version %>
-    <% if logged_in? %>
-      <%= link_to '(edit)', edit_orig_post_path(@orig, @post) %>
-    <% end %>
+    <strong><em><%= link_to '(improve)', edit_orig_post_path(@orig, @post) %></em></strong>
     </p>
     <p class="show_info">Language: <%= @post.language.name %></p>
     <p class="show_info">

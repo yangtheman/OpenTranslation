@@ -38,7 +38,7 @@ If you are upgrading from the 1.x ActiveRecord store, replace your old
 RAILS_ROOT/vendor/plugins/active_record_openid_store/ directory with
 the new one and run the migration XXX_upgrade_open_id_store.rb.
 
-==What about garbage collection? 
+==What about garbage collection?
 
 You may garbage collect unused nonces and expired associations using
 the gc instance method of ActiveRecordOpenIDStore.  Hook it up to a

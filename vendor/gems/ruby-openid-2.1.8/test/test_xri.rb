@@ -20,7 +20,7 @@ module OpenID
 
     class XriEscapingTestCase < Test::Unit::TestCase
       def test_escaping_percents
-        assert_equal('@example/abc%252Fd/ef', 
+        assert_equal('@example/abc%252Fd/ef',
                      XRI.escape_for_iri('@example/abc%2Fd/ef'))
       end
 

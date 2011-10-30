@@ -13,7 +13,7 @@ module Facebooker
     id_is :gid
 
     ##
-    # Get the full list of members as populated User objects.  First time fetches group members via Facebook API call.  
+    # Get the full list of members as populated User objects.  First time fetches group members via Facebook API call.
     # Subsequent calls return cached values.
     # This is a convenience method for getting all of the Membership instances and instantiating User instances for each Membership.
     def members
@@ -21,7 +21,7 @@ module Facebooker
         User.new(membership.uid, session)
       end
     end
-    
+
     ##
     # Get a list of Membership instances associated with this Group.  First call retrieves the Membership instances via a Facebook
     # API call.  Subsequent calls are retrieved from in-memory cache.

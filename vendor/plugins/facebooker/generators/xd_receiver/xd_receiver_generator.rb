@@ -5,6 +5,6 @@ class XdReceiverGenerator < Rails::Generator::Base
       m.template "xd_receiver_ssl.html", "public/xd_receiver_ssl.html"
     end
   end
-  
-  
+
+
 end

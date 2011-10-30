@@ -7,7 +7,7 @@ class FerretResultTest < Test::Unit::TestCase
 
   def teardown
   end
-  
+
   def test_get_prefetched_fields_from_hash
     fr = ActsAsFerret::FerretResult.new 'Content', '1', 0.5, 1, :description => 'description from ferret index'
     assert_equal 'description from ferret index', fr.description

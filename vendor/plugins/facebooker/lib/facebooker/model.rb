@@ -37,17 +37,17 @@ module Facebooker
           end
         end
       end
-      
+
       def populating_hash_settable_accessor(symbol, klass)
         populating_attr_reader symbol
         hash_settable_writer(symbol, klass)
       end
-        
+
       def populating_hash_settable_list_accessor(symbol, klass)
         populating_attr_reader symbol
         hash_settable_list_writer(symbol, klass)
       end
-      
+
       #
       # Declares an attribute named ::symbol:: which can be set with either an instance of ::klass::
       # or a Hash which will be used to populate a new instance of ::klass::.
@@ -55,13 +55,13 @@ module Facebooker
         attr_reader symbol
         hash_settable_writer(symbol, klass)
       end
-      
+
       def hash_settable_writer(symbol, klass)
         define_method("#{symbol}=") do |value|
           instance_variable_set("@#{symbol}", value.kind_of?(Hash) ? klass.from_hash(value) : value)
         end
       end
-      
+
       #
       # Declares an attribute named ::symbol:: which can be set with either a list of instances of ::klass::
       # or a list of Hashes which will be used to populate a new instance of ::klass::.
@@ -99,13 +99,13 @@ module Facebooker
     def session
       @session || (raise UnboundSessionException, "Must bind this object to a Facebook session before querying")
     end
-    
-    # 
+
+    #
     # This gets populated from FQL queries.
     def anon=(value)
       @anonymous_fields = value
     end
-    
+
     def initialize(hash = {})
       populate_from_hash!(hash)
     end
@@ -117,7 +117,7 @@ module Facebooker
     def populated?
       @populated
     end
-    
+
     ##
     # Set model's attributes via Hash.  Keys should map directly to the model's attribute names.
     def populate_from_hash!(hash)
@@ -126,14 +126,14 @@ module Facebooker
           set_attr_method = "#{key}="
           unless value.nil?
             if respond_to?(set_attr_method)
-              self.__send__(set_attr_method, value) 
+              self.__send__(set_attr_method, value)
             else
               Facebooker::Logging.log_info("**Warning**, Attempt to set non-attribute: #{key}",hash)
             end
           end
         end
         @populated = true
-      end      
-    end    
+      end
+    end
   end
 end

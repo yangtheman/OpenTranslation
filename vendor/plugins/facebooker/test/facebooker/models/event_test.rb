@@ -9,7 +9,7 @@ class Facebooker::EventTest < Test::Unit::TestCase
     attendance.session = session
     event = Facebooker::Event.new
     event.eid = eid
-    session.should_receive(:post).once.with('facebook.events.get', :eids => [eid]).and_return([{:eid => eid}])    
+    session.should_receive(:post).once.with('facebook.events.get', :eids => [eid]).and_return([{:eid => eid}])
     assert_equal(123, attendance.event.eid)
   end
 end

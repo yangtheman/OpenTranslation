@@ -3,7 +3,7 @@ require 'benchmark'
 require 'gruff'
 
 # Simple smoke test for the DRb server
-# usage: 
+# usage:
 #
 # # start the DRb server
 # script/ferret_server -e test start
@@ -149,8 +149,8 @@ module DrbSmokeTest
     end
 
     # run a search and log it's results.
-    # Search is done with a query consisting of the term 'findme' 
-    # (which is guaranteed to yield 20 results) and a random term from 
+    # Search is done with a query consisting of the term 'findme'
+    # (which is guaranteed to yield 20 results) and a random term from
     # the word list, ORed together
     def do_search
       result = nil
@@ -184,7 +184,7 @@ module DrbSmokeTest
 
       while Monitor::running?
         puts "open connections: #{Monitor::count_connections}; time elapsed: #{Time.now - @start} seconds"
-        sleep 10 
+        sleep 10
       end
       puts "doing the math now..."
       DrbSmokeTest::Stats.new(DrbSmokeTest::Writer::prefix).run
@@ -210,7 +210,7 @@ module DrbSmokeTest
       sum / population.size.to_f
     end
 
-    # variance and standard_deviation methods from 
+    # variance and standard_deviation methods from
     # http://warrenseen.com/blog/2006/03/13/how-to-calculate-standard-deviation/
     def variance(population)
       n = 0

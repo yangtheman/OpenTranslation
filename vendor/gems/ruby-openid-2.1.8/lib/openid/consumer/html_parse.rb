@@ -18,7 +18,7 @@ module OpenID
 
     [^>]*>.*?<\/script>
 
-  /mixu 
+  /mixu
 
   def OpenID.openid_unescape(s)
     s.gsub('&amp;','&').gsub('&lt;','<').gsub('&gt;','>').gsub('&quot;','"')
@@ -44,9 +44,9 @@ module OpenID
     saw_head = false
 
     begin
-      while el = parser.getTag('head', '/head', 'link', 'body', '/body', 
+      while el = parser.getTag('head', '/head', 'link', 'body', '/body',
                                'html', '/html')
-        
+
         # we are leaving head or have reached body, so we bail
         return links if ['/head', 'body', '/body', '/html'].member?(el.tag_name)
 
@@ -71,7 +71,7 @@ module OpenID
         if el.tag_name == 'link'
           links << unescape_hash(el.attr_hash)
         end
-        
+
       end
     rescue Exception # just stop parsing if there's an error
     end

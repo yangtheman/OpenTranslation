@@ -55,23 +55,23 @@ class UserTest < ActiveSupport::TestCase
     end
 
     should "be found with right fb_user_id" do
-      fb_user = stub("User", :uid => @user2.fb_user_id, :email_hashes => "someemailhash") 
+      fb_user = stub("User", :uid => @user2.fb_user_id, :email_hashes => "someemailhash")
       user = User.find_by_fb_user(fb_user)
       assert_equal @user2.username, user.username
     end
 
     should "not be found without right fb_user_id" do
-      fb_user = stub("User", :uid => "1231243", :email_hashes => "someemailhash") 
+      fb_user = stub("User", :uid => "1231243", :email_hashes => "someemailhash")
       user = User.find_by_fb_user(fb_user)
       assert_nil user
     end
 
     should "be created if no other user with the same id exists" do
-      fb_user = stub("User", :uid => "12315", :email_hashes => "someemailhash") 
+      fb_user = stub("User", :uid => "12315", :email_hashes => "someemailhash")
       assert User.create_from_fb_connect(fb_user)
-      user = User.find_by_fb_user(fb_user) 
+      user = User.find_by_fb_user(fb_user)
       assert_not_nil user
-      
+
       assert_equal user.username, "fb_#{fb_user.uid}"
       assert_equal user.fb_user_id, fb_user.uid.to_i
     end

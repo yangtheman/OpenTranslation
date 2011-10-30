@@ -873,7 +873,7 @@ module OpenID
       # form_tag_attrs is a hash of attributes to be added to the form
       # tag. 'accept-charset' and 'enctype' have defaults that can be
       # overridden. If a value is supplied for 'action' or 'method',
-      # it will be replaced.       
+      # it will be replaced.
       # Returns the form markup for this response.
       def to_form_markup(form_tag_attrs=nil)
         return @fields.to_form_markup(@request.return_to, form_tag_attrs)

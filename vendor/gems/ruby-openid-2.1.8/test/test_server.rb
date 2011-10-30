@@ -1530,7 +1530,7 @@ module OpenID
                    {'blue' => 'star',
                      'mode' => 'id_res',
                    })
-      
+
       assert_equal(@response.fields.get_args(namespace),
                    {'bright' => 'potato'})
     end
@@ -1613,7 +1613,7 @@ module OpenID
       r = @request.answer(@signatory)
       assert_equal({'is_valid' => 'false'},
                    r.fields.get_args(OPENID_NS))
-      
+
     end
 
     def test_replay
@@ -1750,7 +1750,7 @@ module OpenID
                            invalid_s1,
                            invalid_s1_2,
                           ]
-            
+
       bad_request_argss.each { |request_args|
         message = Message.from_post_args(request_args)
         assert_raise(Server::ProtocolError) {
@@ -2428,7 +2428,7 @@ module OpenID
                     'openid.assoc_type' => 'HMAC-SHA1'}
       areq = @server.decode_request(assoc_args)
       aresp = @server.handle_request(areq)
-      
+
       amess = aresp.fields
       assert(amess.is_openid1)
       ahandle = amess.get_arg(OPENID_NS, 'assoc_handle')
@@ -2441,7 +2441,7 @@ module OpenID
                       'openid.return_to' => 'http://example.com/openid/consumer',
                       'openid.assoc_handle' => ahandle,
                       'openid.identity' => 'http://foo.com/'}
-      
+
       cireq = @server.decode_request(checkid_args)
       ciresp = cireq.answer(true)
 
@@ -2449,7 +2449,7 @@ module OpenID
 
       assert_equal(assoc.get_message_signature(signed_resp.fields),
                    signed_resp.fields.get_arg(OPENID_NS, 'sig'))
-                   
+
       assert(assoc.check_message_signature(signed_resp.fields))
     end
 

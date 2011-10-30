@@ -2,7 +2,7 @@
 
 == Consumer Upgrade
 
-The flow is largely the same, however there are a number of significant 
+The flow is largely the same, however there are a number of significant
 changes.  The consumer example is helpful to look at:
 examples/rails_openid/app/controllers/consumer_controller.rb
 
@@ -11,7 +11,7 @@ examples/rails_openid/app/controllers/consumer_controller.rb
 
 You will need to require the file for the store that you are using.
 For the filesystem store, this is 'openid/stores/filesystem'
-They are also now in modules.  The filesystem store is 
+They are also now in modules.  The filesystem store is
   OpenID::Store::Filesystem
 The format has changed, and you should remove your old store directory.
 
@@ -89,7 +89,7 @@ the base URL and the arguments.  With Rails, the params method mashes
 together parameters from GET, POST, and the path, so you'll need to pull
 off the path "parameters" with something like
 
-  return_to = url_for(:only_path => false, 
+  return_to = url_for(:only_path => false,
                       :controller => 'openid',
                       :action => 'complete')
   parameters = params.reject{|k,v| request.path_parameters[k] }
@@ -114,11 +114,11 @@ with
 == Server Upgrade
 
 The server code is mostly the same as before, with the exception of
-extensions.  Also, you must pass in the endpoint URL to the server 
+extensions.  Also, you must pass in the endpoint URL to the server
 constructor:
   @server = OpenID::Server.new(store, server_url)
 
-I recommend looking at 
+I recommend looking at
 examples/rails_openid/app/controllers/server_controller.rb
 for an example of the new way of doing extensions.
 

@@ -1,6 +1,6 @@
 require 'facebooker/model'
 module Facebooker
-  
+
   ##
   # A simple representation of a cookie.
   class Cookie

@@ -26,7 +26,7 @@ module Facebooker
         yield session if block_given?
         session
       end
-      
+
       def without_canvas
         in_canvas = @integration_session.canvas
         @integration_session.canvas = false

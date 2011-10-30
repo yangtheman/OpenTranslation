@@ -1,13 +1,13 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
 
-  def copy_translate_me_js_to_clipboard   
+  def copy_translate_me_js_to_clipboard
     js_tag = %{<script type="text/javascript" language="javascript">document.write( '<a href="http://opent.heroku.com/posts?url=' + window.location + '">Help us translate this into other languages</a>' );</script><noscript>Note: you can turn on Javascript to see this link.</noscript>}
     html = clippy( url_escape( js_tag ) )
   end
-  
+
   def clippy(text, bgcolor='#FFFFFF')
-    html = 
+    html =
       %{<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
               width="110"
               height="14"
@@ -38,6 +38,6 @@ module ApplicationHelper
     data.gsub!( ';', '%3B' )
     data.gsub!( '+', '%2B' )
     data
-  end  
+  end
 
 end

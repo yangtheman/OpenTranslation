@@ -5,17 +5,17 @@ class HttpMulitpartPostTest < Test::Unit::TestCase
   def setup
     super
   end
-  
+
   def fixture(string)
     File.open(File.dirname(__FILE__) + "/../fixtures/#{string}.txt").read
   end
-  
+
   def test_multipart_post_with_only_parameters
     params = add_sample_facebook_params({})
     post = Net::HTTP::MultipartPost.new("uri", params)
     assert_equal fixture("multipart_post_body_with_only_parameters"), post.send(:body)
   end
-  
+
   def test_multipart_post_with_a_single_file
     params = add_sample_facebook_params({})
     params[:file] = Net::HTTP::MultipartPostFile.new
@@ -25,19 +25,19 @@ class HttpMulitpartPostTest < Test::Unit::TestCase
     post = Net::HTTP::MultipartPost.new("uri", params)
     assert_equal fixture("multipart_post_body_with_single_file"), post.send(:body)
   end
-  
+
   def test_multipart_post_with_a_single_file_parameter_that_has_nil_key
     params = add_sample_facebook_params({})
     params[nil] = Net::HTTP::MultipartPostFile.new("somefilename.jpg", "image/jpg", "[Raw file data here]")
     post = Net::HTTP::MultipartPost.new("uri", params)
     assert_equal fixture("multipart_post_body_with_single_file_that_has_nil_key"), post.send(:body)
   end
-  
+
   def test_multipart_post_should_have_correct_content_type
     post = Net::HTTP::MultipartPost.new("uri", {})
     assert post.send(:content_type) =~ /multipart\/form-data; boundary=/
   end
-  
+
   def add_sample_facebook_params(hash)
     hash[:method] = "facebook.photos.upload"
     hash[:v] = "1.0"

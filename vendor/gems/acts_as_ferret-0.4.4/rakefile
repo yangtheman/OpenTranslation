@@ -1,8 +1,8 @@
-# rakefile for acts_as_ferret. 
+# rakefile for acts_as_ferret.
 # use to create a gem or generate rdoc api documentation.
 #
 # RELEASE creation:
-# rake release REL=x.y.z 
+# rake release REL=x.y.z
 
 require 'pathname'
 require 'yaml'
@@ -56,12 +56,12 @@ if PKG_VERSION
     s.version         = PKG_VERSION
     s.platform        = Gem::Platform::RUBY
     s.summary         = "acts_as_ferret - Ferret based full text search for any ActiveRecord model"
-    s.files  = Dir.glob('**/*', File::FNM_DOTMATCH).reject do |f| 
+    s.files  = Dir.glob('**/*', File::FNM_DOTMATCH).reject do |f|
       [ /\.$/, /sqlite$/, /\.log$/, /^pkg/, /\.svn/, /\.git/, /\.\w+\.sw.$/,
         /^html/, /\~$/, /\/\._/, /\/#/ ].any? {|regex| f =~ regex }
     end
     #s.files           = FileList["{lib,test}/**/*"].to_a + %w(README MIT-LICENSE CHANGELOG)
-  # s.files.delete  ...    
+  # s.files.delete  ...
     s.require_path    = 'lib'
     s.bindir          = "bin"
     s.executables     = ["aaf_install"]
@@ -73,7 +73,7 @@ if PKG_VERSION
     s.email           = "jk@jkraemer.net"
     s.homepage        = "http://projects.jkraemer.net/acts_as_ferret"
   end
-  
+
   desc "Update the gemspec for GitHub's gem server"
   task :gemspec do
     Pathname("#{spec.name}.gemspec").open('w') {|f| f << YAML.dump(spec) }
@@ -85,11 +85,11 @@ if PKG_VERSION
 
   # Validate that everything is ready to go for a release.
   task :prerelease do
-    announce 
+    announce
     announce "**************************************************************"
     announce "* Making RubyGem Release #{PKG_VERSION}"
     announce "**************************************************************"
-    announce  
+    announce
 #     # Are all source files checked in?
 #     if ENV['RELTEST']
 #       announce "Release Task Testing, skipping checked-in file test"
@@ -106,8 +106,8 @@ if PKG_VERSION
 # #      `svk push .`
     # end
   end
-  
-  
+
+
   desc "tag the new release"
   task :tag => [ :prerelease ] do
     reltag = "REL_#{PKG_VERSION.gsub(/\./, '_')}"
@@ -121,7 +121,7 @@ if PKG_VERSION
       `svn copy -m 'tagging version #{PKG_VERSION} as stable' svn://projects.jkraemer.net/acts_as_ferret/tags/#{PKG_VERSION} svn://projects.jkraemer.net/acts_as_ferret/tags/stable`
     end
   end
-  
+
   # Upload release to rubyforge
   desc "Upload release to rubyforge"
   task :prel => [ :tag, :prerelease, :package ] do
@@ -134,8 +134,8 @@ if PKG_VERSION
     puts release_command
     system(release_command)
   end
-  
+
   desc 'Publish the gem and API docs'
   task :release => [:pdoc, :prel ]
-  
+
 end

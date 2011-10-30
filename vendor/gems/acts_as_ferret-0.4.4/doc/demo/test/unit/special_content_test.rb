@@ -9,7 +9,7 @@ class SpecialContentTest < Test::Unit::TestCase
     ContentBase.rebuild_index
     Comment.rebuild_index
   end
-  
+
   def test_class_index_dir
     assert SpecialContent.aaf_configuration[:index_dir] =~ %r{^#{RAILS_ROOT}/index/test/content_base}
   end
@@ -20,6 +20,6 @@ class SpecialContentTest < Test::Unit::TestCase
     assert_equal ContentBase.find(3), contents_from_ferret.first
     contents_from_ferret = SpecialContent.find_with_ferret('title')
     assert contents_from_ferret.empty?
-    
+
   end
 end

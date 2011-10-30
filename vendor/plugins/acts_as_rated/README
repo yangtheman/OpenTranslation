@@ -1,6 +1,6 @@
 = acts_as_rated
 
-The ultimate rating system for ActiveRecord models. Highly flexible and configurable, while easy to use with the defaults. Supports 3 different ways to manage the statistics, and creates all the needed associations for easy access to everything. 
+The ultimate rating system for ActiveRecord models. Highly flexible and configurable, while easy to use with the defaults. Supports 3 different ways to manage the statistics, and creates all the needed associations for easy access to everything.
 
 Comes complete with the needed migrations code to make it easy to add to any project.
 
@@ -88,7 +88,7 @@ Look at the file <tt>test/rating_test.rb</tt> for many usage examples covering a
   hobbit.rated_total    # => 8
   hobbit.rated_count    # => 2
 
-  hobbit.unrate bill 
+  hobbit.unrate bill
   hobbit.rating_average # => 5
   hobbit.rated_total    # => 5
   hobbit.rated_count    # => 1
@@ -98,7 +98,7 @@ Look at the file <tt>test/rating_test.rb</tt> for many usage examples covering a
 
   usr = Book.find_rated_by jill   # => [catch22, hobbit]
 
-=== Migration 
+=== Migration
 The file <tt>test/fixtures/migrations/001_add_rating_tables.rb</tt> shows examples of all types of migration options.
 
 See also the detailed documentation for the <tt>acts_as_rated</tt> method on how to declare it, and the rest of the documentation for how to generate the migration columns/files and how to use it.
@@ -106,7 +106,7 @@ See also the detailed documentation for the <tt>acts_as_rated</tt> method on how
   class AddRatingTables < ActiveRecord::Migration
     def self.up
       ActiveRecord::Base.create_ratings_table
-      
+
       # Movies table has the columns for the ratings added while it's created
       create_table(:movies) do |t|
 	t.column :title, :text
@@ -120,17 +120,17 @@ See also the detailed documentation for the <tt>acts_as_rated</tt> method on how
       end
       Car.add_ratings_columns
     end
-    
+
     def self.down
       # Remove the columns we added
       Car.remove_ratings_columns
-      
+
       drop_table :movies rescue nil
       drop_table :cars rescue nil
 
       ActiveRecord::Base.drop_ratings_table
     end
-  end  
+  end
 
 
 == Testing the plugin
@@ -144,4 +144,4 @@ In order for testing to work, you need to create a database (default name is act
 
 Testing defaults to postgresql, to change it set the environment variable DB to the driver you want to use:
     env DB='mysql' rake test
-    
+

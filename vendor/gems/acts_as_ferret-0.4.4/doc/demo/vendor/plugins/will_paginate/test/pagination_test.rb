@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../init'
 
 class PaginationTest < ActiveRecordTestCase
   fixtures :users
-  
+
   class PaginationController < ActionController::Base
     def list_developers
       @developers = Developer.paginate :page => params[params[:param_name] || :page],
@@ -24,7 +24,7 @@ class PaginationTest < ActiveRecordTestCase
     def rescue_errors(e) raise e end
     def rescue_action(e) raise e end
   end
-  
+
   def setup
     @controller = PaginationController.new
     @request    = ActionController::TestRequest.new
@@ -53,7 +53,7 @@ class PaginationTest < ActiveRecordTestCase
   def test_will_paginate_with_options
     get :list_developers, :page => 2, :class => 'will_paginate', :prev_label => 'Prev', :next_label => 'Next'
     assert_response :success
-    
+
     entries = assigns :developers
     assert entries
     assert_equal 4, entries.size
@@ -67,11 +67,11 @@ class PaginationTest < ActiveRecordTestCase
       assert_select 'span.current', entries.current_page.to_s
     end
   end
-  
+
   def test_will_paginate_preserves_parameters
     get :list_developers, :foo => { :bar => 'baz' }
     assert_response :success
-    
+
     assert_select 'div.pagination', 1, 'no main DIV' do
       assert_select 'a[href]', 3 do |elements|
         elements.each do |el|
@@ -80,11 +80,11 @@ class PaginationTest < ActiveRecordTestCase
       end
     end
   end
-  
+
   def test_will_paginate_with_custom_page_param
     get :list_developers, :developers_page => 2, :param_name => :developers_page
     assert_response :success
-    
+
     entries = assigns :developers
     assert entries
     assert_equal 4, entries.size
@@ -94,13 +94,13 @@ class PaginationTest < ActiveRecordTestCase
         validate_page_numbers [nil,nil,3,3], elements, :developers_page
       end
       assert_select 'span.current', entries.current_page.to_s
-    end    
+    end
   end
 
   def test_will_paginate_windows
     get :list_developers, :page => 6, :per_page => 1, :inner_window => 2
     assert_response :success
-    
+
     entries = assigns :developers
     assert entries
     assert_equal 1, entries.size
@@ -124,7 +124,7 @@ class PaginationTest < ActiveRecordTestCase
     assert_select 'div', false
     assert_equal '', @response.body
   end
-  
+
 protected
 
   def validate_page_numbers expected, links, param_name = :page

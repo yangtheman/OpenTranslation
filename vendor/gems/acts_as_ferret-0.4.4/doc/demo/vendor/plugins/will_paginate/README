@@ -67,7 +67,7 @@ resultset, but WillPaginate view helpers also need that object to be able to ren
 
   Ruby port by:           PJ Hyett, Mislav Marohnić (Sulien)
   Contributors:           K. Adam Christensen, Chris Wanstrath, Dr. Nic Williams
-  Original announcement:  http://errtheblog.com/post/929 
+  Original announcement:  http://errtheblog.com/post/929
   Original PHP source:    http://www.strangerstudios.com/sandbox/pagination/diggstyle.php
 
 REPORT BUGS on Lighthouse: http://err.lighthouseapp.com/projects/466-plugins/overview

@@ -48,7 +48,7 @@ module OpenID
       @responses.each { |response_set|
         @url = response_set[0].final_url
         OpenID.fetcher = SimpleMockFetcher.new(self, response_set)
-      
+
         expected_status = response_set[-1].code
         begin
           OpenID.discover(@url)

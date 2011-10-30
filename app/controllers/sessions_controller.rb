@@ -44,7 +44,7 @@ class SessionsController < ApplicationController
 
     if @current_user.save
       successful_login
-    else 
+    else
       failed_login('Failed to create a user account with OpenID')
     end
   end
@@ -64,7 +64,7 @@ class SessionsController < ApplicationController
       #User in db
       if @current_user.fb_user_id == facebook_session.user.uid
 	successful_login
-      else 
+      else
 	redirect_to new_session_path
       end
     end
@@ -96,7 +96,7 @@ class SessionsController < ApplicationController
 	redirect_to(root_url)
       end
     end
-  
+
     def failed_login(message)
       flash[:error] = message
       redirect_to(new_session_url)

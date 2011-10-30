@@ -8,7 +8,7 @@ body {
 }
 
 .latest	{
-  font-size:26px; 
+  font-size:26px;
   color:#BE5653;
 }
 
@@ -21,22 +21,22 @@ body {
 }
 
 .info {
-  font-size: 14px; 
+  font-size: 14px;
   color: #848484;
 }
 
 .info a {
-  color:#848484; 
-  text-decoration: none; 
+  color:#848484;
+  text-decoration: none;
 }
 
 .info a:hover {
-  color:#848484; 
+  color:#848484;
   text-decoration: underline;
 }
 
 .title {
-  font-size:24px; 
+  font-size:24px;
   color:#FFFFFF;
 }
 
@@ -85,7 +85,7 @@ body {
 }
 
 #main p#url {
-  font-size: 24px; 
+  font-size: 24px;
   padding-top: 30px;
 }
 
@@ -116,9 +116,9 @@ body {
 }
 
 #main p.show_title {
-  font-size: 24px;  
+  font-size: 24px;
   font-weight: bold;
-  padding: 50px 0 20px 10px; 
+  padding: 50px 0 20px 10px;
   text-align: left;
 }
 
@@ -206,7 +206,7 @@ body {
 }
 
 #previous {
-  clear: both; 
+  clear: both;
   padding: 10px;
   /* border-bottom: black dotted; */
 }
@@ -224,7 +224,7 @@ body {
   padding: 5px;
   width: 48%;
   float: right;
-} 
+}
 
 #notification {
   border: 5px solid #9c9;

@@ -52,11 +52,11 @@ class Test::Unit::TestCase
   def example_auth_token_xml
     <<-XML
     <?xml version="1.0" encoding="UTF-8"?>
-    <auth_createToken_response xmlns="http://api.facebook.com/1.0/" 
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    <auth_createToken_response xmlns="http://api.facebook.com/1.0/"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://api.facebook.com/1.0/ http://api.facebook.com/1.0/facebook.xsd">
         3e4a22bb2f5ed75114b0fc9995ea85f1
-        </auth_createToken_response>    
+        </auth_createToken_response>
     XML
   end
 
@@ -68,7 +68,7 @@ class Test::Unit::TestCase
       <uid>8055</uid>
       <expires>1173309298</expires>
       <secret>ohairoflamao12345</secret>
-    </auth_getSession_response>    
+    </auth_getSession_response>
     XML
-  end  
+  end
 end

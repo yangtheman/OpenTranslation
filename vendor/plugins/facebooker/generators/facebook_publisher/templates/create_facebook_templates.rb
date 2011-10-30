@@ -1,6 +1,6 @@
 class CreateFacebookTemplates < ActiveRecord::Migration
   def self.up
-    create_table :facebook_templates, :force => true do |t|      
+    create_table :facebook_templates, :force => true do |t|
       t.string :template_name, :null => false
       t.string :content_hash, :null => false
       t.string :bundle_id, :null => true

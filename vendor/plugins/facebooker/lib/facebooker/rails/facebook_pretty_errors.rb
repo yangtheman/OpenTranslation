@@ -13,8 +13,8 @@ class ActionController::Base
     pretty_facebook_errors? ? 200 : response_code_for_rescue_without_facebooker(exception)
   end
   alias_method_chain :response_code_for_rescue, :facebooker
-  
-  
+
+
   def pretty_facebook_errors?
     Facebooker.facebooker_config['pretty_errors'] ||
       (Facebooker.facebooker_config['pretty_errors'].nil? && RAILS_ENV=="development")

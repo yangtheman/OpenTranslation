@@ -11,17 +11,17 @@ class MultiIndexTest < Test::Unit::TestCase
     #make sure the fixtures are in the index
     FileUtils.rm_f 'index/test/'
     Comment.rebuild_index
-    ContentBase.rebuild_index 
+    ContentBase.rebuild_index
     raise "missing fixtures" unless ContentBase.count > 2
-    
-    @another_content = Content.new( :title => 'Another Content item', 
+
+    @another_content = Content.new( :title => 'Another Content item',
                                     :description => 'this is not the title' )
     @another_content.save
     @comment = @another_content.comments.create(:author => 'john doe', :content => 'This is a useless comment')
     @comment2 = @another_content.comments.create(:author => 'another', :content => 'content')
     @another_content.save # to update comment_count in ferret-index
   end
-  
+
   def teardown
     ContentBase.find(:all).each { |c| c.destroy }
     Comment.find(:all).each { |c| c.destroy }
@@ -43,7 +43,7 @@ class MultiIndexTest < Test::Unit::TestCase
 #    assert_not_nil result.ar_record
 #  end
 
-  
+
   def test_total_hits
     q = '*:title OR *:comment'
     assert_equal 3, Comment.total_hits(q)
@@ -78,10 +78,10 @@ class MultiIndexTest < Test::Unit::TestCase
     assert_equal result.map(&:ferret_score), result2.map(&:ferret_score).reverse
   end
 
-  
+
   # remote index rebuilds will create an index in a directory with a timestamped name.
-  # the local MultiIndex instance doesn't know about this (because it's running in 
-  # another interpreter instance than the server) and therefore fails to use the 
+  # the local MultiIndex instance doesn't know about this (because it's running in
+  # another interpreter instance than the server) and therefore fails to use the
   # correct index directories.
   # TODO strange, still doesn't work but it should now...
   unless Content.aaf_configuration[:remote]
@@ -91,11 +91,11 @@ class MultiIndexTest < Test::Unit::TestCase
       hits = i.search(TermQuery.new(:title,"title"))
       assert_equal 1, hits.total_hits
 
-      qp = Ferret::QueryParser.new(:default_field => "title", 
+      qp = Ferret::QueryParser.new(:default_field => "title",
                                   :analyzer => Ferret::Analysis::WhiteSpaceAnalyzer.new)
       hits = i.search(qp.parse("title"))
       assert_equal 1, hits.total_hits
-      
+
       qp = Ferret::QueryParser.new(:fields => ['title', 'content', 'description'],
                         :analyzer => Ferret::Analysis::WhiteSpaceAnalyzer.new)
       hits = i.search(qp.parse("title"))
@@ -182,7 +182,7 @@ class MultiIndexTest < Test::Unit::TestCase
 
   def test_multi_search
     assert_equal 4, ContentBase.find(:all).size
-    
+
     Content.aaf_index.ferret_index.flush
     contents_from_ferret = ActsAsFerret::find('description:title', [Content])
     assert_equal 1, contents_from_ferret.size
@@ -194,10 +194,10 @@ class MultiIndexTest < Test::Unit::TestCase
     assert_equal 2, contents_from_ferret.size
     contents_from_ferret = ActsAsFerret::find('title', [Content])
     assert_equal 2, contents_from_ferret.size
-    
+
     assert_equal contents(:first).id, contents_from_ferret.first.id
     assert_equal @another_content.id, contents_from_ferret.last.id
-    
+
     contents_from_ferret = ActsAsFerret::find('title', [Content])
     assert_equal 2, contents_from_ferret.size
     contents_from_ferret = ActsAsFerret::find('title', [Content], :limit => 1)
@@ -230,7 +230,7 @@ class MultiIndexTest < Test::Unit::TestCase
 
   def test_find_ids
     assert_equal 4, ContentBase.find(:all).size
-    
+
     [ 'title:title OR description:title OR content:title', 'title', '*:title'].each do |query|
       total_hits, contents_from_ferret = ActsAsFerret.find_ids(query, Content)
       assert_equal 2, contents_from_ferret.size, query
@@ -288,7 +288,7 @@ class MultiIndexTest < Test::Unit::TestCase
   def test_pagination_with_ar_conditions
     more_contents(true)
     id = Content.find_with_ferret('title').first.id
-    r = ActsAsFerret.find 'title OR comment', [Content, Comment], { :page => 1, :per_page => 10 }, 
+    r = ActsAsFerret.find 'title OR comment', [Content, Comment], { :page => 1, :per_page => 10 },
                                           { :conditions => { :content => ["id != ?", id] }, :order => 'id ASC' }
     assert_equal 59, r.total_hits
     assert_equal 10, r.size

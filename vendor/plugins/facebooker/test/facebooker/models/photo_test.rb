@@ -7,7 +7,7 @@ class Facebooker::UserTest < Test::Unit::TestCase
     @photo = Facebooker::Photo.new(:pid=>"100000025509592_6801")
     assert_equal("100000025509592_6801",@photo.pid)
   end
-  
+
   def test_setting_id_should_also_use_new_method
     @photo = Facebooker::Photo.new(:id=>"100000025509592_6801")
     assert_equal("100000025509592_6801",@photo.id)

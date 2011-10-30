@@ -23,21 +23,21 @@ class Orig < ActiveRecord::Base
     web.search("#comments").remove
     web.search("div.comments").remove
     web.search("div.entry-footer").remove
-    
+
     # Paul Graham's essays are built with tables
     if url =~ /paulgraham\.com/
       # Skip elements with table open and close tags
       # Wrap each paragraph with <p></p> tags
       bodyarr = web.at('body').inner_html.split('<br /><br />').select {|para| para !~ /<[\/]*table/}
       body = bodyarr.map {|para| "<p>#{para}</p>"}.join
-    elsif url =~ /googleblog\.blogspot\.com/ 
+    elsif url =~ /googleblog\.blogspot\.com/
       body = web.search("div.post-body").to_html.split('<br /><br />').map {|para| "<p>#{para}</p>"}.join
     else
       # Wordpress's main body has "post-content", "entry" or "entry-content" div class
       # Typepad's main body has "entry-body" div class
       if (body = web.search("div.post-content")).size > 0
-      elsif (body = web.search("div.entry-body")).size > 0 
-      elsif (body = web.search("div.entry-content")).size > 0 
+      elsif (body = web.search("div.entry-body")).size > 0
+      elsif (body = web.search("div.entry-content")).size > 0
       elsif (body = web.search("div.entry")).size > 0
       else
 	body = web.search("/html/body")
@@ -48,7 +48,7 @@ class Orig < ActiveRecord::Base
 
   def newentry
     self.author = self.url.scan(/http:\/\/[\w.]+/)[0]
-    
+
     begin
       web = Hpricot(open(self.url))
     rescue
@@ -57,7 +57,7 @@ class Orig < ActiveRecord::Base
 
     self.title = web.at("title").inner_text
     self.content = Orig.extract_body(web, self.url)
-    
+
     save
   end
 

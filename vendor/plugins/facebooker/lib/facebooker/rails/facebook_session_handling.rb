@@ -6,9 +6,9 @@ module ActionController
       initialize_aliased_by_facebooker(cgi, session_options)
       @cgi.instance_variable_set("@request_params", request_parameters.merge(query_parameters))
     end
-    
+
     DEFAULT_SESSION_OPTIONS[:cookie_only] = false
-  end 
+  end
 end
 
 module ActionController
@@ -19,10 +19,10 @@ module ActionController
       initialize_aliased_by_facebooker(cgi, session_options)
       @cgi.instance_variable_set("@request_params", request_parameters.merge(query_parameters))
     end
-  end 
+  end
 end
 
-class CGI  
+class CGI
   class Session
       alias :initialize_aliased_by_facebooker :initialize
       attr_reader :request, :initialization_options
@@ -33,11 +33,11 @@ class CGI
         option['session_id'] ||= set_session_id
         initialize_aliased_by_facebooker(request, option)
       end
-      
+
       def set_session_id
-        if session_key_should_be_set_with_facebook_session_key? 
+        if session_key_should_be_set_with_facebook_session_key?
           request_parameters[facebook_session_key]
-        else 
+        else
           request_parameters[session_key]
         end
       end

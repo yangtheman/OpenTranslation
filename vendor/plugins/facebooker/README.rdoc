@@ -48,15 +48,15 @@ Facebooker can be installed as a Rails plugin by:
 
 If you don't have git, the plugin can be downloaded from http://github.com/mmangino/facebooker/tarball/master
 
-Once the plugin is installed, you will need to configure your Facebook app in config/facebooker.yml. 
+Once the plugin is installed, you will need to configure your Facebook app in config/facebooker.yml.
 
 Your application users will need to have added the application in facebook to access all of facebooker's features. You enforce this by adding
 
-  ensure_application_is_installed_by_facebook_user  
+  ensure_application_is_installed_by_facebook_user
 
 to your application controller.
 
-To prevent a violation of Facebook Terms of Service while reducing log bloat, you should also add 
+To prevent a violation of Facebook Terms of Service while reducing log bloat, you should also add
 
   filter_parameter_logging :fb_sig_friends
 
@@ -78,7 +78,7 @@ class CGI
 end
 
 == Other versions
- 
+
  A facebooker port for Sinatra is available at http://github.com/jsmestad/frankie/tree/master
 
 == LICENSE:

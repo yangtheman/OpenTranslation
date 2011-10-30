@@ -3,7 +3,7 @@ module ::ActionController
     def self.inherited_with_facebooker(subclass)
       inherited_without_facebooker(subclass)
       if subclass.to_s == "ApplicationController"
-        subclass.send(:include,Facebooker::Rails::Controller) 
+        subclass.send(:include,Facebooker::Rails::Controller)
         subclass.helper Facebooker::Rails::Helpers
       end
     end
@@ -27,7 +27,7 @@ if Rails.version < '2.3'
         (query_parameters_without_facebooker||{}).reject {|key,value| key.to_s =~ /^fb_sig/}
       end
     end
-  
+
     alias_method_chain :query_parameters, :facebooker
   end
 else
@@ -39,7 +39,7 @@ else
         (query_parameters_without_facebooker||{}).reject {|key,value| key.to_s =~ /^fb_sig/}
       end
     end
-  
+
     alias_method_chain :query_parameters, :facebooker
   end
 end

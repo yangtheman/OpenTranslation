@@ -14,7 +14,7 @@ class UsersController < ApplicationController
     @current_user.update_attributes(params[:user])
     redirect_to root_url
   end
-  
+
   def index
     @users = User.paginate :page => params[:page], :order => 'created_at DESC', :per_page => 10
   end

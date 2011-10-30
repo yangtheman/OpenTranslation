@@ -16,21 +16,21 @@ class User < ActiveRecord::Base
 
   #find the user in the database by the facebook user id
   def self.find_by_fb_user(fb_user)
-    User.find_by_fb_user_id(fb_user.uid) 
+    User.find_by_fb_user_id(fb_user.uid)
   end
-	
+
   #Take the data returned from facebook and create a new user from it.
   #We don't get the email from Facebook and because a facebooker can only login through Connect we just generate a unique login name for them.
   #If you were using username to display to people you might want to get them to select one after registering through Facebook Connect
   def self.create_from_fb_connect(fb_user)
-    new_facebooker = User.new(:username => "fb_#{fb_user.uid}", :email => "") 
+    new_facebooker = User.new(:username => "fb_#{fb_user.uid}", :email => "")
     new_facebooker.fb_user_id = fb_user.uid.to_i
-	
+
     #Force save and ask user to enter username and email
     new_facebooker.save(false)
-    new_facebooker  
+    new_facebooker
   end
-	
+
   def facebook_user?
     return !fb_user_id.nil? && fb_user_id > 0
   end

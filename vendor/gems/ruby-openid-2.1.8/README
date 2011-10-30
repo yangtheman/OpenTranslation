@@ -20,9 +20,9 @@ Before running the examples or writing your own code you'll need to install
 the library.  See the INSTALL file or use rubygems:
 
   gem install ruby-openid
-  
+
 Check the installation:
-  
+
   $ irb
   irb> require 'rubygems'
   irb> require_gem 'ruby-openid'

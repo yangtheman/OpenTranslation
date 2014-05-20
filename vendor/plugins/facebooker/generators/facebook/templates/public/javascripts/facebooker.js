@@ -48,7 +48,7 @@ function encodeURIComponent(str) {
 
 var Form = {};
 Form.serialize = function(form_element) {
-  return  $(form_element).serialize();  
+  return  $(form_element).serialize();
 };
 
 Ajax.Updater = function (container,url,options) {
@@ -78,9 +78,9 @@ Ajax.Updater = function (container,url,options) {
     options['parameters']['_method'] = options['method'];
   }
 
-  this.ajax.post(url,options['parameters']); 
+  this.ajax.post(url,options['parameters']);
   if (options["onLoading"]) {
-     options["onLoading"].call() 
+     options["onLoading"].call()
   }
 };
 Ajax.Request = function(url,options) {

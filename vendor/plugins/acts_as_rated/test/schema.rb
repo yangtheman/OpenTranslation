@@ -5,21 +5,21 @@ ActiveRecord::Schema.define(:version => 0) do
   end
 
   create_table :ratings, :force => true do |t|
-    t.column :rater_id,   :integer 
+    t.column :rater_id,   :integer
     t.column :rated_id,   :integer
     t.column :rated_type, :string
     t.column :rating,     :decimal
   end
 
   create_table :stats_ratings, :force => true do |t|
-    t.column :rater_id,   :integer 
+    t.column :rater_id,   :integer
     t.column :rated_id,   :integer
     t.column :rated_type, :string
     t.column :rating,     :decimal
   end
 
   create_table :my_stats_ratings, :force => true do |t|
-    t.column :rater_id,   :integer 
+    t.column :rater_id,   :integer
     t.column :rated_id,   :integer
     t.column :rated_type, :string
     t.column :rating,     :decimal
@@ -60,7 +60,7 @@ ActiveRecord::Schema.define(:version => 0) do
     t.column :rating_total, :decimal
     t.column :rating_avg, :decimal
   end
-  
+
   create_table :my_statistics, :force => true do |t|
     t.column :rated_id,   :integer
     t.column :rated_type, :string
@@ -68,5 +68,5 @@ ActiveRecord::Schema.define(:version => 0) do
     t.column :rating_total, :decimal
     t.column :rating_avg, :decimal
   end
-  
+
 end

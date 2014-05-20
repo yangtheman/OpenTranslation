@@ -2,7 +2,7 @@ on_a_golden_pond:
   id: 1
   rated_id: 1
   rated_type: Tape
-  rating_total: 13 
+  rating_total: 13
   rating_count: 3
   rating_avg: 4.3333333333
 
@@ -15,7 +15,7 @@ fame:
   rating_avg: 5
 
 ten:
-  id: 3 
+  id: 3
   rated_id: 3
   rated_type: Tape
   rating_total: 4
@@ -24,7 +24,7 @@ ten:
 
 fields_of_dreams:
   id: 4
-  rated_id: 4 
+  rated_id: 4
   rated_type: Tape
   rating_total: 16
   rating_count: 5

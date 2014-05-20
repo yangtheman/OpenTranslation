@@ -85,7 +85,7 @@ class LinkParseTestCase < Test::Unit::TestCase
         end
       }
       links = OpenID::parse_link_attrs(html)
-      
+
       found = links.dup
       expected = expected_links.dup
       while(fl = found.shift)

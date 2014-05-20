@@ -17,7 +17,7 @@ class OrigTest < ActiveSupport::TestCase
   should_not_allow_values_for :url, "htp://www.web.com", "ftp://web.com", "http://com", "http://web"
 
   context "An original blog" do
-    setup do 
+    setup do
       @user1 = Factory.create(:user)
       @web_content1 = '<html><head><title>Awesome Blog</title></head><body><div id="entry"><p>Awesome Content</p><p>Awesome Content 2</p></div></body></html>'
       @web_content2 = '<html><head><title>PG Blog</title></head><body>Paragraph 1<br /><br />Paragraph 2</body></html>'
@@ -58,7 +58,7 @@ class OrigTest < ActiveSupport::TestCase
       assert_equal orig.title, "PG Blog"
       assert_equal orig.content, "<p>Paragraph 1</p><p>Paragraph 2</p>"
     end
-    
+
     context "with existing entry" do
       setup do
 	@orig = Factory.create(:orig)

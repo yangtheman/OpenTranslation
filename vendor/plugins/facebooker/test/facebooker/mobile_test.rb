@@ -6,7 +6,7 @@ class Facebooker::MobileTest < Test::Unit::TestCase
     @user = Facebooker::User.new(1234, @session)
     Facebooker.use_curl=false
   end
-  
+
   def test_can_send
     expect_http_posts_with_responses(example_can_send_xml)
     assert(@session.mobile.can_send(@user))
@@ -14,7 +14,7 @@ class Facebooker::MobileTest < Test::Unit::TestCase
 
   def test_send
     expect_http_posts_with_responses(example_send_xml)
-    assert(@session.mobile.send(@user, "Some sort of message"))    
+    assert(@session.mobile.send(@user, "Some sort of message"))
   end
 
 private
@@ -29,7 +29,7 @@ private
     </sms_canSend_response>
     XML
   end
-  
+
   def example_send_xml
     <<-XML
     <?xml version="1.0" encoding="UTF-8"?>
@@ -41,5 +41,5 @@ private
     </sms_send_response>
     XML
   end
-  
+
 end

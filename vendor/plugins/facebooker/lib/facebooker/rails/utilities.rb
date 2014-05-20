@@ -7,7 +7,7 @@ module Facebooker
             refresh_image(session,img)
           end
         end
-        
+
         def refresh_image(session,full_path)
           basename=File.basename(full_path)
           base_path=ActionController::Base.asset_host

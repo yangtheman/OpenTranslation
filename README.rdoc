@@ -12,7 +12,7 @@ Ultimately, I think it's all about spreading knowledge, ideas and concepts acros
 
 == Caveats
 
-I am hosting the site at Heroku for free, thus not much horsepower. Worse yet, it scrapes other web pages and uses Google Translate API, thus it's will be slow. You may even get "connection timeout" error. I'd like to add "background job" or more "dynos" features to increase performance once I find a job. Currently it works well with Wordpress blog, Typepad blog, Google's official blog, and Paul Graham's essays. 
+I am hosting the site at Heroku for free, thus not much horsepower. Worse yet, it scrapes other web pages and uses Google Translate API, thus it's will be slow. You may even get "connection timeout" error. I'd like to add "background job" or more "dynos" features to increase performance once I find a job. Currently it works well with Wordpress blog, Typepad blog, Google's official blog, and Paul Graham's essays.
 
 == License
 

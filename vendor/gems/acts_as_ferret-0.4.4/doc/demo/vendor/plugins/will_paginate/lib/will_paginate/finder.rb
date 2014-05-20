@@ -14,7 +14,7 @@ module WillPaginate
     end
 
     # = Paginating finders for ActiveRecord models
-    # 
+    #
     # WillPaginate doesn't really add extra methods to your ActiveRecord models (except +per_page+
     # unless it's already available). It simply intercepts
     # the calls to paginating finders such as +paginate+, +paginate_by_user_id+ (and so on) and
@@ -23,9 +23,9 @@ module WillPaginate
     # same way you used ordinary ones. You only need to tell them what page you want in options.
     #
     #   @topics = Topic.paginate :all, :page => params[:page]
-    # 
+    #
     # In paginating finders, "all" is implicit. No sense in paginating a single record, right? So:
-    # 
+    #
     #   Post.paginate                  => Post.find :all
     #   Post.paginate_all_by_something => Post.find_all_by_something
     #   Post.paginate_by_something     => Post.find_all_by_something
@@ -38,21 +38,21 @@ module WillPaginate
     #
     # == Options
     # Options for paginating finders are:
-    # 
+    #
     #   page           REQUIRED, but defaults to 1 if false or nil
     #   per_page       (default is read from the model, which is 30 if not overriden)
     #   total entries  not needed unless you want to count the records yourself somehow
     #   count          hash of options that are used only for the call to count
-    # 
+    #
     module ClassMethods
       # This methods wraps +find_by_sql+ by simply adding LIMIT and OFFSET to your SQL string
       # based on the params otherwise used by paginating finds: +page+ and +per_page+.
       #
       # Example:
-      # 
+      #
       #   @developers = Developer.paginate_by_sql ['select * from developers where salary > ?', 80000],
       #                           :page => params[:page], :per_page => 3
-      # 
+      #
       def paginate_by_sql(sql, options)
         options, page, per_page = wp_parse_options!(options)
         sanitized_query = sanitize_sql(sql)
@@ -75,11 +75,11 @@ module WillPaginate
       end
 
     protected
-      
+
       def method_missing_with_paginate(method, *args, &block)
         # did somebody tried to paginate? if not, let them be
         unless method.to_s.index('paginate') == 0
-          return method_missing_without_paginate(method, *args, &block) 
+          return method_missing_without_paginate(method, *args, &block)
         end
 
         options, page, per_page = wp_parse_options!(args.pop)
@@ -107,7 +107,7 @@ module WillPaginate
           unless args.first.is_a? Array
             # count expects (almost) the same options as find
             count_options = options.except :count, :order, :select
-            
+
             # merge the hash found in :count
             # this allows you to specify :select, :order, or anything else just for the count query
             count_options.update(options.delete(:count)) if options.key? :count
@@ -115,10 +115,10 @@ module WillPaginate
             conditions = wp_extract_finder_conditions(finder, args, count_options)
 
             # scope_out adds a 'with_finder' method which acts like with_scope, if it's present
-            # then execute the count with the scoping provided by the with_finder  
+            # then execute the count with the scoping provided by the with_finder
             count = nil
             counter = Proc.new { count = count(count_options) }
-            
+
             if respond_to?(scoper = finder.sub(/^find/, 'with'))
               send(scoper, &counter)
             else

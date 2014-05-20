@@ -119,7 +119,7 @@ module OpenID
       def test_invalid_count_value
         msg = FetchRequest.new
         assert_raises(Error) {
-          msg.parse_extension_args({'type.foo'=>'urn:foo', 
+          msg.parse_extension_args({'type.foo'=>'urn:foo',
                                      'count.foo' => 'bogus'})
         }
       end
@@ -216,7 +216,7 @@ module OpenID
                     'value.foo'=>'something',
                   },
                   {'urn:foo'=>['something']}
-                  )     
+                  )
       end
     end
 
@@ -383,7 +383,7 @@ module OpenID
                                                   })
         openid_req = Server::OpenIDRequest.new
         openid_req.message = openid_req_msg
-        assert_raises(Error) { 
+        assert_raises(Error) {
           FetchRequest.from_openid_request(openid_req)
         }
       end
@@ -398,7 +398,7 @@ module OpenID
                                                   })
         openid_req = Server::OpenIDRequest.new
         openid_req.message = openid_req_msg
-        assert_raises(Error) { 
+        assert_raises(Error) {
           FetchRequest.from_openid_request(openid_req)
         }
       end
@@ -623,7 +623,7 @@ module OpenID
         msg = StoreResponse.new
         assert(msg.succeeded?)
         assert(!msg.error_message)
-        assert_equal({'mode' => 'store_response_success'}, 
+        assert_equal({'mode' => 'store_response_success'},
                      msg.get_extension_args)
       end
 
@@ -631,7 +631,7 @@ module OpenID
         msg = StoreResponse.new(false)
         assert(! msg.succeeded? )
         assert(! msg.error_message )
-        assert_equal({'mode' => 'store_response_failure'}, 
+        assert_equal({'mode' => 'store_response_failure'},
                      msg.get_extension_args)
       end
 
@@ -640,7 +640,7 @@ module OpenID
         msg = StoreResponse.new(false, reason)
         assert(! msg.succeeded? )
         assert_equal(reason,  msg.error_message)
-        assert_equal({'mode' => 'store_response_failure', 'error' => reason}, 
+        assert_equal({'mode' => 'store_response_failure', 'error' => reason},
                      msg.get_extension_args)
       end
     end

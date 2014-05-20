@@ -5,12 +5,12 @@ class PostsController < ApplicationController
   #def exception
   #  raise(Exception, "Forced Exception from NodesController")
   #end
-  
+
   uses_yui_editor
 
   # Check client browser only in new and update
   before_filter :check_browser, :login_required, :except => [:index, :show, :search]
-  
+
   def new
     unless params[:post] && params[:url]
       flash[:error] = 'Input parameters are empty.'
@@ -26,15 +26,15 @@ class PostsController < ApplicationController
       url = "http://" + params[:url]
     else
       url = params[:url]
-    end 
+    end
 
     @orig = Orig.find_by_url(url)
     target_lang_id = params[:post][:ted_id]
 
     # Original post exist?
-    if !@orig 
+    if !@orig
       # First translation ever, thus create a original entry.
-      @orig = Orig.new(:origin_id => params[:post][:origin_id], 
+      @orig = Orig.new(:origin_id => params[:post][:origin_id],
 		       :url => params[:url],
 		       :user_id => @current_user.id)
       if !@orig.newentry
@@ -51,7 +51,7 @@ class PostsController < ApplicationController
     if !@post.prep(target_lang_id, @orig)
       flash[:error] = "Translation not supported yet."
       redirect_to(root_url)
-    end 
+    end
   end
 
   def create
@@ -75,19 +75,19 @@ class PostsController < ApplicationController
     target_lang_id = params[:post][:ted_id]
 
     # Refactor this
-    if @orig.origin_id == params[:post][:ted_id] 
+    if @orig.origin_id == params[:post][:ted_id]
       # Trying to translate to original language
       flash[:error] = "Cannot translate to the same language!"
       redirect_to :back and return
     elsif @post = @orig.posts.find_by_ted_id(target_lang_id)
       # Tranlsation already exists, and thus bring up edit page
       redirect_to edit_orig_post_path(@orig, @post) and return
-    else 	
+    else
       @post = @orig.posts.new
       if !@post.prep(target_lang_id, @orig)
 	flash[:error] = "Translation not supported yet."
-	redirect_to :back 
-      else 
+	redirect_to :back
+      else
 	render :action => "new"
       end
     end
@@ -108,7 +108,7 @@ class PostsController < ApplicationController
         flash[:user_action_to_publish] = FacebookPublisher.create_publish_tx(@post, @orig.title, session[:facebook_session])
       end
       redirect_to([@orig, @post])
-    else 
+    else
       flash[:error] = 'Update failed'
       render :action => "edit"
     end
@@ -117,7 +117,7 @@ class PostsController < ApplicationController
   def show
     @orig = Orig.find(params[:orig_id])
     @post = @orig.posts.find(params[:id])
-    if params[:version] 
+    if params[:version]
       @post.revert_to(params[:version])
     end
 
@@ -129,12 +129,12 @@ class PostsController < ApplicationController
   def rate
     @orig = Orig.find(params[:orig_id])
     @post = @orig.posts.find(params[:id])
-    if params[:version] 
+    if params[:version]
       @post.revert_to(params[:version])
     end
 
-    #user = User.find(@post.user_id) 
-    #user.rate(params[:rating].to_i, @current_user) 
+    #user = User.find(@post.user_id)
+    #user.rate(params[:rating].to_i, @current_user)
     @post.rate(params[:rating].to_i, @current_user) if !@post.rated_by?(@current_user)
     #redirect_to post_path(post)
     render :partial => "post_rating", :locals => {:orig => @orig, :post => @post}
@@ -147,7 +147,7 @@ class PostsController < ApplicationController
     #@total_hits = Post.total_hits(@query)
     #@posts = Post.paginate_with_ferret(@query, :page => params[:page], :per_page => 10, :order => 'updated_at DESC')
   end
-   
+
   def check_browser
     browser_type = ua_identifier(request.user_agent)
     redirect_to browser_path if browser_type == "Internet Explorer"

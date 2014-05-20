@@ -58,7 +58,7 @@ class PostsControllerTest < ActionController::TestCase
     setup do
       getready
       get :new, :url => @oldorig.url, :post => {:origin_id => 1, :ted_id => 10}
-    end  
+    end
 
     should_assign_to :orig
     should_assign_to :post
@@ -82,10 +82,10 @@ class PostsControllerTest < ActionController::TestCase
     should_render_template :new
 
     should "find the orig post and create new post" do
-      assert_equal @oldorig.id, assigns(:orig).id 
+      assert_equal @oldorig.id, assigns(:orig).id
       assert_equal @newpost.id, assigns(:post).id
     end
-  end    
+  end
 
   context "On GET to :new with existing URL but no existing translation and with non-supported translation" do
     setup do
@@ -96,7 +96,7 @@ class PostsControllerTest < ActionController::TestCase
 
     #should_set_the_flash_to "Translation not supported yet."
     should_redirect_to("Root URL") { root_url }
-  end    
+  end
 
   context "On GET to :new with no session" do
     setup do
@@ -135,7 +135,7 @@ class PostsControllerTest < ActionController::TestCase
     should_assign_to :post
     should_render_template :new
     #should_set_the_flash_to "Save failed."
-  end 
+  end
 
   context "On POST to :add_trans with the same origin and ted_id" do
     setup do
@@ -149,7 +149,7 @@ class PostsControllerTest < ActionController::TestCase
     should_redirect_to("Previous page") {"http://blah.com/"}
   end
 
-  context "On POST to :add_trans with the existing ted_id" do 
+  context "On POST to :add_trans with the existing ted_id" do
     setup do
       getready
       post :add_trans, :orig_id => @oldorig.id, :post => {:ted_id => 10}
@@ -167,7 +167,7 @@ class PostsControllerTest < ActionController::TestCase
       post :add_trans, :orig_id => @oldorig.id, :post => {:ted_id => 9}
     end
 
-    should_assign_to :orig 
+    should_assign_to :orig
     should_assign_to :post
     should_render_template :new
   end
@@ -180,7 +180,7 @@ class PostsControllerTest < ActionController::TestCase
       post :add_trans, :orig_id => @oldorig.id, :post => {:ted_id => 9}
     end
 
-    should_assign_to :orig 
+    should_assign_to :orig
     should_assign_to :post
     #should_set_the_flash_to "Translation not supported yet."
     should_redirect_to("Previous Page") { "http://blah.com/" }
@@ -196,7 +196,7 @@ class PostsControllerTest < ActionController::TestCase
     should_assign_to :post
     should_render_template :edit
   end
-  
+
   context "On PUT to :update with successful update_attributes" do
     setup do
       getready
@@ -232,7 +232,7 @@ class PostsControllerTest < ActionController::TestCase
     end
 
     should_assign_to :orig, :post, :ted_user, :languages
-    
+
     should "get the right original post and its child post" do
       assert_equal @oldorig.id, assigns(:orig).id
       assert_equal @oldpost.id, assigns(:post).id

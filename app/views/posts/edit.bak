@@ -7,7 +7,7 @@
 	<p>
 	Content: <br />
 	<!--<%= f.text_area :content, :cols => 60, :rows => 40, :class => 'rich_text_editor' %>-->
-	<%= ckeditor_textarea(“post", “content”, :width => ‘100%’, :height => ‘200px’) %> 
+	<%= ckeditor_textarea(“post", “content”, :width => ‘100%’, :height => ‘200px’) %>
 	</p>
 	<%= f.hidden_field :ted_id, :value => @post.ted_id %>
 	<p>

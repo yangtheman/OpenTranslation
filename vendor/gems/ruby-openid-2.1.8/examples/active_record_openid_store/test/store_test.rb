@@ -6,7 +6,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), '../../../../config/e
 module StoreTestCase
   @@allowed_handle = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~'
   @@allowed_nonce = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-  
+
   def _gen_nonce
     OpenID::CryptUtil.random_string(8, @@allowed_nonce)
   end
@@ -23,9 +23,9 @@ module StoreTestCase
     secret = _gen_secret(20)
     handle = _gen_handle(128)
     OpenID::Association.new(handle, secret, Time.now + issued, lifetime,
-                            'HMAC-SHA1') 
+                            'HMAC-SHA1')
   end
-  
+
   def _check_retrieve(url, handle=nil, expected=nil)
     ret_assoc = @store.get_association(url, handle)
 
@@ -156,10 +156,10 @@ module StoreTestCase
     [server_url, ''].each{|url|
       nonce1 = OpenID::Nonce::mk_nonce
 
-      _check_use_nonce(nonce1, true, url, "#{url}: nonce allowed by default") 
-      _check_use_nonce(nonce1, false, url, "#{url}: nonce not allowed twice") 
+      _check_use_nonce(nonce1, true, url, "#{url}: nonce allowed by default")
+      _check_use_nonce(nonce1, false, url, "#{url}: nonce not allowed twice")
       _check_use_nonce(nonce1, false, url, "#{url}: nonce not allowed third time")
-      
+
       # old nonces shouldn't pass
       old_nonce = OpenID::Nonce::mk_nonce(3600)
       _check_use_nonce(old_nonce, false, url, "Old nonce #{old_nonce.inspect} passed")
@@ -182,7 +182,7 @@ module StoreTestCase
     ts, salt = OpenID::Nonce::split_nonce(recent_nonce)
     assert(@store.use_nonce(server_url, ts, salt), "recent_nonce")
 
-    
+
     OpenID::Nonce.skew = 1000
     cleaned = @store.cleanup_nonces
     assert_equal(2, cleaned, "Cleaned #{cleaned} nonces")
@@ -203,7 +203,7 @@ end
 
 class TestARStore < Test::Unit::TestCase
   include StoreTestCase
-  
+
   def setup
     @store = ActiveRecordStore.new
   end

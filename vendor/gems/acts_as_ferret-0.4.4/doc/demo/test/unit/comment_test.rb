@@ -11,7 +11,7 @@ class CommentTest < Test::Unit::TestCase
   def test_truth
     assert_kind_of Comment, comments(:first)
   end
-  
+
   def test_issue_220_index_false_as_false
     c = Comment.new :content => false
     assert_equal false, c.content
@@ -123,31 +123,31 @@ class CommentTest < Test::Unit::TestCase
     assert_equal 2, comments_from_ferret.size
     assert comments_from_ferret.include?(comment)
     assert comments_from_ferret.include?(comment2)
-    
+
     # find options
     comments_from_ferret = Comment.find_with_ferret('anoth* OR jo*', {}, :conditions => ["id=?",comment2.id])
     assert_equal 1, comments_from_ferret.size
     assert comments_from_ferret.include?(comment2)
-    
+
     comments_from_ferret = Comment.find_with_ferret('lorem ipsum not here')
     assert comments_from_ferret.empty?
 
     comments_from_ferret = Comment.find_with_ferret('another')
     assert_equal 1, comments_from_ferret.size
     assert_equal comment2.id, comments_from_ferret.first.id
-    
+
     comments_from_ferret = Comment.find_with_ferret('doe')
     assert_equal 1, comments_from_ferret.size
     assert_equal comment.id, comments_from_ferret.first.id
-    
+
     comments_from_ferret = Comment.find_with_ferret('useless')
     assert_equal 1, comments_from_ferret.size
     assert_equal comment.id, comments_from_ferret.first.id
-  
+
     # no monkeys here
     comments_from_ferret = Comment.find_with_ferret('monkey')
     assert comments_from_ferret.empty?
-    
+
     # multiple terms are ANDed by default...
     comments_from_ferret = Comment.find_with_ferret('monkey comment')
     assert comments_from_ferret.empty?
@@ -158,12 +158,12 @@ class CommentTest < Test::Unit::TestCase
     assert comments_from_ferret.include?(comments(:first))
     assert comments_from_ferret.include?(comments(:another))
 
-    # multiple terms, each term has to occur in a document to be found, 
+    # multiple terms, each term has to occur in a document to be found,
     # but they may occur in different fields
     comments_from_ferret = Comment.find_with_ferret('useless john')
     assert_equal 1, comments_from_ferret.size
     assert_equal comment.id, comments_from_ferret.first.id
-    
+
 
     # search for an exact string by enclosing it in "
     comments_from_ferret = Comment.find_with_ferret('"useless john"')
@@ -177,7 +177,7 @@ class CommentTest < Test::Unit::TestCase
   end
 
   # fixed with Ferret 0.9.6
-  def test_stopwords_ferret_bug 
+  def test_stopwords_ferret_bug
     i = Ferret::I.new(:or_default => false, :default_field => '*' )
     d = Ferret::Document.new
     d[:id] = '1'
@@ -207,10 +207,10 @@ class CommentTest < Test::Unit::TestCase
     comment.destroy
   end
 
-  def test_array_conditions_combining 
-    comments_from_ferret = Comment.find_with_ferret('comment AND fixture', {}, :conditions => [ 'id IN (?)', [ 2, 3 ] ]) 
-    assert_equal 1, comments_from_ferret.size 
-    assert_equal 1, comments_from_ferret.total_hits 
+  def test_array_conditions_combining
+    comments_from_ferret = Comment.find_with_ferret('comment AND fixture', {}, :conditions => [ 'id IN (?)', [ 2, 3 ] ])
+    assert_equal 1, comments_from_ferret.size
+    assert_equal 1, comments_from_ferret.total_hits
   end
 
 

@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class UsersControllerTest < ActionController::TestCase
-  
+
   context "On GET to :show" do
     setup do
       @user = Factory.create(:user)
@@ -10,7 +10,7 @@ class UsersControllerTest < ActionController::TestCase
 
     should_assign_to :user
     should_render_template :show
-    
+
     should "get the right user object" do
       assert_equal @user.id, assigns(:user).id
     end

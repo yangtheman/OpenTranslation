@@ -5,17 +5,17 @@
 //  Richard Livsey
 //  Rahul Bhargava
 //  Rob Wills
-// 
+//
 // See scriptaculous.js for full license.
 
-// Autocompleter.Base handles all the autocompletion functionality 
+// Autocompleter.Base handles all the autocompletion functionality
 // that's independent of the data source for autocompletion. This
 // includes drawing the autocompletion menu, observing keyboard
 // and mouse events, and similar.
 //
-// Specific autocompleters need to provide, at the very least, 
+// Specific autocompleters need to provide, at the very least,
 // a getUpdatedChoices function that will be invoked every time
-// the text inside the monitored textbox changes. This method 
+// the text inside the monitored textbox changes. This method
 // should get the text for which to provide autocompletion by
 // invoking this.getToken(), NOT by directly accessing
 // this.element.value. This is to allow incremental tokenized
@@ -29,20 +29,20 @@
 // will incrementally autocomplete with a comma as the token.
 // Additionally, ',' in the above example can be replaced with
 // a token array, e.g. { tokens: [',', '\n'] } which
-// enables autocompletion on multiple tokens. This is most 
-// useful when one of the tokens is \n (a newline), as it 
+// enables autocompletion on multiple tokens. This is most
+// useful when one of the tokens is \n (a newline), as it
 // allows smart autocompletion after linebreaks.
 
 var Autocompleter = {}
 Autocompleter.Base = function() {};
 Autocompleter.Base.prototype = {
   baseInitialize: function(element, update, options) {
-    this.element     = $(element); 
-    this.update      = $(update);  
-    this.hasFocus    = false; 
-    this.changed     = false; 
-    this.active      = false; 
-    this.index       = 0;     
+    this.element     = $(element);
+    this.update      = $(update);
+    this.hasFocus    = false;
+    this.changed     = false;
+    this.active      = false;
+    this.index       = 0;
     this.entryCount  = 0;
 
     if (this.setOptions)
@@ -54,22 +54,22 @@ Autocompleter.Base.prototype = {
     this.options.tokens       = this.options.tokens || [];
     this.options.frequency    = this.options.frequency || 0.4;
     this.options.minChars     = this.options.minChars || 1;
-    this.options.onShow       = this.options.onShow || 
-    function(element, update){ 
+    this.options.onShow       = this.options.onShow ||
+    function(element, update){
       if(!update.style.position || update.style.position=='absolute') {
         update.style.position = 'absolute';
         Position.clone(element, update, {setHeight: false, offsetTop: element.offsetHeight});
       }
       Effect.Appear(update,{duration:0.15});
     };
-    this.options.onHide = this.options.onHide || 
+    this.options.onHide = this.options.onHide ||
     function(element, update){ new Effect.Fade(update,{duration:0.15}) };
 
-    if (typeof(this.options.tokens) == 'string') 
+    if (typeof(this.options.tokens) == 'string')
       this.options.tokens = new Array(this.options.tokens);
 
     this.observer = null;
-    
+
     this.element.setAttribute('autocomplete','off');
 
     Element.hide(this.update);
@@ -80,11 +80,11 @@ Autocompleter.Base.prototype = {
 
   show: function() {
     if(Element.getStyle(this.update, 'display')=='none') this.options.onShow(this.element, this.update);
-    if(!this.iefix && 
+    if(!this.iefix &&
       (navigator.appVersion.indexOf('MSIE')>0) &&
       (navigator.userAgent.indexOf('Opera')<0) &&
       (Element.getStyle(this.update, 'position')=='absolute')) {
-      new Insertion.After(this.update, 
+      new Insertion.After(this.update,
        '<iframe id="' + this.update.id + '_iefix" '+
        'style="display:none;position:absolute;filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" ' +
        'src="javascript:false;" frameborder="0" scrolling="no"></iframe>');
@@ -92,7 +92,7 @@ Autocompleter.Base.prototype = {
     }
     if(this.iefix) setTimeout(this.fixIEOverlapping.bind(this), 50);
   },
-  
+
   fixIEOverlapping: function() {
     Position.clone(this.update, this.iefix);
     this.iefix.style.zIndex = 1;
@@ -140,50 +140,50 @@ Autocompleter.Base.prototype = {
          if(navigator.appVersion.indexOf('AppleWebKit')>0) Event.stop(event);
          return;
       }
-     else 
-      if(event.keyCode==Event.KEY_TAB || event.keyCode==Event.KEY_RETURN) 
+     else
+      if(event.keyCode==Event.KEY_TAB || event.keyCode==Event.KEY_RETURN)
         return;
 
     this.changed = true;
     this.hasFocus = true;
 
     if(this.observer) clearTimeout(this.observer);
-      this.observer = 
+      this.observer =
         setTimeout(this.onObserverEvent.bind(this), this.options.frequency*1000);
   },
 
   onHover: function(event) {
     var element = Event.findElement(event, 'LI');
-    if(this.index != element.autocompleteIndex) 
+    if(this.index != element.autocompleteIndex)
     {
         this.index = element.autocompleteIndex;
         this.render();
     }
     Event.stop(event);
   },
-  
+
   onClick: function(event) {
     var element = Event.findElement(event, 'LI');
     this.index = element.autocompleteIndex;
     this.selectEntry();
     this.hide();
   },
-  
+
   onBlur: function(event) {
     // needed to make click events working
     setTimeout(this.hide.bind(this), 250);
     this.hasFocus = false;
-    this.active = false;     
-  }, 
-  
+    this.active = false;
+  },
+
   render: function() {
     if(this.entryCount > 0) {
       for (var i = 0; i < this.entryCount; i++)
-        this.index==i ? 
-          Element.addClassName(this.getEntry(i),"selected") : 
+        this.index==i ?
+          Element.addClassName(this.getEntry(i),"selected") :
           Element.removeClassName(this.getEntry(i),"selected");
-        
-      if(this.hasFocus) { 
+
+      if(this.hasFocus) {
         this.show();
         this.active = true;
       }
@@ -192,25 +192,25 @@ Autocompleter.Base.prototype = {
       this.hide();
     }
   },
-  
+
   markPrevious: function() {
     if(this.index > 0) this.index--
       else this.index = this.entryCount-1;
   },
-  
+
   markNext: function() {
     if(this.index < this.entryCount-1) this.index++
       else this.index = 0;
   },
-  
+
   getEntry: function(index) {
     return this.update.firstChild.childNodes[index];
   },
-  
+
   getCurrentEntry: function() {
     return this.getEntry(this.index);
   },
-  
+
   selectEntry: function() {
     this.active = false;
     this.updateElement(this.getCurrentEntry());
@@ -234,7 +234,7 @@ Autocompleter.Base.prototype = {
       this.element.value = value;
     }
     this.element.focus();
-    
+
     if (this.options.afterUpdateElement)
       this.options.afterUpdateElement(this.element, selectedElement);
   },
@@ -246,14 +246,14 @@ Autocompleter.Base.prototype = {
       Element.cleanWhitespace(this.update.firstChild);
 
       if(this.update.firstChild && this.update.firstChild.childNodes) {
-        this.entryCount = 
+        this.entryCount =
           this.update.firstChild.childNodes.length;
         for (var i = 0; i < this.entryCount; i++) {
           var entry = this.getEntry(i);
           entry.autocompleteIndex = i;
           this.addObservers(entry);
         }
-      } else { 
+      } else {
         this.entryCount = 0;
       }
 
@@ -270,7 +270,7 @@ Autocompleter.Base.prototype = {
   },
 
   onObserverEvent: function() {
-    this.changed = false;   
+    this.changed = false;
     if(this.getToken().length>=this.options.minChars) {
       this.startIndicator();
       this.getUpdatedChoices();
@@ -313,13 +313,13 @@ Object.extend(Object.extend(Ajax.Autocompleter.prototype, Autocompleter.Base.pro
   },
 
   getUpdatedChoices: function() {
-    entry = encodeURIComponent(this.options.paramName) + '=' + 
+    entry = encodeURIComponent(this.options.paramName) + '=' +
       encodeURIComponent(this.getToken());
 
     this.options.parameters = this.options.callback ?
       this.options.callback(this.element, entry) : entry;
 
-    if(this.options.defaultParams) 
+    if(this.options.defaultParams)
       this.options.parameters += '&' + this.options.defaultParams;
 
     new Ajax.Request(this.url, this.options);
@@ -344,7 +344,7 @@ Object.extend(Object.extend(Ajax.Autocompleter.prototype, Autocompleter.Base.pro
 // - choices - How many autocompletion choices to offer
 //
 // - partialSearch - If false, the autocompleter will match entered
-//                    text only at the beginning of strings in the 
+//                    text only at the beginning of strings in the
 //                    autocomplete array. Defaults to true, which will
 //                    match text at the beginning of any *word* in the
 //                    strings in the autocomplete array. If you want to
@@ -361,7 +361,7 @@ Object.extend(Object.extend(Ajax.Autocompleter.prototype, Autocompleter.Base.pro
 // - ignoreCase - Whether to ignore case when autocompleting.
 //                 Defaults to true.
 //
-// It's possible to pass in a custom function as the 'selector' 
+// It's possible to pass in a custom function as the 'selector'
 // option, if you prefer to write your own autocompletion logic.
 // In that case, the other options above will not apply unless
 // you support them.
@@ -390,20 +390,20 @@ Autocompleter.Local.prototype = Object.extend(new Autocompleter.Base(), {
         var entry     = instance.getToken();
         var count     = 0;
 
-        for (var i = 0; i < instance.options.array.length &&  
-          ret.length < instance.options.choices ; i++) { 
+        for (var i = 0; i < instance.options.array.length &&
+          ret.length < instance.options.choices ; i++) {
 
           var elem = instance.options.array[i];
-          var foundPos = instance.options.ignoreCase ? 
-            elem.toLowerCase().indexOf(entry.toLowerCase()) : 
+          var foundPos = instance.options.ignoreCase ?
+            elem.toLowerCase().indexOf(entry.toLowerCase()) :
             elem.indexOf(entry);
 
           while (foundPos != -1) {
-            if (foundPos == 0 && elem.length != entry.length) { 
-              ret.push("<li><strong>" + elem.substr(0, entry.length) + "</strong>" + 
+            if (foundPos == 0 && elem.length != entry.length) {
+              ret.push("<li><strong>" + elem.substr(0, entry.length) + "</strong>" +
                 elem.substr(entry.length) + "</li>");
               break;
-            } else if (entry.length >= instance.options.partialChars && 
+            } else if (entry.length >= instance.options.partialChars &&
               instance.options.partialSearch && foundPos != -1) {
               if (instance.options.fullSearch || /\s/.test(elem.substr(foundPos-1,1))) {
                 partial.push("<li>" + elem.substr(0, foundPos) + "<strong>" +
@@ -413,8 +413,8 @@ Autocompleter.Local.prototype = Object.extend(new Autocompleter.Base(), {
               }
             }
 
-            foundPos = instance.options.ignoreCase ? 
-              elem.toLowerCase().indexOf(entry.toLowerCase(), foundPos + 1) : 
+            foundPos = instance.options.ignoreCase ?
+              elem.toLowerCase().indexOf(entry.toLowerCase(), foundPos + 1) :
               elem.indexOf(entry, foundPos + 1);
 
           }
@@ -481,18 +481,18 @@ Ajax.InPlaceEditor.prototype = {
         this.options.formId = null;
       }
     }
-    
+
     if (this.options.externalControl) {
       this.options.externalControl = $(this.options.externalControl);
     }
-    
+
     this.originalBackground = Element.getStyle(this.element, 'background-color');
     if (!this.originalBackground) {
       this.originalBackground = "transparent";
     }
-    
+
     this.element.title = this.options.clickToEditText;
-    
+
     this.onclickListener = this.enterEditMode.bindAsEventListener(this);
     this.mouseoverListener = this.enterHover.bindAsEventListener(this);
     this.mouseoutListener = this.leaveHover.bindAsEventListener(this);
@@ -561,7 +561,7 @@ Ajax.InPlaceEditor.prototype = {
     } else {
       text = this.getText();
     }
-    
+
     if (this.options.rows == 1 && !this.hasHTMLLineBreaks(text)) {
       this.options.textarea = false;
       var textField = document.createElement("input");
@@ -581,7 +581,7 @@ Ajax.InPlaceEditor.prototype = {
       textArea.cols = this.options.cols || 40;
       this.editField = textArea;
     }
-    
+
     if(this.options.loadTextURL) {
       this.loadExternalText();
     }
@@ -623,14 +623,14 @@ Ajax.InPlaceEditor.prototype = {
     // onLoading resets these so we need to save them away for the Ajax call
     var form = this.form;
     var value = this.editField.value;
-    
+
     // do this first, sometimes the ajax call returns before we get a chance to switch on Saving...
     // which means this will actually switch on Saving... *after* we've left edit mode causing Saving...
     // to be displayed indefinitely
     this.onLoading();
-    
+
     new Ajax.Updater(
-      { 
+      {
         success: this.element,
          // don't update on failure (this could be an option)
         failure: null
@@ -723,7 +723,7 @@ Ajax.InPlaceEditor.prototype = {
   }
 };
 
-// Delayed observer, like Form.Element.Observer, 
+// Delayed observer, like Form.Element.Observer,
 // but waits for delay after last key input
 // Ideal for live-search fields
 
@@ -734,7 +734,7 @@ Form.Element.DelayedObserver.prototype = {
     this.element   = $(element);
     this.callback  = callback;
     this.timer     = null;
-    this.lastValue = $F(this.element); 
+    this.lastValue = $F(this.element);
     Event.observe(this.element,'keyup',this.delayedListener.bindAsEventListener(this));
   },
   delayedListener: function(event) {

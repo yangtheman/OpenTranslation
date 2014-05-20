@@ -39,6 +39,6 @@ module Facebooker
       log_message = "#{message} (#{seconds}) #{dump}"
       Facebooker.logger.info(log_message)
     end
-    
-  end  
+
+  end
 end

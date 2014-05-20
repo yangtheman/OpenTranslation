@@ -5,7 +5,7 @@ module Rack
   # method used by the client.
   #
   # If the signature is wrong, it returns a "400 Invalid Facebook Signature".
-  # 
+  #
   # Optionally, it can take a block that receives the Rack environment
   # and returns a value that evaluates to true when we want the middleware to
   # be executed for the specific request.
@@ -28,7 +28,7 @@ module Rack
       @app = app
       @condition = condition
     end
-    
+
     def call(env)
       return @app.call(env) unless @condition.nil? || @condition.call(env)
 
@@ -51,7 +51,7 @@ module Rack
         @app.call(env)
       end
     end
-    
+
     private
 
     def fb_sig_and_params( params )
@@ -65,15 +65,15 @@ module Rack
         collection
       end
     end
-    
+
     def signature_is_valid?(fb_params, actual_sig)
       raw_string = fb_params.map{ |*args| args.join('=') }.sort.join
       expected_signature = Digest::MD5.hexdigest([raw_string, Facebooker.secret_key].join)
       actual_sig == expected_signature
     end
-    
+
     def convert_parameters!(params)
-      
+
       params.each do |key, value|
         case key
         when 'fb_sig_added', 'fb_sig_in_canvas', 'fb_sig_in_new_facebook', 'fb_sig_position_fix', 'fb_sig_is_ajax'

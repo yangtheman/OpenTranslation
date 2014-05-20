@@ -55,19 +55,19 @@ class ControllerWhichRequiresFacebookAuthentication < NoisyController
     options[:canvas] = false if params[:canvas] == false
     render :text=>url_for(options)
   end
-  
+
    def named_route_test
     render :text=>comments_url()
   end
-  
+
   def image_test
     render :inline=>"<%=image_tag 'image.png'%>"
   end
-  
+
   def fb_params_test
     render :text=>facebook_params['user']
   end
-  
+
   def publisher_test
     if wants_interface?
       render :text=>"interface"
@@ -75,11 +75,11 @@ class ControllerWhichRequiresFacebookAuthentication < NoisyController
       render :text=>"not interface"
     end
   end
-  
+
   def publisher_test_interface
     render_publisher_interface("This is a test",false,true)
   end
-  
+
   def publisher_test_response
     ua=Facebooker::Rails::Publisher::UserAction.new
     ua.data = {:params=>true}
@@ -87,17 +87,17 @@ class ControllerWhichRequiresFacebookAuthentication < NoisyController
     ua.template_id =  1234
     render_publisher_response(ua)
   end
-  
+
   def publisher_test_error
     render_publisher_error("Title","Body")
   end
-  
+
 end
 class ControllerWhichRequiresApplicationInstallation < NoisyController
   ensure_application_is_installed_by_facebook_user
   def index
     render :text => 'installed!'
-  end    
+  end
 end
 class FacebookController < ActionController::Base
   def index
@@ -113,7 +113,7 @@ class PlainOldRailsController < ActionController::Base
     options[:canvas] = false if params[:canvas] == false
     render :text => url_for(options)
   end
-  
+
   def named_route_test
     render :text=>comments_url()
   end
@@ -139,7 +139,7 @@ class UrlRecognitionTests < Test::Unit::TestCase
     ActionController::Routing::Routes.recognize(request)
     assert_equal({"controller"=>"facebook","action"=>"index"},request.path_parameters)
   end
-  
+
   def test_routes_when_not_in_canvas
     if Rails.version < '2.3'
       request = ActionController::TestRequest.new({}, {}, nil)
@@ -154,7 +154,7 @@ end
 
 class RailsIntegrationTestForFBConnect < Test::Unit::TestCase
   include FBConnectTestHelpers
-  
+
   def setup
     Facebooker.apply_configuration({
       'api_key'          => '1234567',
@@ -164,15 +164,15 @@ class RailsIntegrationTestForFBConnect < Test::Unit::TestCase
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
     @controller.stubs(:verify_signature).returns(true)
-            
+
   end
-  
+
   def test_doesnt_set_cookie_but_facebook_session_is_available
     setup_fb_connect_cookies
     get :index
     assert_not_nil @controller.facebook_session
-    assert_nil @response.cookies[:facebook_session] 
-    
+    assert_nil @response.cookies[:facebook_session]
+
   end
 end
 
@@ -184,14 +184,14 @@ class RailsIntegrationTestForNonFacebookControllers < Test::Unit::TestCase
       'secret_key'       => '7654321' })
     @controller = PlainOldRailsController.new
     @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new        
+    @response   = ActionController::TestResponse.new
   end
 
   def test_url_for_links_to_callback_if_canvas_is_false_and_in_canvas
     get :link_test
     assert_match(/test.host/, @response.body)
   end
-  
+
   def test_named_route_doesnt_include_canvas_path_when_not_in_canvas
     get :named_route_test
     assert_equal "http://test.host/comments",@response.body
@@ -200,7 +200,7 @@ class RailsIntegrationTestForNonFacebookControllers < Test::Unit::TestCase
     get :named_route_test, facebook_params
     assert_equal "http://apps.facebook.com/facebook_app_name/comments",@response.body
   end
- 
+
   def test_named_route_doesnt_include_canvas_path_when_in_canvas_with_canvas_equals_false
     get :canvas_false_test, facebook_params
     assert_equal "http://test.host/comments",@response.body
@@ -209,9 +209,9 @@ class RailsIntegrationTestForNonFacebookControllers < Test::Unit::TestCase
     get :canvas_true_test
     assert_equal "http://apps.facebook.com/facebook_app_name/comments",@response.body
   end
-  
+
 end
-  
+
 class RailsIntegrationTestForExtendedPermissions < Test::Unit::TestCase
   def setup
     Facebooker.apply_configuration({
@@ -222,7 +222,7 @@ class RailsIntegrationTestForExtendedPermissions < Test::Unit::TestCase
     @response   = ActionController::TestResponse.new
     @controller.stubs(:verify_signature).returns(true)
   end
-  
+
   def test_redirects_without_set_status
     post :index, facebook_params
     assert_response :success
@@ -243,15 +243,15 @@ class RailsIntegrationTestForExtendedPermissions < Test::Unit::TestCase
     assert_response :success
     assert_equal("<fb:redirect url=\"http://www.facebook.com/authorize.php?api_key=1234567&v=1.0&ext_perm=create_listing\" />", @response.body)
   end
-  
+
   def test_renders_with_permission
     post :index, facebook_params(:fb_sig_ext_perms=>"status_update,photo_upload,create_listing,video_upload")
     assert_response :success
     assert_equal("score!", @response.body)
-    
+
   end
-end  
-  
+end
+
 class RailsIntegrationTestForApplicationInstallation < Test::Unit::TestCase
   def setup
     Facebooker.apply_configuration({
@@ -262,26 +262,26 @@ class RailsIntegrationTestForApplicationInstallation < Test::Unit::TestCase
     @response   = ActionController::TestResponse.new
     @controller.stubs(:verify_signature).returns(true)
   end
-  
+
   def test_if_controller_requires_application_installation_unauthenticated_requests_will_redirect_to_install_page
     get :index
     assert_response :redirect
     assert_equal("http://www.facebook.com/install.php?api_key=1234567&v=1.0&next=http%3A%2F%2Ftest.host%2Frequire_install", @response.headers['Location'])
   end
-  
+
   def test_if_controller_requires_application_installation_authenticated_requests_without_installation_will_redirect_to_install_page
     get :index, facebook_params(:fb_sig_added => nil)
     assert_response :success
     assert(@response.body =~ /fb:redirect/)
   end
-  
+
   def test_if_controller_requires_application_installation_authenticated_requests_with_installation_will_render
     get :index, facebook_params('fb_sig_added' => "1")
     assert_response :success
     assert_equal("installed!", @response.body)
   end
 end
-  
+
 class RailsIntegrationTest < Test::Unit::TestCase
   include FBConnectTestHelpers
   def setup
@@ -293,11 +293,11 @@ class RailsIntegrationTest < Test::Unit::TestCase
       'callback_url'     => "http://root.example.com" })
     @controller = ControllerWhichRequiresFacebookAuthentication.new
     @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new    
+    @response   = ActionController::TestResponse.new
     @controller.stubs(:verify_signature).returns(true)
-    
+
   end
-  
+
   def test_named_route_includes_new_canvas_path_when_in_new_canvas
     get :named_route_test, facebook_params("fb_sig_in_new_facebook"=>"1")
     assert_equal "http://apps.facebook.com/root/comments",@response.body
@@ -313,17 +313,17 @@ class RailsIntegrationTest < Test::Unit::TestCase
     get :index, facebook_params(:fb_sig_user => '9')
     assert_not_nil @controller.facebook_params['time']
   end
-  
+
   def test_facebook_params_convert_in_canvas_to_boolean
     get :index, facebook_params
-    assert_equal(true, @controller.facebook_params['in_canvas'])    
+    assert_equal(true, @controller.facebook_params['in_canvas'])
   end
-  
+
   def test_facebook_params_convert_added_to_boolean_false
     get :index, facebook_params(:fb_sig_added => '0')
     assert_equal(false, @controller.facebook_params['added'])
   end
-  
+
   def test_facebook_params_convert_added_to_boolean_true
     get :index, facebook_params('fb_sig_added' => "1")
     assert_equal(true, @controller.facebook_params['added'])
@@ -338,28 +338,28 @@ class RailsIntegrationTest < Test::Unit::TestCase
     get :index, facebook_params('fb_sig_added' => true)
     assert_equal(true, @controller.facebook_params['added'])
   end
-  
+
   def test_facebook_params_convert_expirey_into_nil
     get :index, facebook_params(:fb_sig_expires => '0')
     assert_nil(@controller.facebook_params['expires'])
   end
-  
+
   def test_facebook_params_convert_expirey_into_time
     get :index, facebook_params(:fb_sig_expires => 5.minutes.from_now.to_f)
     assert_instance_of Time, @controller.facebook_params['expires']
   end
-  
+
   def test_facebook_params_convert_friend_list_to_parsed_array_of_friend_ids
     get :index, facebook_params(:fb_sig_friends => '1,2,3,4,5')
-    assert_kind_of(Array, @controller.facebook_params['friends'])    
+    assert_kind_of(Array, @controller.facebook_params['friends'])
     assert_equal(5, @controller.facebook_params['friends'].size)
   end
-  
+
   def test_session_can_be_resecured_from_facebook_params
     get :index, facebook_params(:fb_sig_user => 10)
-    assert_equal(10, @controller.facebook_session.user.id)    
+    assert_equal(10, @controller.facebook_session.user.id)
   end
-  
+
   def test_existing_secured_session_is_used_if_available
     session = Facebooker::Session.create(Facebooker::Session.api_key, Facebooker::Session.secret_key)
     session.secure_with!("session_key", "111", Time.now.to_i + 60)
@@ -387,7 +387,7 @@ class RailsIntegrationTest < Test::Unit::TestCase
     session = Facebooker::Session.create(ENV['FACEBOOK_API_KEY'], ENV['FACEBOOK_SECRET_KEY'])
     session.secure_with!("a session key", "1111111", Time.now.to_i + 60)
     get :index,{}, {:facebook_session => session}
-    
+
     assert_equal(1111111, @controller.facebook_session.user.id)
   end
 
@@ -416,7 +416,7 @@ class RailsIntegrationTest < Test::Unit::TestCase
     flexmock(@controller).should_receive(:new_facebook_session).once.and_return(session).ordered
     get :index, modified_params
   end
-  
+
   def test_session_secured_with_auth_token_if_cookies_expired
       auth_token = 'ohaiauthtokenhere111'
       modified_params = facebook_params
@@ -430,37 +430,37 @@ class RailsIntegrationTest < Test::Unit::TestCase
       get :index, modified_params
       assert_equal(321, @controller.facebook_session.user.id)
   end
-          
+
   def test_session_can_be_secured_with_cookies
     setup_fb_connect_cookies
     get :index
     assert_equal(77777, @controller.facebook_session.user.id)
   end
-  
+
   def test_session_does_NOT_secure_with_expired_cookies
     setup_fb_connect_cookies(expired_cookie_hash_for_auth)
     get :index
     assert_nil(@controller.facebook_session)
   end
-      
+
   def test_user_friends_can_be_populated_from_facebook_params_if_available
     get :index, facebook_params(:fb_sig_friends => '1,2,3,4')
     friends = @controller.facebook_session.user.friends
     assert_not_nil(friends)
-    assert_equal(4, friends.size)    
+    assert_equal(4, friends.size)
   end
-  
+
   def test_fbml_redirect_tag_handles_hash_parameters_correctly
     get :index, facebook_params
     assert_equal "<fb:redirect url=\"http://apps.facebook.com/root/require_auth\" />", @controller.send(:fbml_redirect_tag, :action => :index,:canvas=>true)
   end
-  
+
   def test_redirect_to_renders_fbml_redirect_tag_if_request_is_for_a_facebook_canvas
     get :index, facebook_params(:fb_sig_user => nil)
     assert_response :success
     assert @response.body =~ /fb:redirect/
   end
-  
+
   def test_redirect_to_renders_javascript_redirect_if_request_is_for_a_facebook_iframe
     get :index, facebook_params(:fb_sig_user => nil, :fb_sig_in_iframe => 1)
     assert_response :success
@@ -488,7 +488,7 @@ class RailsIntegrationTest < Test::Unit::TestCase
     get :link_test,facebook_params(:fb_sig_in_canvas=>0,:canvas=>false)
     assert !@response.body.match(/root/)
   end
-  
+
   def test_default_url_omits_fb_params
     get :index,facebook_params(:fb_sig_friends=>"overwriteme",:get_param=>"yes")
     assert_equal "http://apps.facebook.com/root/require_auth?get_param=yes", @controller.send(:default_after_facebook_login_url)
@@ -503,7 +503,7 @@ class RailsIntegrationTest < Test::Unit::TestCase
     get :image_test, facebook_params
     assert_equal "<img alt=\"Image\" src=\"http://root.example.com/images/image.png\" />",@response.body
   end
-  
+
   def test_wants_interface_is_available_and_detects_method
     get :publisher_test, facebook_params(:method=>"publisher_getInterface")
     assert_equal "interface",@response.body
@@ -512,23 +512,23 @@ class RailsIntegrationTest < Test::Unit::TestCase
     get :publisher_test, facebook_params(:method=>"publisher_getFeedStory")
     assert_equal "not interface",@response.body
   end
-  
+
   def test_publisher_test_error
     get :publisher_test_error, facebook_params
     assert_equal Facebooker.json_decode("{\"errorCode\": 1, \"errorTitle\": \"Title\", \"errorMessage\": \"Body\"}"), Facebooker.json_decode(@response.body)
   end
-  
+
   def test_publisher_test_interface
     get :publisher_test_interface, facebook_params
     assert_equal Facebooker.json_decode("{\"method\": \"publisher_getInterface\", \"content\": {\"fbml\": \"This is a test\", \"publishEnabled\": false, \"commentEnabled\": true}}"), Facebooker.json_decode(@response.body)
   end
-  
+
   def test_publisher_test_reponse
     get :publisher_test_response, facebook_params
     assert_equal Facebooker.json_decode("{\"method\": \"publisher_getFeedStory\", \"content\": {\"feed\": {\"template_data\": {\"params\": true}, \"template_id\": 1234}}}"), Facebooker.json_decode(@response.body)
-    
+
   end
-  
+
   private
 
   def expired_cookie_hash_for_auth
@@ -538,7 +538,7 @@ class RailsIntegrationTest < Test::Unit::TestCase
   def cookie_hash_for_auth
     {"_ss" => "not_used", "_session_key"=> "whatever", "_user"=>"77777", "_expires"=>"#{1.day.from_now.to_i}"}
   end
-   
+
 end
 
 
@@ -550,12 +550,12 @@ class RailsSignatureTest < Test::Unit::TestCase
       'secret_key'       => '7654321' })
     @controller = ControllerWhichRequiresFacebookAuthentication.new
     @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new    
+    @response   = ActionController::TestResponse.new
 
   end
 
   if Rails.version < '2.3'
-  
+
     def test_should_raise_on_bad_sig
       begin
         get :fb_params_test, facebook_params.merge('fb_sig' => 'incorrect')
@@ -566,11 +566,11 @@ class RailsSignatureTest < Test::Unit::TestCase
 
     def test_valid_signature
       @controller.expects(:earliest_valid_session).returns(Time.at(1186588275.5988)-1)
-      get :fb_params_test, facebook_params 
+      get :fb_params_test, facebook_params
     end
 
   end
-  
+
   def test_should_raise_too_old_for_replayed_session
     begin
       get :fb_params_test, facebook_params('fb_sig_time' => Time.now.to_i - 49.hours)
@@ -578,7 +578,7 @@ class RailsSignatureTest < Test::Unit::TestCase
     rescue Facebooker::Session::SignatureTooOld=>e
     end
   end
-  
+
 end
 class RailsHelperTest < Test::Unit::TestCase
   class HelperClass
@@ -605,13 +605,13 @@ class RailsHelperTest < Test::Unit::TestCase
     def fields_for(*args)
       ""
     end
-        
-  end 
+
+  end
 
   # used for capturing the contents of some of the helper tests
-  # this duplicates the rails template system  
+  # this duplicates the rails template system
   attr_accessor :_erbout
-  
+
   def setup
     Facebooker.apply_configuration({
       'api_key'          => '1234567',
@@ -622,7 +622,7 @@ class RailsHelperTest < Test::Unit::TestCase
     #use an asset path where the canvas path equals the hostname to make sure we handle that case right
     ActionController::Base.asset_host='http://facebook.host.com'
   end
-  
+
   def test_fb_profile_pic
     assert_equal "<fb:profile-pic uid=\"1234\"></fb:profile-pic>", @h.fb_profile_pic("1234")
   end
@@ -651,11 +651,11 @@ class RailsHelperTest < Test::Unit::TestCase
   def test_fb_photo_with_invalid_size
     assert_raises(ArgumentError) {@h.fb_photo("1234", :size => :medium)}
   end
-  
+
   def test_fb_photo_with_invalid_size_value
     assert_raises(ArgumentError) {@h.fb_photo("1234", :size => :mediumm)}
   end
-  
+
   def test_fb_photo_with_invalid_align_value
     assert_raises(ArgumentError) {@h.fb_photo("1234", :align => :rightt)}
   end
@@ -670,36 +670,36 @@ class RailsHelperTest < Test::Unit::TestCase
   def test_fb_photo_with_style
     assert_equal "<fb:photo pid=\"1234\" style=\"some=css;put=here;\"></fb:photo>",@h.fb_photo("1234", :style => "some=css;put=here;")
   end
-  
+
   def test_fb_prompt_permission_valid_no_callback
-    assert_equal "<fb:prompt-permission perms=\"email\">Can I email you?</fb:prompt-permission>",@h.fb_prompt_permission("email","Can I email you?")    
+    assert_equal "<fb:prompt-permission perms=\"email\">Can I email you?</fb:prompt-permission>",@h.fb_prompt_permission("email","Can I email you?")
   end
-  
+
   def test_fb_prompt_permission_valid_with_callback
     assert_equal "<fb:prompt-permission next_fbjs=\"do_stuff()\" perms=\"email\">a message</fb:prompt-permission>",@h.fb_prompt_permission("email","a message","do_stuff()")
   end
-  
+
   def test_fb_prompt_permission_invalid_option
     assert_raises(ArgumentError) {@h.fb_prompt_permission("invliad", "a message")}
-    
+
   end
-  
+
   def test_fb_prompt_permissions_valid_no_callback
     assert_equal "<fb:prompt-permission perms=\"publish_stream,read_stream\">Can I read and write your streams?</fb:prompt-permission>",
-                 @h.fb_prompt_permissions(['publish_stream', 'read_stream'],"Can I read and write your streams?")    
+                 @h.fb_prompt_permissions(['publish_stream', 'read_stream'],"Can I read and write your streams?")
   end
-  
+
   def test_fb_prompt_permissions_valid_with_callback
     assert_equal "<fb:prompt-permission next_fbjs=\"do_stuff()\" perms=\"publish_stream,read_stream\">Can I read and write your streams?</fb:prompt-permission>",
-                 @h.fb_prompt_permissions(['publish_stream', 'read_stream'],"Can I read and write your streams?", "do_stuff()")    
+                 @h.fb_prompt_permissions(['publish_stream', 'read_stream'],"Can I read and write your streams?", "do_stuff()")
   end
-  
+
   def test_fb_prompt_permissions_invalid_option
     assert_raises(ArgumentError) {@h.fb_prompt_permissions(["invliad", "read_stream"], "a message")}
-    
-  end  
- 
-  
+
+  end
+
+
   def test_fb_add_profile_section
     assert_equal "<fb:add-section-button section=\"profile\" />",@h.fb_add_profile_section
   end
@@ -752,11 +752,11 @@ class RailsHelperTest < Test::Unit::TestCase
   def test_fb_tab_item_raises_exception_for_invalid_align_value
     assert_raises(ArgumentError) {@h.fb_tab_item("Google", "http://www.google.com", :align => :rightt)}
   end
-    
+
   def test_fb_req_choice
     assert_equal "<fb:req-choice label=\"label\" url=\"url\" />", @h.fb_req_choice("label","url")
   end
-  
+
   def test_fb_multi_friend_selector
     assert_equal "<fb:multi-friend-selector actiontext=\"This is a message\" max=\"20\" showborder=\"false\" />", @h.fb_multi_friend_selector("This is a message")
   end
@@ -767,52 +767,52 @@ class RailsHelperTest < Test::Unit::TestCase
   def test_fb_title
     assert_equal "<fb:title>This is the canvas page window title</fb:title>", @h.fb_title("This is the canvas page window title")
   end
-  
+
   def test_fb_google_analytics
     assert_equal "<fb:google-analytics uacct=\"UA-9999999-99\" />", @h.fb_google_analytics("UA-9999999-99")
   end
 
   def test_fb_if_is_user_with_single_object
     user = flexmock("user", :facebook_id => "5678")
-    assert_equal "<fb:if-is-user uid=\"5678\"></fb:if-is-user>", @h.fb_if_is_user(user){}    
+    assert_equal "<fb:if-is-user uid=\"5678\"></fb:if-is-user>", @h.fb_if_is_user(user){}
   end
-  
+
   def test_fb_if_is_user_with_array
     user1 = flexmock("user", :facebook_id => "5678")
     user2 = flexmock("user", :facebook_id => "1234")
     assert_equal "<fb:if-is-user uid=\"5678,1234\"></fb:if-is-user>", @h.fb_if_is_user([user1,user2]){}
   end
-  
+
   def test_fb_else
-    assert_equal "<fb:else></fb:else>", @h.fb_else{}    
+    assert_equal "<fb:else></fb:else>", @h.fb_else{}
   end
-  
+
   def test_fb_about_url
     ENV["FACEBOOK_API_KEY"]="1234"
     assert_equal "http://www.facebook.com/apps/application.php?api_key=1234", @h.fb_about_url
   end
-  
+
   def test_fb_ref_with_url
     assert_equal "<fb:ref url=\"A URL\" />", @h.fb_ref(:url => "A URL")
   end
-  
+
   def test_fb_ref_with_handle
     assert_equal "<fb:ref handle=\"A Handle\" />", @h.fb_ref(:handle => "A Handle")
   end
-  
+
   def test_fb_ref_with_invalid_attribute
     assert_raises(ArgumentError) {@h.fb_ref(:handlee => "A HANLDE")}
   end
-  
+
   def test_fb_ref_with_handle_and_url
     assert_raises(ArgumentError) {@h.fb_ref(:url => "URL", :handle => "HANDLE")}
-  end  
-  
+  end
+
   def test_facebook_messages_notice
     @h.flash[:notice]="A message"
     assert_equal "<fb:success message=\"A message\" />",@h.facebook_messages
   end
-  
+
   def test_facebook_messages_error
     @h.flash[:error]="An error"
     assert_equal "<fb:error message=\"An error\" />",@h.facebook_messages
@@ -820,31 +820,31 @@ class RailsHelperTest < Test::Unit::TestCase
   def test_fb_wall_post
     assert_equal "<fb:wallpost uid=\"1234\">A wall post</fb:wallpost>",@h.fb_wall_post("1234","A wall post")
   end
-  
+
   def test_fb_pronoun
     assert_equal "<fb:pronoun uid=\"1234\"></fb:pronoun>", @h.fb_pronoun(1234)
   end
-  
+
   def test_fb_pronoun_with_transformed_key
     assert_equal "<fb:pronoun uid=\"1234\" usethey=\"true\"></fb:pronoun>", @h.fb_pronoun(1234, :use_they => true)
   end
-  
+
   def test_fb_pronoun_with_user_responding_to_facebook_id
     user = flexmock("user", :facebook_id => "5678")
     assert_equal "<fb:pronoun uid=\"5678\"></fb:pronoun>", @h.fb_pronoun(user)
   end
-  
+
   def test_fb_pronoun_with_invalid_key
     assert_raises(ArgumentError) {@h.fb_pronoun(1234, :posessive => true)}
   end
-  
+
   def test_fb_wall
     @h.expects(:capture).returns("wall content")
-    @h.fb_wall do 
+    @h.fb_wall do
     end
     assert_equal "<fb:wall>wall content</fb:wall>",@h.output_buffer
   end
-  
+
   def test_fb_multi_friend_request
     @h.expects(:capture).returns("body")
     @h.expects(:protect_against_forgery?).returns(false)
@@ -852,7 +852,7 @@ class RailsHelperTest < Test::Unit::TestCase
     assert_equal "<fb:request-form action=\"action\" content=\"body\" invite=\"true\" method=\"post\" type=\"invite\">friend selector</fb:request-form>",
       (@h.fb_multi_friend_request("invite","ignored","action") {})
   end
-  
+
   def test_fb_multi_friend_request_with_protection_against_forgery
     @h.expects(:capture).returns("body")
     @h.expects(:protect_against_forgery?).returns(true)
@@ -863,7 +863,7 @@ class RailsHelperTest < Test::Unit::TestCase
     assert_equal "<fb:request-form action=\"action\" content=\"body\" invite=\"true\" method=\"post\" type=\"invite\">friend selector<input name=\"forgery_token\" type=\"hidden\" value=\"form_token\" /></fb:request-form>",
       (@h.fb_multi_friend_request("invite","ignored","action") {})
   end
-  
+
   def test_fb_dialog
     @h.expects(:capture).returns("dialog content")
     @h.fb_dialog( "my_dialog", "1" ) do
@@ -884,7 +884,7 @@ class RailsHelperTest < Test::Unit::TestCase
       @h.fb_dialog_button("submit", "Yes", {:clickrewriteurl => "http://www.some_url_here.com/dialog_return.php",
                                             :clickrewriteid => "my_dialog", :clickrewriteform => "my_form" } )
   end
-  
+
   def test_fb_request_form
     @h.expects(:capture).returns("body")
     @h.expects(:protect_against_forgery?).returns(false)
@@ -900,7 +900,7 @@ class RailsHelperTest < Test::Unit::TestCase
     assert_equal "<fb:request-form action=\"action\" content=\"Test Param\" invite=\"true\" method=\"post\" type=\"invite\">body<input name=\"forgery_token\" type=\"hidden\" value=\"form_token\" /></fb:request-form>",
       (@h.fb_request_form("invite","test_param","action") {})
   end
-  
+
   def test_fb_error_with_only_message
     assert_equal "<fb:error message=\"Errors have occurred!!\" />", @h.fb_error("Errors have occurred!!")
   end
@@ -924,14 +924,14 @@ class RailsHelperTest < Test::Unit::TestCase
   def test_fb_success_with_message_and_text
     assert_equal "<fb:success><fb:message>Woot!!</fb:message>You Rock!!</fb:success>", @h.fb_success("Woot!!", "You Rock!!")
   end
-  
+
   def test_facebook_form_for
     @h.expects(:protect_against_forgery?).returns(false)
     form_body=@h.facebook_form_for(:model,:url=>"action") do
     end
     assert_equal "<fb:editor action=\"action\"></fb:editor>",form_body
   end
-  
+
   def test_facebook_form_for_with_authenticity_token
     @h.expects(:protect_against_forgery?).returns(true)
     @h.expects(:request_forgery_protection_token).returns('forgery_token')
@@ -939,14 +939,14 @@ class RailsHelperTest < Test::Unit::TestCase
     assert_equal "<fb:editor action=\"action\"><input name=\"forgery_token\" type=\"hidden\" value=\"form_token\" /></fb:editor>",
       (@h.facebook_form_for(:model, :url => "action") {})
   end
-  
+
   def test_fb_friend_selector
     assert_equal("<fb:friend-selector />",@h.fb_friend_selector)
   end
-  
+
   def test_fb_request_form_submit
-    assert_equal("<fb:request-form-submit />",@h.fb_request_form_submit)  
-  end   
+    assert_equal("<fb:request-form-submit />",@h.fb_request_form_submit)
+  end
 
 	def test_fb_request_form_submit_with_uid
     assert_equal("<fb:request-form-submit uid=\"123456789\" />",@h.fb_request_form_submit({:uid => "123456789"}))
@@ -959,15 +959,15 @@ class RailsHelperTest < Test::Unit::TestCase
   def test_fb_request_form_submit_with_uid_and_label
     assert_equal("<fb:request-form-submit label=\"Send Invite to Joel\" uid=\"123456789\" />",@h.fb_request_form_submit({:uid =>"123456789", :label => "Send Invite to Joel"}))
   end
-  
+
   def test_fb_action
-    assert_equal "<fb:action href=\"/growingpets/rub\">Rub my pet</fb:action>", @h.fb_action("Rub my pet", "/growingpets/rub")  
+    assert_equal "<fb:action href=\"/growingpets/rub\">Rub my pet</fb:action>", @h.fb_action("Rub my pet", "/growingpets/rub")
   end
-  
+
   def test_fb_help
-    assert_equal "<fb:help href=\"http://www.facebook.com/apps/application.php?id=6236036681\">Help</fb:help>", @h.fb_help("Help", "http://www.facebook.com/apps/application.php?id=6236036681")      
+    assert_equal "<fb:help href=\"http://www.facebook.com/apps/application.php?id=6236036681\">Help</fb:help>", @h.fb_help("Help", "http://www.facebook.com/apps/application.php?id=6236036681")
   end
-  
+
   def test_fb_create_button
     assert_equal "<fb:create-button href=\"/growingpets/invite\">Invite Friends</fb:create-button>", @h.fb_create_button('Invite Friends', '/growingpets/invite')
   end
@@ -981,47 +981,47 @@ class RailsHelperTest < Test::Unit::TestCase
   end
 
   def test_fb_comments_with_title
-    assert_equal "<fb:comments candelete=\"false\" canpost=\"true\" numposts=\"4\" optional=\"false\" xid=\"xxx\"><fb:title>TITLE</fb:title></fb:comments>", @h.fb_comments("xxx",true,false,4,:optional=>false, :title => "TITLE") 
+    assert_equal "<fb:comments candelete=\"false\" canpost=\"true\" numposts=\"4\" optional=\"false\" xid=\"xxx\"><fb:title>TITLE</fb:title></fb:comments>", @h.fb_comments("xxx",true,false,4,:optional=>false, :title => "TITLE")
   end
   def test_fb_board
-    assert_equal "<fb:board optional=\"false\" xid=\"xxx\"></fb:board>", @h.fb_board("xxx",:optional => false) 
+    assert_equal "<fb:board optional=\"false\" xid=\"xxx\"></fb:board>", @h.fb_board("xxx",:optional => false)
   end
   def test_fb_board_with_title
-    assert_equal "<fb:board optional=\"false\" xid=\"xxx\"><fb:title>TITLE</fb:title></fb:board>", @h.fb_board("xxx",:optional=>false, :title => "TITLE") 
+    assert_equal "<fb:board optional=\"false\" xid=\"xxx\"><fb:title>TITLE</fb:title></fb:board>", @h.fb_board("xxx",:optional=>false, :title => "TITLE")
   end
-  
+
   def test_fb_dashboard
     @h.expects(:capture).returns("dashboard content")
-    @h.fb_dashboard do 
+    @h.fb_dashboard do
     end
     assert_equal "<fb:dashboard>dashboard content</fb:dashboard>", @h.output_buffer
   end
   def test_fb_dashboard_non_block
     assert_equal "<fb:dashboard></fb:dashboard>", @h.fb_dashboard
   end
-  
+
   def test_fb_wide
     @h.expects(:capture).returns("wide profile content")
     @h.fb_wide do
     end
     assert_equal "<fb:wide>wide profile content</fb:wide>", @h.output_buffer
   end
-  
+
   def test_fb_narrow
     @h.expects(:capture).returns("narrow profile content")
     @h.fb_narrow do
     end
     assert_equal "<fb:narrow>narrow profile content</fb:narrow>", @h.output_buffer
-  end  
-  
+  end
+
   def test_fb_login_button
     assert_equal "<fb:login-button onlogin=\"somejs\"></fb:login-button>",@h.fb_login_button("somejs")
   end
-  
+
   def test_init_fb_connect_no_features
     assert ! @h.init_fb_connect.match(/XFBML/)
   end
-  
+
   def test_init_fb_connect_with_features
     assert @h.init_fb_connect("XFBML").match(/XFBML/)
   end
@@ -1044,7 +1044,7 @@ class RailsHelperTest < Test::Unit::TestCase
 
   def test_init_fb_connect_with_features_and_body
     @h.expects(:capture).returns("Body Content")
-    
+
     __in_erb_template = true
 
     @h.init_fb_connect("XFBML") do
@@ -1055,11 +1055,11 @@ class RailsHelperTest < Test::Unit::TestCase
   def test_init_fb_connect_no_options
     assert ! @h.init_fb_connect.match(/Element.observe\(window,'load',/)
   end
-  
+
   def test_init_fb_connect_with_options_js_jquery
     assert ! @h.init_fb_connect(:js => :jquery).match(/\$\(document\).ready\(/)
   end
-  
+
   def test_init_fb_connect_with_features_and_options_js_jquery
     assert @h.init_fb_connect("XFBML", :js => :jquery).match(/XFBML.*/)
     assert @h.init_fb_connect("XFBML", :js => :jquery).match(/\$\(document\).ready\(/)
@@ -1068,16 +1068,16 @@ class RailsHelperTest < Test::Unit::TestCase
   def test_init_fb_connect_without_options_app_settings
     assert @h.init_fb_connect().match(/, \{\}\)/)
   end
-  
+
   def test_init_fb_connect_with_options_app_settings
     assert @h.init_fb_connect(:app_settings => "{foo: bar}").match(/, \{foo: bar\}\)/)
   end
-  
-  
+
+
   def test_fb_login_and_redirect
     assert_equal @h.fb_login_and_redirect("/path"),"<fb:login-button onlogin=\"window.location.href = &quot;/path&quot;;\"></fb:login-button>"
   end
-  
+
   def test_fb_logout_link
     assert_equal @h.fb_logout_link("Logout","My URL"),"<a href=\"#\" onclick=\"FB.Connect.logoutAndRedirect(&quot;My URL&quot;);; return false;\">Logout</a>"
   end
@@ -1145,40 +1145,40 @@ class RailsHelperTest < Test::Unit::TestCase
     end
     assert_equal "<fb:container condition=\"somejs\">Inner Stuff</fb:container>",@h.output_buffer
   end
-  
+
   def test_fb_eventlink
     assert_equal '<fb:eventlink eid="21150032416"></fb:eventlink>',@h.fb_eventlink("21150032416")
   end
-  
+
   def test_fb_grouplink
     assert_equal '<fb:grouplink gid="2541896821"></fb:grouplink>',@h.fb_grouplink("2541896821")
   end
-  
+
   def test_fb_serverfbml
     @h.expects(:capture).returns("Inner Stuff")
     @h.fb_serverfbml(:condition=>"somejs") do
     end
     assert_equal "<fb:serverfbml condition=\"somejs\">Inner Stuff</fb:serverfbml>",@h.output_buffer
   end
-  
+
   def test_fb_share_button
     assert_equal "<fb:share-button class=\"url\" href=\"http://www.elevatedrails.com\"></fb:share-button>",@h.fb_share_button("http://www.elevatedrails.com")
   end
-  
+
   def test_fb_unconnected_friends_count_without_condition
     assert_equal "<fb:unconnected-friends-count></fb:unconnected-friends-count>",@h.fb_unconnected_friends_count
   end
-  
+
   def test_fb_user_status
     user=flexmock("user", :facebook_id => "5678")
     assert_equal '<fb:user-status linked="false" uid="5678"></fb:user-status>',@h.fb_user_status(user,false)
   end
-  
+
   def test_fb_time
     time = Time.now
     assert_equal %Q{<fb:time preposition="true" t="#{time.to_i}" tz="America/New York" />}, @h.fb_time(time, :tz => 'America/New York', :preposition => true)
   end
-  
+
   def test_fb_time_defaults
     time = Time.now
     assert_equal %Q{<fb:time t="#{time.to_i}" />}, @h.fb_time(time)
@@ -1209,59 +1209,59 @@ class RailsFacebookFormbuilderTest < Test::Unit::TestCase
     def @form_builder._erbout
       ""
     end
-    
+
   end
-  
+
   def test_text_field
     assert_equal "<fb:editor-text id=\"test_model_name\" label=\"Name\" name=\"test_model[name]\" value=\"Mike\"></fb:editor-text>",
         @form_builder.text_field(:name)
   end
   def test_text_area
     assert_equal "<fb:editor-textarea id=\"test_model_name\" label=\"Name\" name=\"test_model[name]\">Mike</fb:editor-textarea>",
-        @form_builder.text_area(:name)    
+        @form_builder.text_area(:name)
   end
-  
+
   def test_default_name_and_id
     assert_equal "<fb:editor-text id=\"different_id\" label=\"Name\" name=\"different_name\" value=\"Mike\"></fb:editor-text>",
         @form_builder.text_field(:name, {:name => 'different_name', :id => 'different_id'})
   end
-  
+
   def test_collection_typeahead
     flexmock(@form_builder) do |fb|
       fb.should_receive(:collection_typeahead_internal).with(:name,["ABC"],:size,:to_s,{})
     end
-    @form_builder.collection_typeahead(:name,["ABC"],:size,:to_s)        
+    @form_builder.collection_typeahead(:name,["ABC"],:size,:to_s)
   end
-  
+
   def test_collection_typeahead_internal
     assert_equal "<fb:typeahead-input id=\"test_model_name\" name=\"test_model[name]\" value=\"Mike\"><fb:typeahead-option value=\"3\">ABC</fb:typeahead-option></fb:typeahead-input>",
-      @form_builder.collection_typeahead_internal(:name,["ABC"],:size,:to_s)        
+      @form_builder.collection_typeahead_internal(:name,["ABC"],:size,:to_s)
   end
-  
+
   def test_buttons
     @form_builder.expects(:create_button).with(:first).returns("first")
     @form_builder.expects(:create_button).with(:second).returns("second")
     @template.expects(:content_tag).with("fb:editor-buttonset","firstsecond")
-    @form_builder.buttons(:first,:second)    
+    @form_builder.buttons(:first,:second)
   end
-  
+
   def test_create_button
     assert_equal "<fb:editor-button name=\"commit\" value=\"first\"></fb:editor-button>",@form_builder.create_button(:first)
   end
-  
+
   def test_custom
     @template.expects(:password_field).returns("password_field")
     assert_equal "<fb:editor-custom label=\"Name\">password_field</fb:editor-custom>",@form_builder.password_field(:name)
   end
-  
+
   def test_text
     assert_equal "<fb:editor-custom label=\"custom\">Mike</fb:editor-custom>",@form_builder.text("Mike",:label=>"custom")
   end
-  
+
   def test_multi_friend_input
     assert_equal "<fb:editor-custom label=\"Friends\"><fb:multi-friend-input></fb:multi-friend-input></fb:editor-custom>",@form_builder.multi_friend_input
   end
-  
+
 
 end
 
@@ -1274,14 +1274,14 @@ class RailsPrettyErrorsTest < Test::Unit::TestCase
       raise "I'm failing"
     end
   end
-  
+
   def setup
     Facebooker.apply_configuration('api_key'=>"1234", 'secret_key'=>"34278",'canvas_page_name'=>'mike','pretty_errors'=>true)
     @controller = ControllerWhichFails.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
   end
-  
+
   def test_pretty_errors_disabled_success
     post :pass, facebook_params
     assert_response 200
@@ -1318,17 +1318,17 @@ class RailsUrlHelperExtensionsTest < Test::Unit::TestCase
     def protect_against_forgery?
        false
     end
-    
+
     def request_comes_from_facebook?
       @request_comes_from_facebook
     end
-    
+
     def request_comes_from_facebook=(val)
       @request_comes_from_facebook = val
     end
 
-  end 
-  class UrlHelperExtensionsController < NoisyController    
+  end
+  class UrlHelperExtensionsController < NoisyController
     def index
       render :nothing => true
     end
@@ -1337,7 +1337,7 @@ class RailsUrlHelperExtensionsTest < Test::Unit::TestCase
     end
   end
 
-  class FacebookRequest < ActionController::TestRequest  
+  class FacebookRequest < ActionController::TestRequest
   end
 
   def setup
@@ -1347,10 +1347,10 @@ class RailsUrlHelperExtensionsTest < Test::Unit::TestCase
 
     @u = UrlHelperExtensionsClass.new(@controller)
     @u.request_comes_from_facebook = true
-    
+
     @non_canvas_u = UrlHelperExtensionsClass.new(@controller)
     @non_canvas_u.request_comes_from_facebook = false
-    
+
     @label = "Testing"
     @url = "test.host"
     @prompt = "Are you sure?"
@@ -1373,19 +1373,19 @@ class RailsUrlHelperExtensionsTest < Test::Unit::TestCase
 
   def test_link_to_with_confirm
     assert_dom_equal( "<a href=\"#{@url}\" onclick=\"var dlg = new Dialog().showChoice(\'#{@default_title}\',\'#{@prompt}\',\'#{@default_okay}\',\'#{@default_cancel}\').setStyle(#{@default_style});"+
-                 "var a=this;dlg.onconfirm = function() { " + 
+                 "var a=this;dlg.onconfirm = function() { " +
                  "document.setLocation(a.getHref()); };return false;\">#{@label}</a>",
                   @u.link_to(@label, @url, :confirm => @prompt) )
   end
   def test_link_to_with_confirm_with_title
     assert_dom_equal( "<a href=\"#{@url}\" onclick=\"var dlg = new Dialog().showChoice(\'#{@title}\',\'#{@prompt}\',\'#{@default_okay}\',\'#{@default_cancel}\').setStyle(#{@default_style});"+
-                 "var a=this;dlg.onconfirm = function() { " + 
+                 "var a=this;dlg.onconfirm = function() { " +
                  "document.setLocation(a.getHref()); };return false;\">#{@label}</a>",
                   @u.link_to(@label, @url, :confirm => {:title=>@title,:content=>@prompt}) )
   end
   def test_link_to_with_confirm_with_title_and_style
     assert_dom_equal( "<a href=\"#{@url}\" onclick=\"var dlg = new Dialog().showChoice(\'#{@title}\',\'#{@prompt}\',\'#{@default_okay}\',\'#{@default_cancel}\').setStyle(#{@verbose_style});"+
-                 "var a=this;dlg.onconfirm = function() { " + 
+                 "var a=this;dlg.onconfirm = function() { " +
                  "document.setLocation(a.getHref()); };return false;\">#{@label}</a>",
                   @u.link_to(@label, @url, :confirm => {:title=>@title,:content=>@prompt}.merge!(@style)) )
   end
@@ -1400,7 +1400,7 @@ class RailsUrlHelperExtensionsTest < Test::Unit::TestCase
 
   def test_link_to_with_confirm_and_method
     assert_dom_equal( "<a href=\"#{@url}\" onclick=\"var dlg = new Dialog().showChoice(\'#{@default_title}\',\'#{@prompt}\',\'#{@default_okay}\',\'#{@default_cancel}\').setStyle(#{@default_style});"+
-                 "var a=this;dlg.onconfirm = function() { " + 
+                 "var a=this;dlg.onconfirm = function() { " +
                  "var f = document.createElement('form'); f.setStyle('display','none'); "+
                  "a.getParentNode().appendChild(f); f.setMethod('POST'); f.setAction(a.getHref());" +
                  "var m = document.createElement('input'); m.setType('hidden'); "+
@@ -1424,7 +1424,7 @@ class RailsUrlHelperExtensionsTest < Test::Unit::TestCase
     assert_equal "<form method=\"post\" action=\"#{@url}\" class=\"button-to\"><div>" +
                  "<input onclick=\"var dlg = new Dialog().showChoice(\'#{@default_title}\',\'#{@prompt}\',\'#{@default_okay}\',\'#{@default_cancel}\').setStyle(#{@default_style});"+
                  "var a=this;dlg.onconfirm = function() { "+
-                 "a.getForm().submit(); };return false;\" type=\"submit\" value=\"#{@label}\" /></div></form>", 
+                 "a.getForm().submit(); };return false;\" type=\"submit\" value=\"#{@label}\" /></div></form>",
                  @u.button_to(@label,@url, :confirm=>@prompt)
   end
   def test_button_to_with_confirm_for_non_canvas_page
@@ -1446,7 +1446,7 @@ class RailsUrlHelperExtensionsTest < Test::Unit::TestCase
   def test_link_to_if_with_false
        assert_equal @label, @u.link_to_if(false,@label,@url)
   end
-  
+
 end
 
 class RailsRequestFormatTest < Test::Unit::TestCase
@@ -1459,7 +1459,7 @@ class RailsRequestFormatTest < Test::Unit::TestCase
       end
     end
   end
-  
+
   def setup
     Facebooker.apply_configuration({
       'api_key'          => '1234567',
@@ -1470,7 +1470,7 @@ class RailsRequestFormatTest < Test::Unit::TestCase
     @response   = ActionController::TestResponse.new
     @controller.stubs(:verify_signature).returns(true)
   end
-  
+
   def test_responds_to_html_without_canvas
     get :index
     assert_equal 'html', @response.body
@@ -1485,10 +1485,10 @@ class RailsRequestFormatTest < Test::Unit::TestCase
     get :index, facebook_params(:fb_sig_is_ajax => '1')
     assert_equal 'fbjs', @response.body
   end
-  
+
   def test_responds_to_html_when_iframe
     get :index, facebook_params(:fb_sig_in_iframe => '1')
     assert_equal 'html', @response.body
   end
-  
+
 end

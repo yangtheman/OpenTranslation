@@ -6,14 +6,14 @@ class Facebooker::Service::CurlService < Facebooker::Service::BaseService
       c.multipart_form_post = multipart
       c.timeout = Facebooker.timeout
     end
-    curl.http_post(*to_curb_params(params)) 
+    curl.http_post(*to_curb_params(params))
     curl.body_str
   end
-  
+
   def post_multipart_form(url,params)
     post_form(url,params,true)
   end
-  
+
   # Net::HTTP::MultipartPostFile
   def multipart_post_file?(object)
     object.respond_to?(:content_type) &&
@@ -39,6 +39,5 @@ class Facebooker::Service::CurlService < Facebooker::Service::BaseService
     end
     parray
   end
-  
+
 end
-  

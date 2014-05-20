@@ -15,7 +15,7 @@ class PostTest < ActiveSupport::TestCase
 
     should "be created when original post exists" do
       post = @orig.posts.new
-      post.user_id = @user.id 
+      post.user_id = @user.id
       assert post.valid?
       assert post.save
       assert_equal @user.id, post.user_id
@@ -32,7 +32,7 @@ class PostTest < ActiveSupport::TestCase
       assert !post.valid?
     end
 
-    should "be rated by a user" do 
+    should "be rated by a user" do
       post = Factory.create(:post)
       post.rate 5, @user
 
@@ -50,7 +50,7 @@ class PostTest < ActiveSupport::TestCase
 	post = Factory.build(:post, :language => @ko)
         content = post.para_translate(@orig.content, @en.short, @ko.short)
 	assert_not_nil content
-      end	
+      end
 
       should "have its contents translated" do
 	post = Factory.build(:post, :language => @ko)
@@ -80,7 +80,7 @@ class PostTest < ActiveSupport::TestCase
       assert_equal "Different Title", @post.title
       assert_equal 2, @post.version
       assert_equal @user2.id, @post.user_id
-      
+
       @post.content = "Different Content"
       @post.user_id = @user3.id
       @post.save

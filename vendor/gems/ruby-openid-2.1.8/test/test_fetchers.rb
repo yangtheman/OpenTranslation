@@ -112,7 +112,7 @@ class FetcherTestCase < Test::Unit::TestCase
       assert_block("Fetched too many times.") { @_redirect_counter < 10 }
     }
   end
-  
+
   def setup
     @fetcher = OpenID::StandardFetcher.new
     @logfile = StringIO.new
@@ -385,7 +385,7 @@ EOF
       f.fetch("https://bogus.com/")
     }
   end
-  
+
   class TestingException < OpenID::FetchingError; end
 
   class NoSSLSupportConnection
@@ -516,7 +516,7 @@ class ProxyTest < Test::Unit::TestCase
   def test_proxy_env
     ENV['http_proxy'] = 'http://127.0.0.1:3128/'
     OpenID.fetcher_use_env_http_proxy
-    
+
     # make_http just to give us something with readable attributes to inspect.
     conn = OpenID.fetcher.make_http(URI.parse('http://127.0.0.2'))
     assert_equal('127.0.0.1', conn.proxy_address)

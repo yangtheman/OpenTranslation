@@ -163,9 +163,9 @@ module OpenID
       # documentation for help with the parameters.
       def html_markup(realm, return_to=nil, immediate=false,
                       form_tag_attrs=nil)
-        Util.auto_submit_html(form_markup(realm, 
-                                          return_to, 
-                                          immediate, 
+        Util.auto_submit_html(form_markup(realm,
+                                          return_to,
+                                          immediate,
                                           form_tag_attrs))
       end
 

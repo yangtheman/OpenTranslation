@@ -22,13 +22,13 @@ class OrigsControllerTest < ActionController::TestCase
   end
 
   context "On GET to :show" do
-    setup do 
+    setup do
       @orig = Factory.create(:orig)
       @ko = Factory.create(:language, :name => "korean", :short => "ko")
       5.times do
 	Factory.create(:post, :language => @ko, :orig => @orig)
       end
-      get :show, :id => @orig.id 
+      get :show, :id => @orig.id
     end
 
     should_assign_to :orig

@@ -31,7 +31,7 @@ class LoginController < ApplicationController
     else
       flash[:error] = "Sorry, couldn't log you in. Try again."
     end
-    
+
     redirect_to :action => 'index'
   end
 

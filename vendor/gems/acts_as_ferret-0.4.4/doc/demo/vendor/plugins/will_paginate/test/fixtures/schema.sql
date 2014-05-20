@@ -5,20 +5,20 @@ CREATE TABLE 'companies' (
 );
 
 CREATE TABLE 'replies' (
-  'id' INTEGER PRIMARY KEY NOT NULL, 
-  'content' text, 
-  'created_at' datetime, 
-  'updated_at' datetime, 
+  'id' INTEGER PRIMARY KEY NOT NULL,
+  'content' text,
+  'created_at' datetime,
+  'updated_at' datetime,
   'topic_id' integer
 );
 
 CREATE TABLE 'topics' (
-  'id' INTEGER PRIMARY KEY NOT NULL, 
+  'id' INTEGER PRIMARY KEY NOT NULL,
   'project_id' INTEGER DEFAULT NULL,
-  'title' varchar(255), 
-  'subtitle' varchar(255), 
-  'content' text, 
-  'created_at' datetime, 
+  'title' varchar(255),
+  'subtitle' varchar(255),
+  'content' text,
+  'created_at' datetime,
   'updated_at' datetime
 );
 

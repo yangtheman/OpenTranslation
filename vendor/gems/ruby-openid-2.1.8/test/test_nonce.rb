@@ -78,7 +78,7 @@ module OpenID
         # malformed nonce string
         ['monkeys', 0, 0, false],
       ]
-      
+
       cases.each{|c|
         (nonce_str, allowed_skew, now, expected) = c
         actual = Nonce::check_timestamp(nonce_str, allowed_skew, now)

@@ -17,7 +17,7 @@ class SharedIndex1Test < Test::Unit::TestCase
       assert_nil r.instance_variable_get(:@ar_record) # lazy, AR record has not been fetched
     }
   end
-  
+
   def test_find
     assert_equal shared_index1s(:first), SharedIndex1.find(1)
     assert_equal shared_index2s(:first), SharedIndex2.find(1)

@@ -54,11 +54,11 @@
 
 * (6 Oct 2005) renamed dirty? to changed? to keep it uniform.  it was aliased to keep it backwards compatible.
 
-*0.2* 
+*0.2*
 
 * (6 Oct 2005)  added find_versions and find_version class methods.
 
-* (6 Oct 2005)  removed transaction from create_versioned_table().  
+* (6 Oct 2005)  removed transaction from create_versioned_table().
   this way you can specify your own transaction around a group of operations.
 
 * (30 Sep 2005) fixed bug where find_versions() would order by 'version' twice. (found by Joe Clark)
@@ -77,6 +77,6 @@
 
 * Adding tests and rdocs
 
-*0.1* 
+*0.1*
 
 * Initial transfer from Rails ticket: http://dev.rubyonrails.com/ticket/1974

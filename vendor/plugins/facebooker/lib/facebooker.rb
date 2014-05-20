@@ -45,19 +45,19 @@ module Facebooker
       apply_configuration(@raw_facebooker_configuration)
     end
 
-    # Sets the Facebook environment based on a hash of options. 
+    # Sets the Facebook environment based on a hash of options.
     # By default the hash passed in is loaded from facebooker.yml, but it can also be passed in
-    # manually every request to run multiple Facebook apps off one Rails app. 
+    # manually every request to run multiple Facebook apps off one Rails app.
     def apply_configuration(config)
       ENV['FACEBOOK_API_KEY']             = config['api_key']
       ENV['FACEBOOK_SECRET_KEY']          = config['secret_key']
       ENV['FACEBOOKER_RELATIVE_URL_ROOT'] = config['canvas_page_name']
       ENV['FACEBOOKER_API']               = config['api']
       if config.has_key?('set_asset_host_to_callback_url')
-        Facebooker.set_asset_host_to_callback_url = config['set_asset_host_to_callback_url'] 
+        Facebooker.set_asset_host_to_callback_url = config['set_asset_host_to_callback_url']
       end
       if Object.const_defined?("ActionController") and Facebooker.set_asset_host_to_callback_url
-        ActionController::Base.asset_host = config['callback_url'] 
+        ActionController::Base.asset_host = config['callback_url']
       end
       Facebooker.timeout = config['timeout']
 
@@ -189,7 +189,7 @@ module Facebooker
     # If this request is_canvas_request
     # then use the application name as the url root
     def request_for_canvas(is_canvas_request)
-      original_path_prefix = @path_prefix 
+      original_path_prefix = @path_prefix
       begin
         @path_prefix = facebook_path_prefix if is_canvas_request
         yield
@@ -209,7 +209,7 @@ require 'facebooker/service'
 require 'facebooker/service/base_service'
 #optional HTTP service adapters
 begin
-  require 'facebooker/service/curl_service' 
+  require 'facebooker/service/curl_service'
 rescue LoadError
   nil
 end

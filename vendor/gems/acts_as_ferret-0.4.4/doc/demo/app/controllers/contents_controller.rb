@@ -1,7 +1,7 @@
 class ContentsController < ApplicationController
   before_filter :find_content, :only => [ :show, :edit, :update, :destroy ]
 
-  def index 
+  def index
     @contents = Content.paginate :page => params[:page]
   end
 

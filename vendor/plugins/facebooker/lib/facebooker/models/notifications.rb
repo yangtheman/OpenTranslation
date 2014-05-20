@@ -2,7 +2,7 @@ module Facebooker
   class Notifications
     include Model
     attr_accessor :messages, :group_invites, :pokes, :friend_requests, :event_invites, :shares
-    
+
     [:Messages, :Pokes, :Shares].each do |notification_type|
       const_set(notification_type, Class.new do
         include Model

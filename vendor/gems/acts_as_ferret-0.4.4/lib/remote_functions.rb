@@ -20,7 +20,7 @@ module ActsAsFerret
       return_value_in_case_of_error
     end
 
-    alias :old_handle_drb_error :handle_drb_error 
+    alias :old_handle_drb_error :handle_drb_error
     def handle_drb_error(return_value_in_case_of_error = false)
       handle_drb_restart do
         old_handle_drb_error(return_value_in_case_of_error) { yield }

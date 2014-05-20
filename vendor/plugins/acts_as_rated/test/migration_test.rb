@@ -1,11 +1,11 @@
-ENV['NO_SCHEMA_LOAD'] = 'true' 
+ENV['NO_SCHEMA_LOAD'] = 'true'
 require File.join(File.dirname(__FILE__), 'abstract_unit')
 require File.join(File.dirname(__FILE__), 'dummy_classes')
 
-if ActiveRecord::Base.connection.supports_migrations? 
+if ActiveRecord::Base.connection.supports_migrations?
   class MigrationTest < Test::Unit::TestCase
     self.use_transactional_fixtures = false
-   
+
     # Defeat table creation!
     def create_fixtures(*table_names)
     end
@@ -13,7 +13,7 @@ if ActiveRecord::Base.connection.supports_migrations?
     def setup
       teardown # Same in our case...
     end
-    
+
     def teardown
       ActiveRecord::Base.connection.initialize_schema_information
       ActiveRecord::Base.connection.update "UPDATE schema_info SET version = 0"
@@ -23,11 +23,11 @@ if ActiveRecord::Base.connection.supports_migrations?
         c.reset_column_information
       end
     end
-    
+
     # Add ratings table AND add the special stats table
     def test_add_ratings_table_migration
       verify_tables_do_not_exist
-     
+
       # up we go...
       ActiveRecord::Migrator.up(File.dirname(__FILE__) + '/fixtures/migrations/')
       [Book, Movie, Car, Video, Truck, Tape, Film, User, Mechanic].each do |c|
@@ -35,8 +35,8 @@ if ActiveRecord::Base.connection.supports_migrations?
         assert_nothing_raised { t = c.create }
         assert_respond_to t, :title
         assert_respond_to t, :rating_average unless [User, Mechanic].include?(c)
-        assert t.attributes.include?('rating_avg') unless [User, Mechanic, Book, Video, Tape].include?(c) 
-        assert !t.attributes.include?('rating_avg') if [User, Mechanic, Book, Video, Tape].include?(c) 
+        assert t.attributes.include?('rating_avg') unless [User, Mechanic, Book, Video, Tape].include?(c)
+        assert !t.attributes.include?('rating_avg') if [User, Mechanic, Book, Video, Tape].include?(c)
       end
       r = nil
       assert_nothing_raised { r = Rating.create }
@@ -55,7 +55,7 @@ if ActiveRecord::Base.connection.supports_migrations?
       assert_respond_to m, :rated_id
       assert_respond_to m, :rated_type
       assert_respond_to m, :rating_avg
-  
+
       # down again
       ActiveRecord::Migrator.down(File.dirname(__FILE__) + '/fixtures/migrations/')
       verify_tables_do_not_exist
@@ -66,6 +66,6 @@ if ActiveRecord::Base.connection.supports_migrations?
         assert_raises(ActiveRecord::StatementInvalid) { c.create }
       end
     end
-    
+
   end
 end

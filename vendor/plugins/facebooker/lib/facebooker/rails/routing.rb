@@ -10,14 +10,14 @@ module Facebooker
           env = extract_request_environment_without_facebooker(request)
           env.merge :canvas => (request.parameters[:fb_sig_in_canvas]=="1")
         end
-      end 
+      end
       module MapperExtensions
 
         # Generates pseudo-resource routes. Since everything is a POST, routes can't be identified
         # using HTTP verbs. Therefore, the action is appended to the beginning of each named route,
         # except for index.
         #
-        # Example: 
+        # Example:
         #   map.facebook_resources :profiles
         #
         # Generates the following routes:
@@ -40,10 +40,10 @@ module Facebooker
             map.named_route("create_#{name.singularize}",  "#{name}/create",      :action => 'create')
             map.named_route("edit_#{name.singularize}",    "#{name}/:id/edit",    :action => 'edit',    :id => /\d+/)
             map.named_route("update_#{name.singularize}",  "#{name}/:id/update",  :action => 'update',  :id => /\d+/)
-            map.named_route("destroy_#{name.singularize}", "#{name}/:id/destroy", :action => 'destroy', :id => /\d+/)            
+            map.named_route("destroy_#{name.singularize}", "#{name}/:id/destroy", :action => 'destroy', :id => /\d+/)
           end
         end
       end
     end
-  end      
+  end
 end

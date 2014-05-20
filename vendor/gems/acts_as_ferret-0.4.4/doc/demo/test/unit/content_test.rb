@@ -11,17 +11,17 @@ class ContentTest < Test::Unit::TestCase
     #make sure the fixtures are in the index
     FileUtils.rm_f 'index/test/'
     Comment.rebuild_index
-    ContentBase.rebuild_index 
+    ContentBase.rebuild_index
     raise "missing fixtures" unless ContentBase.count > 2
-    
-    @another_content = Content.new( :title => 'Another Content item', 
+
+    @another_content = Content.new( :title => 'Another Content item',
                                     :description => 'this is not the title' )
     @another_content.save
     @comment = @another_content.comments.create(:author => 'john doe', :content => 'This is a useless comment')
     @comment2 = @another_content.comments.create(:author => 'another', :content => 'content')
     @another_content.save # to update comment_count in ferret-index
   end
-  
+
   def teardown
     ContentBase.find(:all).each { |c| c.destroy }
     Comment.find(:all).each { |c| c.destroy }
@@ -117,7 +117,7 @@ class ContentTest < Test::Unit::TestCase
     assert content.ferret_enabled?
     content.disable_ferret(:always)
     assert !content.ferret_enabled?
-    2.times do 
+    2.times do
       content.save
       assert Content.find_with_ferret('"find me"').empty?
       assert !content.ferret_enabled?
@@ -134,7 +134,7 @@ class ContentTest < Test::Unit::TestCase
     content = Content.new(:title => 'should not get saved', :description => 'do not find me')
     assert !content.ferret_enabled?
     assert !Content.ferret_enabled?
-    2.times do 
+    2.times do
       content.save
       assert Content.find_with_ferret('"find me"').empty?
       assert !Content.ferret_enabled?
@@ -237,7 +237,7 @@ class ContentTest < Test::Unit::TestCase
 
 
   def test_unicode
-    content = Content.new(:title => 'Title with some Ümläuts - äöü', 
+    content = Content.new(:title => 'Title with some Ümläuts - äöü',
                           :description => 'look - an ß')
     content.save
     result = Content.find_with_ferret('äöü')
@@ -250,14 +250,14 @@ class ContentTest < Test::Unit::TestCase
 
   def test_content_for_field_name
     c = 'lorem ipsum dolor sit amet. lorem.'
-    @c1 = Content.new( :title => 'Content item 1', 
+    @c1 = Content.new( :title => 'Content item 1',
                        :description => c )
     assert_equal c, @c1.content_for_field_name(:description)
   end
 
   def test_document_number
     c = 'lorem ipsum dolor sit amet. lorem.'
-    c1 = Content.new( :title => 'Content item 1', 
+    c1 = Content.new( :title => 'Content item 1',
                        :description => c )
     c1.save
     fi = Content.aaf_index.ferret_index
@@ -273,10 +273,10 @@ class ContentTest < Test::Unit::TestCase
 
   def test_more_like_this
     assert Content.find_with_ferret('lorem ipsum').empty?
-    @c1 = Content.new( :title => 'Content item 1', 
+    @c1 = Content.new( :title => 'Content item 1',
                        :description => 'lorem ipsum dolor sit amet. lorem.' )
     @c1.save
-    @c2 = Content.new( :title => 'Content item 2', 
+    @c2 = Content.new( :title => 'Content item 2',
                        :description => 'lorem ipsum dolor sit amet. lorem ipsum.' )
     @c2.save
     assert_equal 2, Content.find_with_ferret('lorem ipsum').size
@@ -287,9 +287,9 @@ class ContentTest < Test::Unit::TestCase
 
   def test_more_like_this_new_record
     assert Content.find_with_ferret('lorem ipsum').empty?
-    @c1 = Content.new( :title => 'Content item 1', 
+    @c1 = Content.new( :title => 'Content item 1',
                        :description => 'lorem ipsum dolor sit amet. lorem.' )
-    @c2 = Content.new( :title => 'Content item 2', 
+    @c2 = Content.new( :title => 'Content item 2',
                        :description => 'lorem ipsum dolor sit amet. lorem ipsum.' )
     @c2.save
     assert_equal 1, Content.find_with_ferret('lorem ipsum').size
@@ -301,7 +301,7 @@ class ContentTest < Test::Unit::TestCase
   def test_class_index_dir
     assert Content.aaf_configuration[:index_dir] =~ %r{^#{RAILS_ROOT}/index/test/content_base}
   end
-  
+
   def test_update
     contents_from_ferret = Content.find_with_ferret('useless')
     assert_equal 1, contents_from_ferret.size
@@ -343,7 +343,7 @@ class ContentTest < Test::Unit::TestCase
     result = Content.find_with_ferret('comment_count:2', :sort => sorting)
     assert result.first.id < result.last.id
 
-    sorting = Ferret::Search::Sort.new([ Ferret::Search::SortField.new(:id), 
+    sorting = Ferret::Search::Sort.new([ Ferret::Search::SortField.new(:id),
                                          Ferret::Search::SortField::SCORE ],
                                         :reverse => true)
 
@@ -351,7 +351,7 @@ class ContentTest < Test::Unit::TestCase
     result = Content.find_with_ferret('comment_count:2', :sort => sorting)
     assert result.first.id > result.last.id
   end
-  
+
   def test_sort_class
     sorting = Ferret::Search::Sort.new(Ferret::Search::SortField.new(:id, :reverse => true))
     result = Content.find_with_ferret('comment_count:2 OR comment_count:1', :sort => sorting)
@@ -361,7 +361,7 @@ class ContentTest < Test::Unit::TestCase
     assert_equal 2, result.size
     assert result.first.id > result.last.id
   end
-  
+
   def test_sort_with_limit
     sorting = [ Ferret::Search::SortField.new(:id) ]
     result = Content.find_with_ferret('comment_count:2 OR comment_count:1', :sort => sorting)
@@ -379,7 +379,7 @@ class ContentTest < Test::Unit::TestCase
     assert_equal 2, result.size
     assert result.first.id > result.last.id
   end
-  
+
 
   def test_add_rebuilds_index
     remove_index Content
@@ -404,10 +404,10 @@ class ContentTest < Test::Unit::TestCase
     assert_equal 2, total_hits
     #puts "first (id=#{contents_from_ferret.first[:id]}): #{contents_from_ferret.first[:score]}"
     #puts "last  (id=#{contents_from_ferret.last[:id]}): #{contents_from_ferret.last[:score]}"
-    assert_equal contents(:first).id, contents_from_ferret.first[:id].to_i 
+    assert_equal contents(:first).id, contents_from_ferret.first[:id].to_i
     assert_equal @another_content.id, contents_from_ferret.last[:id].to_i
     assert contents_from_ferret.first[:score] >= contents_from_ferret.last[:score]
-     
+
     # give description field higher boost:
     total_hits, contents_from_ferret = Content.find_ids_with_ferret('title:title OR description:title^200')
     assert_equal 2, contents_from_ferret.size
@@ -415,17 +415,17 @@ class ContentTest < Test::Unit::TestCase
     #puts "first (id=#{contents_from_ferret.first[:id]}): #{contents_from_ferret.first[:score]}"
     #puts "last  (id=#{contents_from_ferret.last[:id]}): #{contents_from_ferret.last[:score]}"
     assert_equal @another_content.id, contents_from_ferret.first[:id].to_i
-    assert_equal contents(:first).id, contents_from_ferret.last[:id].to_i 
+    assert_equal contents(:first).id, contents_from_ferret.last[:id].to_i
     assert contents_from_ferret.first[:score] > contents_from_ferret.last[:score]
-     
+
   end
-  
+
   def test_find_with_ferret_boost
     # give description field higher boost:
     contents_from_ferret = Content.find_with_ferret('title:title OR description:title^200')
     assert_equal 2, contents_from_ferret.size
     assert_equal @another_content.id, contents_from_ferret.first.id
-    assert_equal contents(:first).id, contents_from_ferret.last.id 
+    assert_equal contents(:first).id, contents_from_ferret.last.id
   end
 
   def test_default_and_queries
@@ -437,13 +437,13 @@ class ContentTest < Test::Unit::TestCase
     assert_equal 1, contents_from_ferret.size
     assert_equal contents(:first).id, contents_from_ferret.first.id
 
-    # multiple terms, each term has to occur in a document to be found, 
+    # multiple terms, each term has to occur in a document to be found,
     # but they may occur in different fields
     contents_from_ferret = Content.find_with_ferret('useless title')
     assert_equal 1, contents_from_ferret.size
     assert_equal contents(:first).id, contents_from_ferret.first.id
   end
-  
+
   def test_find_with_ferret
 
     contents_from_ferret = Content.find_with_ferret('lorem ipsum not here')
@@ -452,20 +452,20 @@ class ContentTest < Test::Unit::TestCase
     contents_from_ferret = Content.find_with_ferret('title')
     assert_equal 2, contents_from_ferret.size
     # the title field has a higher boost value, so contents(:first) must be first in the list
-    assert_equal contents(:first).id, contents_from_ferret.first.id 
+    assert_equal contents(:first).id, contents_from_ferret.first.id
     assert_equal @another_content.id, contents_from_ferret.last.id
 
-     
+
 
     contents_from_ferret = Content.find_with_ferret('useless')
     assert_equal 1, contents_from_ferret.size
     assert_equal contents(:first).id, contents_from_ferret.first.id
-    
+
     # no monkeys here
     contents_from_ferret = Content.find_with_ferret('monkey')
     assert contents_from_ferret.empty?
-    
-    
+
+
 
     # search for an exact string by enclosing it in "
     contents_from_ferret = Content.find_with_ferret('"useless title"')
@@ -482,7 +482,7 @@ class ContentTest < Test::Unit::TestCase
     # using StandardAnalyzer:
     # contents_from_ferret = Content.find_with_ferret('Ti*')
     # we should find both 'Title' and 'title'
-    # assert_equal 2, contents_from_ferret.size 
+    # assert_equal 2, contents_from_ferret.size
     # theory: :wild_lower parser option isn't used
 
     contents_from_ferret = Content.find_with_ferret('ti*')
@@ -501,16 +501,16 @@ class ContentTest < Test::Unit::TestCase
     contents_from_ferret = Content.find_with_ferret('title', {}, :conditions => ["id=?",contents(:first).id])
     assert_equal 1, contents_from_ferret.size
     assert_equal contents(:first), contents_from_ferret.first
-    
+
     # limit result set size to 1
     contents_from_ferret = Content.find_with_ferret('title', :limit => 1)
     assert_equal 1, contents_from_ferret.size
-    assert_equal contents(:first), contents_from_ferret.first 
-    
+    assert_equal contents(:first), contents_from_ferret.first
+
     # limit result set size to 1, starting with the second result
     contents_from_ferret = Content.find_with_ferret('title', :limit => 1, :offset => 1)
     assert_equal 1, contents_from_ferret.size
-    assert_equal @another_content.id, contents_from_ferret.first.id 
+    assert_equal @another_content.id, contents_from_ferret.first.id
 
   end
 
@@ -552,30 +552,30 @@ class ContentTest < Test::Unit::TestCase
   def test_limits_and_offsets_with_ar_conditions
     more_contents
 
-    r = Content.find_with_ferret 'title', { :limit => 10, :offset => 0 }, 
+    r = Content.find_with_ferret 'title', { :limit => 10, :offset => 0 },
                                           { :conditions => "description != '0'", :order => 'title ASC' }
     assert_equal 29, r.total_hits
     assert_equal 10, r.size
     assert_equal "1", r.first.description
     assert_equal "10", r.last.description
 
-    r = Content.find_with_ferret 'title', { :limit => 10, :offset => 10 }, 
+    r = Content.find_with_ferret 'title', { :limit => 10, :offset => 10 },
                                           { :conditions => "description != '0'", :order => 'title ASC' }
     assert_equal 29, r.total_hits
     assert_equal 10, r.size
     assert_equal "11", r.first.description
     assert_equal "20", r.last.description
 
-    r = Content.find_with_ferret 'title', { }, 
-                                          { :conditions => "description != '0'", :order => 'title ASC', 
+    r = Content.find_with_ferret 'title', { },
+                                          { :conditions => "description != '0'", :order => 'title ASC',
                                             :limit => 10, :offset => 0  }
     assert_equal 29, r.total_hits
     assert_equal 10, r.size
     assert_equal "1", r.first.description
     assert_equal "10", r.last.description
 
-    r = Content.find_with_ferret 'title', { }, 
-                                          { :conditions => "description != '0'", :order => 'title ASC', 
+    r = Content.find_with_ferret 'title', { },
+                                          { :conditions => "description != '0'", :order => 'title ASC',
                                             :limit => 10, :offset => 10 }
     assert_equal 29, r.total_hits
     assert_equal 10, r.size
@@ -586,7 +586,7 @@ class ContentTest < Test::Unit::TestCase
   def test_pagination_with_ar_conditions
     more_contents
 
-    r = Content.find_with_ferret 'title', { :page => 1, :per_page => 10 }, 
+    r = Content.find_with_ferret 'title', { :page => 1, :per_page => 10 },
                                           { :conditions => "description != '0'", :order => 'title ASC' }
     assert_equal 29, r.total_hits
     assert_equal 10, r.size
@@ -611,12 +611,12 @@ class ContentTest < Test::Unit::TestCase
     # r = Content.find_with_ferret 'title', { :page => 1, :per_page => 10,
     #                                         :sort => Ferret::Search::SortField.new(:id,
     #                                                                                :type => :integer,
-    #                                                                                :reverse => true ) }, 
+    #                                                                                :reverse => true ) },
     #                                       { :conditions => "description != '0'" }
     r = ActsAsFerret::find 'title', Content, { :page => 1, :per_page => 10,
                                             :sort => Ferret::Search::SortField.new(:id,
                                                                                    :type => :integer,
-                                                                                   :reverse => true ) }, 
+                                                                                   :reverse => true ) },
                                           { :conditions => "description != '29'" }
     assert_equal 29, r.total_hits
     assert_equal 10, r.size

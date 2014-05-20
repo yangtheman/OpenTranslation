@@ -1,5 +1,5 @@
 This is a very minimalistic example of using ferret
-to do full text searches in Rails model data. Tested with 
+to do full text searches in Rails model data. Tested with
   Ruby 1.8.3, Rails 1.0 and Ferret 0.3.2.
 
 You can install the latter with
@@ -23,7 +23,7 @@ Create databases (if you don't use unix and/or sudo, use 'mysql -u root -p')
   create database ferret_test;
   grant all on ferret_development.* to 'ferret'@'localhost' identified by 'ferret';
   grant all on ferret_test.* to 'ferret'@'localhost' identified by 'ferret';
- 
+
 Create database schema
   mysql -u ferret -pferret ferret_development < db/schema.sql
 
@@ -32,7 +32,7 @@ Edit config/database.yml (user names and passwords)
 Create content controller and model
 script/generate scaffold Content
 
-Running rake at this point should yield no errors. 
+Running rake at this point should yield no errors.
 Otherwise check your database configuration.
 
 
@@ -45,25 +45,25 @@ Add ferret to the content model class:
 
 Add unit tests for the find_by_contents method to content_test.rb.
 
-running rake should succeed, and there should be an index in 
+running rake should succeed, and there should be an index in
 RAILS_ROOT/index/test/Content.
 
 Extend the ContentController with a search method and create the search view
 Add unit tests for the search method to content_controller_test.rb
-Run rake again to see the tests pass. 
-Remember that, as a good programmer, you would've written the tests first, 
+Run rake again to see the tests pass.
+Remember that, as a good programmer, you would've written the tests first,
 before implementing the feature ;-)
 
 
 Try it out
 ==========
-Run the app with script/server and create some content objects. You should 
+Run the app with script/server and create some content objects. You should
 see the index in RAILS_ROOT/index/development/Content.
 
 Try searching at http://localhost:3000/content/search
 
 
-Please contact me if you find any bugs/problems within this howto or 
+Please contact me if you find any bugs/problems within this howto or
 in the code.
 
 Jens Kraemer <jk@jkraemer.net>

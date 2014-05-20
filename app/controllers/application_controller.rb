@@ -28,7 +28,7 @@ class ApplicationController < ActionController::Base
       @clickpass_callback_url = 'alpha.bloglation.com'
       @disqus_env = "1"
     end
-  end 
+  end
 
   def login_required
     return true if logged_in?

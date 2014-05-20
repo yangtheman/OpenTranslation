@@ -41,7 +41,7 @@ module OpenID
       @disco_services.next
       assert(@disco_services.started?)
       @disco_services.next
-      assert(@disco_services.started?) 
+      assert(@disco_services.started?)
       @disco_services.next
       assert(!@disco_services.started?)
     end

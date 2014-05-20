@@ -10,14 +10,14 @@ rake rails:freeze:edge
 You'll also need to set up a database for it.
 SQL scripts for both SQLite and MySQL are provided in db/ .
 
-Just set up one of these, and configure your db connection 
+Just set up one of these, and configure your db connection
 in config/database.yml .
 
-after that run 
+after that run
 rake
 to see the unit tests pass.
 
 
-Please feel free to post bugs/enhancements/patches at 
+Please feel free to post bugs/enhancements/patches at
 http://projects.jkraemer.net/acts_as_ferret .
 

@@ -24,7 +24,7 @@ class WelcomeControllerTest < ActionController::TestCase
       Post.any_instance.stubs(:post_count).returns('10')
       User.any_instance.stubs(:post_count).returns('10')
 
-      get :index 
+      get :index
     end
 
     should_assign_to :languages, :top_posts, :top_origs, :top_users

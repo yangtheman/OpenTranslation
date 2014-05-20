@@ -11,14 +11,14 @@ module Facebooker
       yield
     end
   end
-  
+
   module Rails
     module Controller
       # prevent Facebooker from rendering fb:redirect
       def redirect_to(*args)
         super
       end
-      
+
       # Return the mock session
       def new_facebook_session
         Facebooker::MockSession.create

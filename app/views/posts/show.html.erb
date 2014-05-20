@@ -8,7 +8,7 @@
     </p>
     <p class="show_info">Language: <%= @post.language.name %></p>
     <p class="show_info">
-    <%= link_to 'Additional translations', orig_path(@orig) %> | 
+    <%= link_to 'Additional translations', orig_path(@orig) %> |
     <%= link_to 'Original blog', @orig.url, :target => '_blank' %>
     </p>
   </div>
@@ -17,7 +17,7 @@
 <div id="show_middle">
   <div id="add_trans">
     <% form_tag :action => 'add_trans' do %>
-      <p><%= collection_select(:post, :ted_id, @languages, :id, :name) %></p> 
+      <p><%= collection_select(:post, :ted_id, @languages, :id, :name) %></p>
       <%= image_submit_tag 'tran.gif' %>
     <% end %>
   </div>

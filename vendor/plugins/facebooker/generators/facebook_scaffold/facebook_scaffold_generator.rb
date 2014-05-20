@@ -1,7 +1,7 @@
 class Rails::Generator::Commands::Create
     def register_fbml_mime_type_alias
       path = destination_path('config/initializers/mime_types.rb')
-      content = "Mime::Type.register_alias 'text/html', :fbml"  
+      content = "Mime::Type.register_alias 'text/html', :fbml"
       unless File.read(path).match(Regexp.escape(content))
 	logger.register "text/html, :fbml"
 	File.open(path, 'a') { |file| file.write(content) }

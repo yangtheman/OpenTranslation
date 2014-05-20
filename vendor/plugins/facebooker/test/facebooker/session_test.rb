@@ -231,11 +231,11 @@ class Facebooker::SessionTest < Test::Unit::TestCase
     @session = Facebooker::Session.create(ENV['FACEBOOK_API_KEY'], ENV['FACEBOOK_SECRET_KEY'])
     assert_equal 17876842716, @session.register_template_bundle("{*actor*} did something",nil,nil,[{:text=>"text",:href=>"href"}])
   end
-  
+
   def test_can_register_template_bundle_with_short_story
     one_line = "{*actor*} did something"
     short_story = { :title => 'title', :body => 'body' }
-    
+
     @session = Facebooker::Session.create(ENV['FACEBOOK_API_KEY'], ENV['FACEBOOK_SECRET_KEY'])
     @session.expects(:post).with(
       'facebook.feed.registerTemplateBundle',
@@ -244,11 +244,11 @@ class Facebooker::SessionTest < Test::Unit::TestCase
     )
     @session.register_template_bundle(one_line, short_story)
   end
-  
+
   def test_can_register_template_bundle_with_short_story_for_several_templates
     one_line = ["{*actor*} did something", "{*actor*} did something again"]
     short_story = [{ :title => 'title', :body => 'body' }, { :title => 'title2', :body => 'body2' }]
-    
+
     @session = Facebooker::Session.create(ENV['FACEBOOK_API_KEY'], ENV['FACEBOOK_SECRET_KEY'])
     @session.expects(:post).with(
       'facebook.feed.registerTemplateBundle',
@@ -257,12 +257,12 @@ class Facebooker::SessionTest < Test::Unit::TestCase
     )
     @session.register_template_bundle(one_line, short_story)
   end
-  
+
   def test_can_register_template_bundle_with_full_story_for_several_templates
     one_line = ["{*actor*} did something", "{*actor*} did something again"]
     short_story = [{ :title => 'title', :body => 'body' }, { :title => 'title2', :body => 'body2' }]
     full_story = { :title => 'title', :body => 'body' }
-    
+
     @session = Facebooker::Session.create(ENV['FACEBOOK_API_KEY'], ENV['FACEBOOK_SECRET_KEY'])
     @session.expects(:post).with(
       'facebook.feed.registerTemplateBundle',
@@ -271,7 +271,7 @@ class Facebooker::SessionTest < Test::Unit::TestCase
     )
     @session.register_template_bundle(one_line, short_story, full_story)
   end
-  
+
   def test_can_deactivate_template_bundle_by_id
     @session = Facebooker::Session.create(ENV['FACBEOOK_API_KEY'], ENV['FACEBOOK_SECRET_KEY'])
     @session.expects(:post).with(

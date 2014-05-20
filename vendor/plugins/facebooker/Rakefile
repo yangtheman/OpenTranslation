@@ -67,18 +67,18 @@ namespace :gem do
 end
 
 # vim: syntax=Ruby
-# 
-# 
+#
+#
 # require File.dirname(__FILE__) + '/vendor/gardener/lib/gardener'
-# 
+#
 # require 'facebooker'
-# 
+#
 # namespace :doc do
 #   task :readme do
 #     puts "Readme"
 #   end
 # end
-# 
+#
 # Gardener.configure do
 #   gem_spec do |spec|
 #     spec.name              = 'facebooker'

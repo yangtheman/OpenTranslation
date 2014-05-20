@@ -26,10 +26,10 @@ class Admin::BackendControllerTest < Test::Unit::TestCase
     post :search, :query => 'title'
     assert_template 'search'
     assert_equal 1, assigns(:results).size
-    
+
     post :search, :query => 'monkey'
     assert_template 'search'
     assert assigns(:results).empty?
- 
+
   end
 end

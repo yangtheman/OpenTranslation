@@ -1,11 +1,11 @@
 # Extends the ActionView::Helpers::UrlHelper module.  See it for details on
-# the usual url helper methods: url_for, link_to, button_to, etc.  
+# the usual url helper methods: url_for, link_to, button_to, etc.
 #
-# Mostly, the changes sanitize javascript into facebook javascript.  
-# It sanitizes link_to solely by altering the private methods: 
-# convert_options_to_javascript!, confirm_javascript_function, and 
+# Mostly, the changes sanitize javascript into facebook javascript.
+# It sanitizes link_to solely by altering the private methods:
+# convert_options_to_javascript!, confirm_javascript_function, and
 # method_javascript_function.  For button_to, it alters button_to
-# itself, as well as confirm_javascript_function.  No other methods 
+# itself, as well as confirm_javascript_function.  No other methods
 # need to be changed because of Facebook javascript.
 #
 # For button_to and link_to, adds alternate confirm options for facebook.
@@ -17,11 +17,11 @@
 #     # Generates: <a href="http://rubyforge.org/projects/facebooker" onclick="
 #     #			var dlg = new Dialog().showChoice('Please Confirm', 'Go to Facebooker?').setStyle();
 #     #			var a=this;dlg.onconfirm = function() {
-#     #		          document.setLocation(a.getHref()); 
+#     #		          document.setLocation(a.getHref());
 #     #			}; return false;">Facebooker</a>
 #     link_to("Facebooker", "http://rubyforge.org/projects/facebooker", :confirm=>"Go to Facebooker?")
 #
-#   Alternatively, options[:confirm] may be specified.  
+#   Alternatively, options[:confirm] may be specified.
 #   See the Facebook page http://wiki.developers.facebook.com/index.php/FBJS.
 #   These options are:
 #   <tt>:title</tt>::       Specifies the title of the Facebook dialog. Default is "Please Confirm".
@@ -31,7 +31,7 @@
 #     # Generates: <a href="http://rubyforge.org/projects/facebooker" onclick="
 #     #			var dlg = new Dialog().showChoice('the page says:', 'Go to Facebooker?').setStyle();
 #     #			var a=this;dlg.onconfirm = function() {
-#     #		          document.setLocation(a.getHref()); 
+#     #		          document.setLocation(a.getHref());
 #     #			}; return false;">Facebooker</a>
 #     link_to("Facebooker", "http://rubyforge.org/projects/facebooker", :confirm=>{:title=>"the page says:", :content=>"Go to Facebooker?"})
 #
@@ -42,7 +42,7 @@
 #     # Generates: <a href="http://rubyforge.org/projects/facebooker" onclick="
 #     #			var dlg = new Dialog().showChoice('the page says:', 'Are you sure?').setStyle({color: 'pink', width: '200px'});
 #     #			var a=this;dlg.onconfirm = function() {
-#     #		          document.setLocation(a.getHref()); 
+#     #		          document.setLocation(a.getHref());
 #     #			}; return false;">Facebooker</a>
 #     link_to("Facebooker", "http://rubyforge.org/projects/facebooker", :confirm=>{:title=>"the page says:, :color=>"pink", :width=>"200px"})
 module ActionView
@@ -62,12 +62,12 @@ module ActionView
           end
 
           form_method = method.to_s == 'get' ? 'get' : 'post'
-        
+
           request_token_tag = ''
           if form_method == 'post' && protect_against_forgery?
             request_token_tag = tag(:input, :type => "hidden", :name => request_forgery_protection_token.to_s, :value => form_authenticity_token)
           end
-        
+
           if confirm = html_options.delete("confirm")
             # this line is the only change => html_options["onclick"] = "return #{confirm_javascript_function(confirm)}"
             html_options["onclick"] = "#{confirm_javascript_function(confirm, 'a.getForm().submit();')}return false;"
@@ -75,7 +75,7 @@ module ActionView
 
           url = options.is_a?(String) ? options : self.url_for(options)
           name ||= url
- 
+
           html_options.merge!("type" => "submit", "value" => name)
 
           "<form method=\"#{form_method}\" action=\"#{escape_once url}\" class=\"button-to\"><div>" +
@@ -114,7 +114,7 @@ module ActionView
 
 
 	# Overrides a private method that link_to calls via convert_options_to_javascript! and
-	# also, button_to calls directly.  For Facebook, confirm can be a hash of options to 
+	# also, button_to calls directly.  For Facebook, confirm can be a hash of options to
 	# stylize the Facebook dialog.  Takes :title, :content, :style options.  See
 	# the Facebook page http://wiki.developers.facebook.com/index.php/FBJS for valid
 	# style formats like "color: 'black', background: 'white'" or like "'color','black'".
@@ -154,7 +154,7 @@ module ActionView
 	  style << "}"
 	end
 
-	# Dynamically creates a form for link_to with method.  Calls confirm_javascript_function if and 
+	# Dynamically creates a form for link_to with method.  Calls confirm_javascript_function if and
 	# only if (confirm && method) for link_to
         def method_javascript_function_with_facebooker(method, url = '', href = nil, confirm = nil)
           if !respond_to?(:request_comes_from_facebook?) || !request_comes_from_facebook?

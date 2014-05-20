@@ -12,7 +12,7 @@ development:
   database: aaf_dev
   username: ferret
   password: ferret
-  
+
 test:
   adapter: mysql
   database: aaf_test
@@ -24,7 +24,7 @@ test:
 #  adapter: mysql
 #  database: ferret_production
 #  username: root
-#  password: 
+#  password:
 #  socket: /var/run/mysqld/mysqld.sock
 
 # SQLITE

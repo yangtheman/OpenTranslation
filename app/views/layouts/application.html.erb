@@ -13,7 +13,7 @@
   <% end %>
   <script type = "text/javascript">
     var disqus_developer = <%= @disqus_env %>;
-  </script>  
+  </script>
 </head>
 
 <body>
@@ -36,23 +36,23 @@
 	Please log in using either
 	<p>
 	<!-- Facebook login -->
-	<%= fb_login_button('window.location = "/fb_login";')%> or 
+	<%= fb_login_button('window.location = "/fb_login";')%> or
 
 	<!-- Clickpass login -->
 	<style> @import 'http://www.clickpass.com/stylesheets/container.css'; </style>
 	<div id="clickpass_button" style="width: 176px; height: 28px; position: relative; z-index : 9999 ;">
-	  <iframe src="http://www.clickpass.com/embedded_buttons/login-standard/<%= @clickpass_site_key %>" width="176" height="28" frameborder="0" allowtransparency="true" scrolling="no" style="z-index:9999;position: absolute; top: 0; left: 0;"></iframe> 
+	  <iframe src="http://www.clickpass.com/embedded_buttons/login-standard/<%= @clickpass_site_key %>" width="176" height="28" frameborder="0" allowtransparency="true" scrolling="no" style="z-index:9999;position: absolute; top: 0; left: 0;"></iframe>
 	</div>
 	<script type="text/javascript" src="http://www.clickpass.com/javascripts/ClickpassPanel.class.external.js?v1"></script>
-	<script type="text/javascript">  
-	  var clickpassPanel = new ClickpassPanel('clickpass_button');   
+	<script type="text/javascript">
+	  var clickpassPanel = new ClickpassPanel('clickpass_button');
 	</script>
 	</p>
       <% end %>
     </div>
   <div id="search">
     <p>
-    <% form_tag(search_path) do %> 
+    <% form_tag(search_path) do %>
     <%= text_field_tag 'query' %>
     <%= image_submit_tag("search.gif", :class => 'submit_button') %>
     <% end %>
@@ -73,12 +73,12 @@
   var uservoiceOptions = {
     /* required */
     key: 'bloglation',
-    host: 'bloglation.uservoice.com', 
+    host: 'bloglation.uservoice.com',
     forum: '34170',
-    showTab: true,  
+    showTab: true,
     /* optional */
     alignment: 'left',
-    background_color: '#06C', 
+    background_color: '#06C',
     text_color: 'white',
     hover_color: '#f00',
     lang: 'en'

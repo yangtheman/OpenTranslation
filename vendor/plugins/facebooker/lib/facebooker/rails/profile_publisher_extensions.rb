@@ -9,7 +9,7 @@ module Facebooker
       end
 
       ##
-      # render the interface for a publisher. 
+      # render the interface for a publisher.
       # fbml is the content in string form. Use render_to_string to get the content from a template
       # publish_enabled controlls whether the post form is active by default. If it isn't, you'll need to use fbjs to activate it
       # comment_enabled controls whether to include a comment box
@@ -17,7 +17,7 @@ module Facebooker
         render :json=>{:content=>{:fbml=>fbml,:publishEnabled=>publish_enabled,:commentEnabled=>comment_enabled},
          :method=>"publisher_getInterface"}
       end
-      
+
       # render an error while publishing the template
       # This can be used for validation errors
       def render_publisher_error(title,body)

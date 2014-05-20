@@ -135,7 +135,7 @@ module OpenID
         aliases = NamespaceMap.new
         required = []
         if_available = []
-        ax_args = new_args 
+        ax_args = new_args
         @requested_attributes.each{|type_uri, attribute|
           if attribute.ns_alias
             name = aliases.add_alias(type_uri, attribute.ns_alias)
@@ -326,7 +326,7 @@ module OpenID
           if count_s.nil?
             value = ax_args['value.'+name]
             if value.nil?
-              raise IndexError, "Missing #{'value.'+name} in FetchResponse" 
+              raise IndexError, "Missing #{'value.'+name} in FetchResponse"
             elsif value.empty?
               values = []
             else
@@ -363,7 +363,7 @@ module OpenID
       def get(type_uri)
         @data[type_uri]
       end
-      
+
       # retrieve the list of values for this attribute
       def [](type_uri)
         @data[type_uri]

@@ -18,7 +18,7 @@ class FinderTest < ActiveRecordTestCase
     assert_equal Array, collection.entries.class
     assert_equal 3, collection.offset
   end
-  
+
   def test_simple_paginate
     entries = Topic.paginate :page => nil
     assert_equal 1, entries.current_page
@@ -26,7 +26,7 @@ class FinderTest < ActiveRecordTestCase
     assert_nil entries.next_page
     assert_equal 1, entries.page_count
     assert_equal 4, entries.size
-    
+
     entries = Topic.paginate :page => 2
     assert_equal 2, entries.current_page
     assert_equal 1, entries.previous_page
@@ -37,7 +37,7 @@ class FinderTest < ActiveRecordTestCase
     assert_raise(ArgumentError){ Topic.paginate }
     assert_raise(ArgumentError){ Topic.paginate({}) }
   end
-  
+
   def test_paginate_with_per_page
     entries = Topic.paginate :page => 1, :per_page => 1
     assert_equal 1, entries.size
@@ -53,14 +53,14 @@ class FinderTest < ActiveRecordTestCase
     assert_equal 5, entries.size
     assert_equal 3, entries.page_count
   end
-  
+
   def test_paginate_with_order
     entries = Topic.paginate :page => 1, :order => 'created_at desc'
     expected = [topics(:futurama), topics(:harvey_birdman), topics(:rails), topics(:ar)].reverse
     assert_equal expected, entries.to_a
     assert_equal 1, entries.page_count
   end
-  
+
   def test_paginate_with_conditions
     entries = Topic.paginate :page => 1, :conditions => ["created_at > ?", 30.minutes.ago]
     expected = [topics(:rails), topics(:ar)]
@@ -93,11 +93,11 @@ class FinderTest < ActiveRecordTestCase
     assert_equal expected.map(&:id).sort, topic.replies.paginate(:page => 1).map(&:id).sort
     assert_equal expected.reverse, topic.replies.paginate(:page => 1, :order => 'replies.id ASC')
   end
-  
+
   def test_paginate_with_joins
     entries = Developer.paginate :page => 1,
                         :joins => 'LEFT JOIN developers_projects ON users.id = developers_projects.developer_id',
-                        :conditions => 'project_id = 1'        
+                        :conditions => 'project_id = 1'
     assert_equal 2, entries.size
     developer_names = entries.map { |d| d.name }
     assert developer_names.include?('David')
@@ -109,17 +109,17 @@ class FinderTest < ActiveRecordTestCase
                         :conditions => 'project_id = 1', :count => { :select => "users.id" }
     assert_equal expected, entries.to_a
   end
-  
+
   def test_paginate_with_include_and_order
     entries = Topic.paginate \
-      :page     => 1, 
-      :include  => :replies,  
-      :order    => 'replies.created_at asc, topics.created_at asc', 
+      :page     => 1,
+      :include  => :replies,
+      :order    => 'replies.created_at asc, topics.created_at asc',
       :per_page => 10
 
-    expected = Topic.find :all, 
-      :include => 'replies', 
-      :order   => 'replies.created_at asc, topics.created_at asc', 
+    expected = Topic.find :all,
+      :include => 'replies',
+      :order   => 'replies.created_at asc, topics.created_at asc',
       :limit   => 10
 
     assert_equal expected, entries.to_a

@@ -26,11 +26,11 @@ class SearchesControllerTest < Test::Unit::TestCase
     assert_template 'search'
     assert_equal 1, assigns(:results).total_hits
     assert_equal 1, assigns(:results).size
-    
+
     get :search, :q => 'monkey'
     assert_template 'search'
     assert assigns(:results).empty?
-    
+
     # check that model changes are picked up by the searcher (searchers have to
     # be reopened to reflect changes done to the index)
     # wait for the searcher to age a bit (it seems fs timestamp resolution is
@@ -41,7 +41,7 @@ class SearchesControllerTest < Test::Unit::TestCase
     assert_template 'search'
     assert_equal 1, assigns(:results).total_hits
     assert_equal 1, assigns(:results).size
-    
+
   end
 
   def test_pagination

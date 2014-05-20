@@ -8,7 +8,7 @@ module Facebooker
   class Session
 
     #
-    # Raised when a facebook session has expired.  This 
+    # Raised when a facebook session has expired.  This
     # happens when the timeout is reached, or when the
     # user logs out of facebook
     # can be handled with:
@@ -33,7 +33,7 @@ module Facebooker
     class BlankFeedTitle < StandardError; end
     class FeedBodyLengthTooLong < StandardError; end
     class InvalidFeedPhotoSource < StandardError; end
-    class InvalidFeedPhotoLink < StandardError; end    
+    class InvalidFeedPhotoLink < StandardError; end
     class TemplateDataMissingRequiredTokens < StandardError; end
     class FeedMarkupInvalid < StandardError; end
     class FeedTitleDataInvalid < StandardError; end
@@ -135,7 +135,7 @@ module Facebooker
     end
 
     def install_url_optional_parameters(options)
-      optional_parameters = []      
+      optional_parameters = []
       optional_parameters += add_next_parameters(options)
       optional_parameters.join
     end
@@ -148,7 +148,7 @@ module Facebooker
     end
 
     def login_url_optional_parameters(options)
-      # It is important that unused options are omitted as stuff like &canvas=false will still display the canvas. 
+      # It is important that unused options are omitted as stuff like &canvas=false will still display the canvas.
       optional_parameters = []
       optional_parameters += add_next_parameters(options)
       optional_parameters << "&skipcookie=true" if options[:skip_cookie]
@@ -197,8 +197,8 @@ module Facebooker
     def secure!(args = {})
       response = post 'facebook.auth.getSession', :auth_token => auth_token, :generate_session_secret => args[:generate_session_secret] ? "1" : "0"
       secure_with!(response['session_key'], response['uid'], response['expires'], response['secret'])
-    end    
-    
+    end
+
     def secure_with_session_secret!
       self.secure!(:generate_session_secret => true)
     end
@@ -249,7 +249,7 @@ module Facebooker
           name = response.shift
           response = response.shift
           type = response.shift
-          value = [] 
+          value = []
           unless type.nil?
             value = response.shift.map do |hash|
               fql_build_object(type, hash)
@@ -286,7 +286,7 @@ module Facebooker
     def create_event(event_info, multipart_post_file = nil)
       post_file('facebook.events.create', :event_info => event_info.to_json, nil => multipart_post_file)
     end
-    
+
     # Cancel an event
     # http://wiki.developers.facebook.com/index.php/Events.cancel
     # E.g:
@@ -331,7 +331,7 @@ module Facebooker
     def is_fan(page_id, uid)
       puts "Deprecated. Use Page#user_is_fan? instead"
       Page.new(page_id).user_is_fan?(uid)
-    end    
+    end
 
 
     #
@@ -373,7 +373,7 @@ module Facebooker
 
     def get_photos(pids = nil, subj_id = nil,  aid = nil)
       if [subj_id, pids, aid].all? {|arg| arg.nil?}
-        raise ArgumentError, "Can't get a photo without a picture, album or subject ID" 
+        raise ArgumentError, "Can't get a photo without a picture, album or subject ID"
       end
       # We have to normalize params orherwise FB complain about signature
       params = {:pids => pids, :subj_id => subj_id, :aid => aid}.delete_if { |k,v| v.nil? }
@@ -386,7 +386,7 @@ module Facebooker
 
     def get_albums(aids)
       @albums = post('facebook.photos.getAlbums', :aids => aids) do |response|
-        response.map do |hash|        
+        response.map do |hash|
           Album.from_hash(hash)
         end
       end
@@ -402,7 +402,7 @@ module Facebooker
 
     def add_tags(pid, x, y, tag_uid = nil, tag_text = nil )
       if [tag_uid, tag_text].all? {|arg| arg.nil?}
-        raise ArgumentError, "Must enter a name or string for this tag"        
+        raise ArgumentError, "Must enter a name or string for this tag"
       end
       @tags = post('facebook.photos.addTag', :pid => pid, :tag_uid => tag_uid, :tag_text => tag_text, :x => x, :y => y )
     end
@@ -419,7 +419,7 @@ module Facebooker
       end
 
       post 'facebook.notifications.send', params,uid?
-    end 
+    end
 
     ##
     # Register a template bundle with Facebook.
@@ -427,20 +427,20 @@ module Facebooker
     def register_template_bundle(one_line_story_templates,short_story_templates=nil,full_story_template=nil, action_links=nil)
       templates = ensure_array(one_line_story_templates)
       parameters = {:one_line_story_templates => templates.to_json}
-      
+
       unless action_links.blank?
         parameters[:action_links] = action_links.to_json
       end
-      
+
       unless short_story_templates.blank?
         templates = ensure_array(short_story_templates)
         parameters[:short_story_templates] = templates.to_json
       end
-      
+
       unless full_story_template.blank?
         parameters[:full_story_template] = full_story_template.to_json
       end
-      
+
       post("facebook.feed.registerTemplateBundle", parameters, false)
     end
 
@@ -471,9 +471,9 @@ module Facebooker
 
     ##
     # Send email to as many as 100 users at a time
-    def send_email(user_ids, subject, text, fbml = nil)       
+    def send_email(user_ids, subject, text, fbml = nil)
       user_ids = Array(user_ids)
-      params = {:fbml => fbml, :recipients => user_ids.map{ |id| User.cast_to_facebook_id(id)}.join(','), :text => text, :subject => subject} 
+      params = {:fbml => fbml, :recipients => user_ids.map{ |id| User.cast_to_facebook_id(id)}.join(','), :text => text, :subject => subject}
       post 'facebook.notifications.sendEmail', params, false
     end
 
@@ -482,12 +482,12 @@ module Facebooker
       fields_to_serialize.each_with_index{|field, index| instance_variable_set_value(field, variables[index])}
     end
 
-    # Only serialize the bare minimum to recreate the session.    
+    # Only serialize the bare minimum to recreate the session.
     def marshal_dump#:nodoc:
       fields_to_serialize.map{|field| instance_variable_value(field)}
     end
 
-    # Only serialize the bare minimum to recreate the session. 
+    # Only serialize the bare minimum to recreate the session.
     def to_yaml( opts = {} )
       YAML::quick_emit(self.object_id, opts) do |out|
         out.map(taguri) do |map|
@@ -543,7 +543,7 @@ module Facebooker
     end
 
     # Submit the enclosed requests for this session inside a batch
-    # 
+    #
     # All requests will be sent to Facebook at the end of the block
     # each method inside the block will return a proxy object
     # attempting to access the proxy before the end of the block will yield an exception
@@ -570,11 +570,11 @@ module Facebooker
     # re-raised on the next access to that object or when exception_raised? is called
     #
     # for example, if the send_notification resulted in TooManyUserCalls being raised,
-    # calling 
-    #   @send_result.exception_raised? 
+    # calling
+    #   @send_result.exception_raised?
     # would re-raise that exception
-    # if there was an error retrieving the albums, it would be re-raised when 
-    #  @albums.first 
+    # if there was an error retrieving the albums, it would be re-raised when
+    #  @albums.first
     # is called
     #
     def batch(serial_only=false)
@@ -659,7 +659,7 @@ module Facebooker
       end
 
       def service
-        @service ||= Service.new(Facebooker.api_server_base, Facebooker.api_rest_path, @api_key)      
+        @service ||= Service.new(Facebooker.api_server_base, Facebooker.api_rest_path, @api_key)
       end
 
       def uid
@@ -679,7 +679,7 @@ module Facebooker
         end.sort.join
         Digest::MD5.hexdigest([raw_string, secret_for_method(params[:method])].join)
       end
-      
+
       def ensure_array(value)
         value.is_a?(Array) ? value : [value]
       end

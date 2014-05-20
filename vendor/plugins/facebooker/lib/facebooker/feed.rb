@@ -8,7 +8,7 @@ module Facebooker
         attr_accessor "image_#{num}"
         attr_accessor "image_#{num}_link"
       end
-      
+
       def add_image(image,link=nil)
         1.upto(4) do |num|
           if send("image_#{num}").blank?
@@ -16,9 +16,9 @@ module Facebooker
             send("image_#{num}_link=",link) unless link.nil?
             return num
           end
-        end        
+        end
       end
-      
+
 
       protected
       def image_params
@@ -27,7 +27,7 @@ module Facebooker
           image_attribute = "image_#{num}"
           image_link_attribute = image_attribute + "_link"
           self.__send__(image_attribute) ? image_hash[image_attribute] = self.__send__(image_attribute) : nil
-          self.__send__(image_link_attribute) ? image_hash[image_link_attribute] = self.__send__(image_link_attribute) : nil    
+          self.__send__(image_link_attribute) ? image_hash[image_link_attribute] = self.__send__(image_link_attribute) : nil
         end
         image_hash
       end
@@ -40,16 +40,16 @@ module Facebooker
 
       def to_params
        raise "Must set title_template" if self.title_template.nil?
-       { :page_actor_id => page_actor_id, 
-         :title_template => title_template, 
+       { :page_actor_id => page_actor_id,
+         :title_template => title_template,
          :title_data => convert_json(title_data),
-         :body_template => body_template, 
-         :body_data => convert_json(body_data), 
+         :body_template => body_template,
+         :body_data => convert_json(body_data),
          :body_general => body_general,
          :target_ids => target_ids }.merge image_params
       end
-      
-      def convert_json(hash_or_string)    
+
+      def convert_json(hash_or_string)
         (hash_or_string.is_a?(Hash) and hash_or_string.respond_to?(:to_json)) ? hash_or_string.to_json : hash_or_string
       end
     end

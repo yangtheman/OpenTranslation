@@ -10,27 +10,27 @@ module Facebooker
       def follow_facebook_redirect!
         facebook_post facebook_redirect_url
       end
-      
+
       def facebook_get(path,params={})
         facebook_verb(:get,path,params)
       end
-      
+
       def facebook_post(path,params={})
         facebook_verb(:post,path,params)
       end
-      
+
       def facebook_put(path,params={})
         facebook_verb(:put,path,params)
       end
-      
+
       def facebook_delete(path,params={})
         facebook_verb(:delete,path,params)
       end
-      
+
       def facebook_verb(verb,path, params={})
         send verb, path, facebook_params(params).reverse_merge(:canvas => true)
       end
-      
+
       def facebook_params(params = {})
         params = default_facebook_parameters.with_indifferent_access.merge(params || {})
         sig = generate_signature params
@@ -41,9 +41,9 @@ module Facebooker
 
       def default_facebook_parameters
         {
-          :fb_sig_added => "1", 
-          :fb_sig_session_key => "facebook_session_key", 
-          :fb_sig_user => "1234", 
+          :fb_sig_added => "1",
+          :fb_sig_session_key => "facebook_session_key",
+          :fb_sig_user => "1234",
           :fb_sig_expires => "0",
           :fb_sig_in_canvas => "1",
           :fb_sig_time => Time.now.to_f
@@ -61,8 +61,7 @@ module Facebooker
         end
         Digest::MD5.hexdigest([facebook_params.sort.join, Facebooker::Session.secret_key].join)
       end
-      
+
     end
   end
 end
-        

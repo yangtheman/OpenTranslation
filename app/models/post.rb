@@ -27,7 +27,7 @@ class Post < ActiveRecord::Base
     title   'A'
     content 'B'
   end
-  
+
   def prep(target_lang_id, orig)
     self.ted_id = target_lang_id
 
@@ -38,7 +38,7 @@ class Post < ActiveRecord::Base
     self.title = Translate.t(cleanup(orig.title), from, to)
     if self.title =~ /^Error\: Translation from.*supported yet\!/
       return false
-    else 
+    else
       #self.content = para_translate(orig.content, from, to)
       #paras = Hpricot(orig.content).search("/p|/pre|/h[1-6]")
       #self.content = paras.map {|p| Translate.t(cleanup(p.to_html), from, to)}.join
@@ -61,7 +61,7 @@ class Post < ActiveRecord::Base
       end
       self
     end
-  end 
+  end
 
 
   def cleanup(txt)
@@ -70,8 +70,8 @@ class Post < ActiveRecord::Base
     txt.gsub!(/\&lsquo\;|\&\#8216\;/, '‘')
     txt.gsub!(/\&rsquo\;|\&\#8217\;/, '’')
     txt.gsub!(/\&sbquo\;|\&\#8218\;/, '‚')
-    txt.gsub!(/\&ldquo\;|\&\#8220\;/, '“') 
-    txt.gsub!(/\&rdquo\;|\&\#8221\;/, '”') 
+    txt.gsub!(/\&ldquo\;|\&\#8220\;/, '“')
+    txt.gsub!(/\&rdquo\;|\&\#8221\;/, '”')
     txt.gsub!(/\&bdquo\;|\&\#8222\;/, '„')
     txt.gsub!(/\&\#8224\;/, '†')
     txt.gsub!(/\&\#8225\;/, '‡')

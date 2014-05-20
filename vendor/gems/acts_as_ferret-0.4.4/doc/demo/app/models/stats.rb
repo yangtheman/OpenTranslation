@@ -2,10 +2,10 @@ class Stats < ActiveRecord::Base
   def self.compute(kind)
     start_date = minimum :created_at
     sql = <<-END
-  select min(processing_time), max(processing_time), avg(processing_time), stddev(processing_time), 
+  select min(processing_time), max(processing_time), avg(processing_time), stddev(processing_time),
          concat_ws(':', hour(timediff(created_at, ?)), lpad(minute(timediff(created_at, ?)), 2, '0')) as time,
          group_concat(processing_time) as data
-      from stats 
+      from stats
       where kind=? group by time;
   END
     result = connection.execute sanitize_sql([sql, start_date, start_date, kind.to_s])
